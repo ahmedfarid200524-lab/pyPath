@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>pyPath admin</title>
+<style>
+:root{color-scheme:dark;--bg:#15122e;--card:#1d1946;--ink:#f4ecd8;--mute:#a49fc8;--line:#3a3470;--yel:#ffc93c;--pink:#ff5c8a;--ok:#19c6b7;--bad:#ff5c8a}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(rgba(244,236,216,.07) 1.3px,transparent 1.6px) 0 0/16px 16px,var(--bg);color:var(--ink);font:500 16px/1.45 system-ui,Segoe UI,Arial,sans-serif;min-height:100vh}
+main{max-width:860px;margin:0 auto;padding:20px 16px 60px}
+h1{margin:0;font-size:28px;letter-spacing:-.5px;text-shadow:3px 3px 0 var(--pink)}
+h1 i{font-style:normal;color:var(--yel)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+button{font:inherit;cursor:pointer;color:inherit}
+.btn{border:3px solid var(--ink);border-radius:10px;background:var(--card);padding:8px 14px;font-weight:700}
+.btn.go{background:var(--yel);color:#15122e;box-shadow:3px 3px 0 var(--pink)}
+.btn.ok{background:var(--ok);color:#06241a}
+.btn.bad{background:transparent;border-color:var(--bad);color:var(--bad)}
+.btn:disabled{opacity:.5;cursor:wait}
+input{font:inherit;width:100%;background:var(--card);color:var(--ink);border:3px solid var(--ink);border-radius:10px;padding:10px 12px}
+input:focus-visible,button:focus-visible{outline:3px solid var(--yel);outline-offset:2px}
+.login{max-width:360px;margin:12vh auto 0}
+.login p{color:var(--mute)}
+.tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.tabs .btn.on{background:var(--yel);color:#15122e}
+.tabs b{display:inline-block;min-width:22px;text-align:center;margin-left:6px;background:var(--pink);color:#15122e;border-radius:99px;padding:0 6px;font-size:13px}
+.warn{background:#4a1230;border:2px dashed var(--pink);border-radius:12px;padding:10px 14px;margin-bottom:14px}
+.warn code{background:#2a2350;padding:1px 6px;border-radius:5px}
+.user{background:var(--card);border:3px solid var(--ink);border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:4px 4px 0 var(--line);display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.user h3{margin:0 0 2px;font-size:19px}
+.user small{display:block;color:var(--mute)}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:6px;color:var(--mute);font-size:14px}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.empty{color:var(--mute);text-align:center;padding:40px 0}
+.msg{min-height:22px;margin:10px 0;font-weight:700}
+.msg.err{color:var(--bad)}.msg.good{color:var(--ok)}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#15122e;font-weight:700;padding:10px 18px;border-radius:12px;max-width:90vw;box-shadow:4px 4px 0 var(--pink)}
+</style>
+</head>
+<body>
+<main id="m"></main>
+<script>
+var TOKEN=null,TAB='pending',USERS=[],MAIL={},TIMER=null;
+try{TOKEN=sessionStorage.getItem('pp_admin')}catch(e){}
+var m=document.getElementById('m');
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function api(method,path,body){
+  return fetch(path,{method:method,headers:Object.assign({'Content-Type':'application/json'},TOKEN?{Authorization:'Bearer '+TOKEN}:{}),body:body?JSON.stringify(body):undefined})
+   .then(function(r){return r.json().catch(function(){return{}}).then(function(j){if(!r.ok){var e=new Error(j.error||'Error '+r.status);e.status=r.status;throw e}return j})});
+}
+function toast(t){var d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(function(){d.remove()},4500)}
+function loginView(msg){
+  clearInterval(TIMER);
+  m.innerHTML='<div class="login"><h1>py<i>Path</i> admin</h1><p>Enter the admin password to review registrations.</p><form onsubmit="return doLogin(event)"><input id="pw" type="password" placeholder="Admin password" autocomplete="current-password" autofocus><div class="msg err" id="lm">'+esc(msg||'')+'</div><button class="btn go" style="width:100%">Log in</button></form></div>';
+}
+function doLogin(e){
+  e.preventDefault();var pw=document.getElementById('pw').value;
+  api('POST','/api/admin/login',{password:pw}).then(function(j){TOKEN=j.token;try{sessionStorage.setItem('pp_admin',TOKEN)}catch(x){}load();TIMER=setInterval(load,20000)})
+   .catch(function(er){document.getElementById('lm').textContent=er.message});
+  return false;
+}
+function logout(){TOKEN=null;try{sessionStorage.removeItem('pp_admin')}catch(e){}loginView()}
+function load(){
+  api('GET','/api/admin/users').then(function(j){USERS=j.users;MAIL=j.mail;draw()}).catch(function(er){if(er.status===401)loginView('Session ended. Please log in again.');else toast(er.message)});
+}
+function fmt(t){return t?new Date(t).toLocaleString([], {dateStyle:'medium',timeStyle:'short'}):''}
+function draw(){
+  var c={pending:0,approved:0,rejected:0};USERS.forEach(function(u){c[u.status]++});
+  var list=USERS.filter(function(u){return u.status===TAB});
+  var h='<div class="top"><h1>py<i>Path</i> admin</h1><button class="btn" onclick="logout()">Log out</button></div>';
+  if(!MAIL.installed)h+='<div class="warn"><b>Email is off.</b> Run <code>npm install</code> inside the server folder, then restart the server. Until then people are NOT emailed.</div>';
+  else if(!MAIL.configured)h+='<div class="warn"><b>Email is not set up.</b> Approving works, but people are NOT emailed yet. Add your SMTP details in <code>server/config.json</code> (see README) and restart. Messages are saved in <code>server/data/outbox.log</code>.</div>';
+  h+='<div class="tabs">'+['pending','approved','rejected'].map(function(s){return '<button class="btn'+(TAB===s?' on':'')+'" onclick="TAB=\''+s+'\';draw()">'+s[0].toUpperCase()+s.slice(1)+'<b>'+c[s]+'</b></button>'}).join('')+'</div>';
+  if(!list.length)h+='<div class="empty">Nobody here yet.</div>';
+  list.forEach(function(u){
+    h+='<div class="user"><div><h3>'+esc(u.name)+'</h3><small>'+esc(u.email)+'</small><div class="meta"><span>Age '+u.age+'</span><span>'+esc(u.college)+'</span><span>Registered '+fmt(u.created)+'</span>'+(u.status==='approved'?'<span>⭐ '+u.xp+' XP</span><span>🔥 '+u.streak+'</span><span>✓ '+u.levels+' levels</span>':'')+'</div></div><div class="acts">';
+    var e=esc(u.email).replace(/'/g,'');
+    if(u.status!=='approved')h+='<button class="btn ok" onclick="act(this,\'approve\',\''+e+'\')">Approve</button>';
+    if(u.status==='approved')h+='<button class="btn" onclick="act(this,\'resend\',\''+e+'\')">Resend email</button>';
+    if(u.status!=='rejected')h+='<button class="btn bad" onclick="act(this,\'reject\',\''+e+'\')">'+(u.status==='approved'?'Remove access':'Reject')+'</button>';
+    h+='</div></div>';
+  });
+  m.innerHTML=h;
+}
+function act(btn,kind,email){
+  if(kind==='reject'&&!confirm('Are you sure? They will not be able to log in.'))return;
+  btn.disabled=true;
+  api('POST','/api/admin/'+kind,{email:email}).then(function(j){
+    var t=kind==='reject'?'Rejected.':kind==='resend'?'':'Approved. ';
+    if(j.mail==='sent')t+=kind==='reject'?' Email sent.':'Email sent to '+email+'.';
+    else if(j.mail==='not-configured')t+=' (Email is not set up, so nobody was emailed.)';
+    else if(j.mail==='failed')t+=' Email FAILED: '+j.mailError;
+    toast(t.trim());load();
+  }).catch(function(er){toast(er.message);btn.disabled=false});
+}
+if(TOKEN){load();TIMER=setInterval(load,20000)}else loginView();
+</script>
+</body>
+</html>
