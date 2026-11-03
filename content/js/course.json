@@ -1,0 +1,20 @@
+{
+ "id": "js",
+ "t": "JavaScript",
+ "e": "🟨",
+ "d": "From console.log to async code",
+ "lang": "js",
+ "units": [
+  "u01",
+  "u02",
+  "u03",
+  "u04",
+  "u05",
+  "u06",
+  "u07",
+  "u08",
+  "u09",
+  "u10",
+  "u11"
+ ]
+}

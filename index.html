@@ -1208,382 +1208,9 @@ var IMG_BOARD=(function(){var s=rc(60,30,200,90,'#0e5c53',6)+rc(130,55,60,40,DK,
 var IMG_ADC=SV(112,rc(20,40,280,24,PN,0)+'<rect x="20" y="40" width="140" height="24" fill="'+TL+'"/>'+ln(160,34,160,70,YL,3)+tx(20,30,'0 V',CR,'start')+tx(300,30,'5 V',CR,'end')+tx(20,82,'0',CR,'start')+tx(300,82,'1023',CR,'end')+tx(160,102,'2.5 V → reads about 512',YL),'Analog to digital reading');
 var IMG_WIRE=SV(150,rc(20,20,100,110,PN,6)+tx(70,36,'BOARD',CR,'middle',10,1)+tx(28,54,'5V',CR,'start')+tx(28,79,'GND',CR,'start')+tx(28,104,'A0',CR,'start')+ln(120,50,210,50,PK,3)+ln(120,75,210,75,'#9a9ac0',3)+ln(120,100,210,100,PU,3)+rc(210,28,90,94,TL,6)+tx(255,44,'SENSOR',DK,'middle',10,1)+tx(294,54,'VCC',DK,'end')+tx(294,79,'GND',DK,'end')+tx(294,104,'SIG',DK,'end'),'Wiring a sensor');
 
-/* ===== Robotics units 1-3 ===== */
-var ROBO=[
-/* ---------- R1 ---------- */
-{t:"What is a robot?",e:"🤖",
-lessons:[
-{t:"Robots around us",pages:[
-pg("A machine that senses, thinks and acts",`A **robot** is a machine that can **sense** its surroundings, **think** about what it senses, and then **act** on the world.
-
-A washing machine follows a fixed program. A robot vacuum checks the room, decides where to go, and moves.`,null,null,`Sense → Think → Act is the heart of every robot, from toys to Mars rovers.`,IMG_STA),
-pg("The parts of a robot",`Most robots are built from the same five building blocks:
-
-• **Frame**: the body that holds everything
-• **Sensors**: the eyes and ears
-• **Controller**: the brain that runs the program
-• **Actuators**: motors that make it move
-• **Power**: a battery or power supply`,null,null,null,IMG_PARTS),
-pg("Kinds of robots",`Robots come in many shapes. **Industrial arms** weld and paint in factories. **Mobile robots** roll around warehouses and homes. **Drones** fly. **Humanoids** are built with a human-like body.`,null,null,`What they share: all of them sense, think and act.`,IMG_TYPES)
-]},
-{t:"The control loop",pages:[
-pg("Repeat, repeat, repeat",`A robot's brain runs the same steps **over and over**, many times each second. Here it is in Python-style pseudocode:`,`while True:
-    distance = read_sensor()
-    if distance < 20:
-        stop()
-    else:
-        move_forward()`,null,`Pseudocode is plain, code-like text for planning. It does not have to run.`),
-pg("Open loop vs closed loop",`An **open-loop** robot just sends a command and hopes for the best. A **closed-loop** robot uses a sensor to **check the result** and corrects itself.
-
-A toaster with a timer is open loop. A thermostat that measures the room is closed loop.`,null,null,null,IMG_LOOP),
-pg("Autonomous or remote controlled?",`A **teleoperated** robot is driven by a human with a remote. An **autonomous** robot decides for itself. Many robots are in between: a human gives the goal and the robot works out the details.`)
-]}],
-hand:[
-M("Which three steps does a robot keep repeating?",null,"Sense, think, act",["Eat, sleep, repeat","Read, write, print","Start, stop, pause"],"Every robot loops through sensing, thinking and acting."),
-WI(M("Look at the diagram. Which part works like the robot’s eyes and ears?",null,"Sensors",["Motors","Battery","Frame"],"Sensors measure the world around the robot."),IMG_PARTS),
-M("Which part is the robot’s “brain”?",null,"The controller",["The wheel","The battery","The frame"],"The controller runs the program and makes decisions."),
-M("Motors and servos are examples of…",null,"actuators",["sensors","batteries","programs"],"Actuators turn energy into movement."),
-Fl("A part that turns energy into movement is called an ___.",null,["actuator"],"Actuators, such as motors, make a robot move."),
-Od("Put the robot loop in the right order.",`The sensor measures the distance
-The controller decides what to do
-The motor moves the robot`,"Sense first, then think, then act."),
-M("A robot arm that welds cars in a factory is a(n)…",null,"industrial robot",["drone","humanoid","submarine"],"Factory arms are industrial robots."),
-M("What gives a robot its power?",null,"A battery or power supply",["The sensor","The program","The frame"],"Every robot needs a source of energy."),
-M("A robot that uses a sensor to check and correct its movement is…",null,"closed-loop",["open-loop","teleoperated","unpowered"],"Closed loop means feedback from a sensor."),
-M("A fan that switches on with a timer, without checking the temperature, is…",null,"open-loop",["closed-loop","autonomous","a humanoid"],"There is no sensor feedback, so it is open loop."),
-Fl("Rovers, arms and drones are robots because they sense, think and ___.",null,["act"],"Sense, think, act."),
-M("Which of these is an actuator?",null,"A wheel motor",["An ultrasonic sensor","A battery","A microcontroller"],"The motor creates the movement."),
-M("A robot vacuum bumps into a wall and turns around. Which step is the “sense” step?",null,"The bumper detects the wall",["It turns around","It decides to turn","The battery charges"],"Sensing means measuring the world."),
-M("Why does a robot repeat its loop many times per second?",null,"To keep reacting to a changing world",["To use up its battery","Because it forgets the program","To make noise"],"The world keeps changing, so the robot keeps checking.")
-]},
-
-/* ---------- R2 ---------- */
-{t:"Electricity basics",e:"⚡",
-lessons:[
-{t:"Voltage, current, resistance",pages:[
-pg("Think of water in pipes",`Electricity is easier to understand as water in a pipe:
-
-• **Voltage (V)**: the push, like water pressure. Measured in **volts**.
-• **Current (I)**: how much flows, like the flow of water. Measured in **amps (A)**.
-• **Resistance (R)**: what slows the flow, like a narrow pipe. Measured in **ohms (Ω)**.`,null,null,null,IMG_WATER),
-pg("Ohm’s law",`These three are linked by one simple rule: **V = I × R**. Rearrange it to find any of them.`,`V = 9      # volts
-R = 3      # ohms
-I = V / R
-print(I)   # amps`,"3.0",`Cover the quantity you want in the triangle, and you see the formula.`,IMG_OHM),
-pg("A simple circuit",`Current only flows around a **closed loop**. Break the loop with the switch, and the LED goes dark.`,null,null,`Always put a resistor in series with an LED, or too much current can burn it out.`,IMG_CIRCUIT)
-]},
-{t:"Series, parallel & safety",pages:[
-pg("Series and parallel",`In **series**, parts are in a single line, so their resistances add up. In **parallel**, each part has its own path, so if one breaks the others keep working.`,null,null,`Robot headlights are wired in parallel so one broken bulb doesn’t turn off the rest.`,IMG_SERPAR),
-pg("Power and battery life",`**Power** is how fast energy is used: **P = V × I**, measured in watts (W).
-
-A battery’s size is given in **mAh** (milliamp-hours). Run time ≈ battery mAh ÷ current drawn in mA.`,`V = 5
-I = 2
-print(V * I)          # watts
-print(2000 / 500)     # hours`,"10\n4.0"),
-pg("Stay safe",`• Check the **+ and −** before connecting a battery.
-• Never connect the two battery terminals directly together (a **short circuit**).
-• Don’t touch wires while the robot is powered.
-• Disconnect the battery before changing the wiring.`)
-]}],
-hand:[
-M("What is the unit of voltage?",null,"The volt",["The amp","The ohm","The watt"],"Voltage is measured in volts (V)."),
-M("What is the unit of current?",null,"The ampere (amp)",["The volt","The ohm","The watt"],"Current is measured in amps (A)."),
-M("What is the unit of resistance?",null,"The ohm",["The volt","The amp","The watt"],"Resistance is measured in ohms (Ω)."),
-M("Which formula is Ohm’s law?",null,"V = I × R",["V = I + R","I = V × R","R = V × I"],"Voltage equals current times resistance."),
-M("A 6 V battery is connected across a 2 Ω resistor. What is the current?",null,"3 A",["12 A","4 A","0.33 A"],"I = V ÷ R = 6 ÷ 2 = 3 A."),
-M("A motor drops 12 V and draws 4 A. What is its resistance?",null,"3 Ω",["48 Ω","8 Ω","16 Ω"],"R = V ÷ I = 12 ÷ 4 = 3 Ω."),
-Fl("Current only flows when the circuit is a ___ loop.",null,["closed"],"An open switch breaks the loop and stops the current."),
-WI(M("What is the total resistance of two 10 Ω resistors in series (top diagram)?",null,"20 Ω",["5 Ω","10 Ω","100 Ω"],"In series, resistances add: 10 + 10."),IMG_SERPAR),
-M("In a parallel circuit, one branch breaks. What happens to the other branches?",null,"They keep working",["They all stop","They get dimmer","They explode"],"Each parallel branch has its own path."),
-Od("Put the LED circuit steps in order.",`Connect the battery plus to the resistor
-Connect the resistor to the LED
-Connect the LED back to the battery minus`,"The current goes plus → resistor → LED → minus."),
-M("Why do we put a resistor in series with an LED?",null,"To limit the current so the LED doesn’t burn out",["To make it brighter","To store energy","To change its colour"],"LEDs can’t handle unlimited current."),
-M("Power is P = V × I. What is the power of 5 V at 2 A?",null,"10 W",["7 W","2.5 W","3 W"],"5 × 2 = 10 watts."),
-M("A 2000 mAh battery powers a robot that draws 500 mA. About how long will it run?",null,"4 hours",["1 hour","2 hours","10 hours"],"2000 ÷ 500 = 4 hours."),
-M("Which is safe practice when connecting a battery?",null,"Check the + and − polarity first",["Touch the bare wires to test them","Connect the terminals together","Wire it while the robot is running"],"Wrong polarity or shorts can damage parts.")
-]},
-
-/* ---------- R3 ---------- */
-{t:"Sensors",e:"👀",
-lessons:[
-{t:"How robots sense",pages:[
-pg("Sensors turn the world into numbers",`A sensor measures something real, such as light, distance or touch, and turns it into an **electrical signal**. The controller reads that signal as a **number** and uses it to decide what to do.`,`distance = read_ultrasonic()
-print(distance)`,"25",`The number 25 here means 25 cm in front of the robot.`),
-pg("Distance with sound",`An **ultrasonic** sensor sends out a sound pulse you can’t hear and times the **echo**. Sound travels at about **343 m/s**, and it makes a round trip, so we divide by 2.`,`t = 0.01          # echo time in seconds
-distance = t * 343 / 2
-print(distance)   # metres`,"1.715",null,IMG_ECHO),
-pg("Light and line sensors",`An **infrared (IR)** sensor shines light down and measures how much bounces back. **White** surfaces reflect a lot (high number). **Black** lines reflect very little (low number). That is how line-following robots find their path.`,null,null,null,IMG_LINE)
-]},
-{t:"More sensors",pages:[
-pg("Touch and bump switches",`A bump switch is the simplest sensor. It is either pressed (**1**) or not pressed (**0**). Sensors with only two values are called **digital** sensors.`),
-pg("Encoders count turns",`An **encoder** has a disc with slits. As the wheel turns, a light sensor counts each slit passing by. More ticks means more rotation, so the robot can measure how far it has travelled.`,null,null,null,IMG_ENC),
-pg("Sense the robot’s own motion",`An **accelerometer** measures acceleration and tilt. A **gyroscope** measures how fast the robot turns. A **compass** finds direction. Together they form an **IMU**. Outdoors, **GPS** gives the position.`),
-pg("Cameras and lidar",`A **camera** lets a robot recognise colours, faces and signs. **Lidar** spins a laser to measure distances in all directions, building a map of the room.`,null,null,`Sensor readings are noisy. Robots often **average** several readings to get a steadier value.`)
-]}],
-hand:[
-M("What does an ultrasonic sensor measure?",null,"Distance, using the echo of sound",["Temperature","Light colour","Battery level"],"It times how long an echo takes to return."),
-WI(M("An echo takes 0.02 s to return. Sound travels at 343 m/s. How far away is the object?",null,"3.43 m",["6.86 m","0.34 m","343 m"],"0.02 × 343 ÷ 2 = 3.43 m."),IMG_ECHO),
-M("Why do we divide the echo time by 2?",null,"The sound travels to the object and back",["Sound moves at half speed","The sensor has two eyes","To convert to centimetres"],"The measured time covers a round trip."),
-M("An IR line sensor is over a black line. What does it read?",null,"A low value (little light reflected)",["A high value","Always zero volts","A random value"],"Black absorbs light, so little bounces back."),
-Fl("A touch sensor has only two values, 0 or 1. It is called a ___ sensor.",null,["digital"],"Two-value sensors are digital."),
-M("Which sensor counts wheel rotations?",null,"An encoder",["A compass","A camera","A thermometer"],"Encoders count slits passing as the wheel turns."),
-M("Which sensor measures how fast the robot is turning?",null,"A gyroscope",["A bump switch","A light sensor","A microphone"],"Gyroscopes measure rotation rate."),
-M("GPS is mostly useful for…",null,"finding position outdoors",["measuring wheel speed","detecting a black line","counting slits"],"GPS needs a view of the sky."),
-M("Which sensor helps a robot recognise colours and faces?",null,"A camera",["A bump switch","An encoder","A battery gauge"],"Cameras give the robot images to analyse."),
-Od("Put this sensor-to-action chain in order.",`The sensor detects an obstacle
-The controller reads the value
-The program decides to stop
-The motors stop`,"Sense, read, decide, act."),
-Fl("Sensor readings are noisy, so robots often take the ___ of several readings.",null,["average","mean"],"Averaging smooths out random noise."),
-M("Which sensor would you use to detect a nearby wall without touching it?",null,"An ultrasonic sensor",["A bump switch","An encoder","A battery"],"Ultrasonic sensors measure distance without contact."),
-M("What does an accelerometer measure?",null,"Acceleration and tilt",["Temperature","Colour","Distance by echo"],"It senses changes in speed and orientation."),
-M("How does lidar work?",null,"It spins a laser to measure distances around the robot",["It listens to echoes of sound","It counts wheel slits","It reads colours"],"Lidar builds a map from laser distances.")
-]}
-];
-/* ===== diagrams for unit 6 ===== */
-var IMG_DIFF=SV(184,rc(110,50,100,80,YL,6)+rc(88,58,22,64,GR,4)+rc(210,58,22,64,GR,4)+ar(99,104,99,64)+ar(221,104,221,64)+tx(160,95,'ROBOT',DK,'middle',12,1)+tx(160,40,'front ↑')+tx(160,152,'both forward → straight',TL)+tx(160,168,'opposite directions → spin',PK)+tx(160,182,'',CR),'Differential drive robot, top view');
-var IMG_TURN=SV(150,ci(80,62,30,'none',GR)+pa('M80 32 A30 30 0 1 1 52 52',CR,2,1)+rc(70,52,20,20,YL,3)+tx(80,112,'spin in place',CR)+tx(80,128,'wheels opposite',TL)+rc(190,100,20,20,YL,3)+pa('M200 98 Q 250 90 280 30',CR,2,1)+tx(240,128,'curve',CR)+tx(240,144,'one wheel faster',TL),'Spinning and curving');
-var IMG_ARM=SV(172,rc(40,140,60,16,GR,3)+ln(70,134,150,70,TL,10,null,1)+ln(150,70,240,95,YL,10,null,1)+ci(70,134,8,CR,DK)+ci(150,70,8,CR,DK)+rc(236,88,18,14,PK,3)+tx(8,126,'joint 1',CR,'start',10)+tx(150,50,'joint 2',CR,'middle',10)+tx(312,126,'end effector ↖',PK,'end',10)+tx(160,168,'each hinge joint = 1 degree of freedom',YL,'middle',10),'Two-joint robot arm');
-
-/* ===== Robotics units 4-6 ===== */
-ROBO=ROBO.concat([
-/* ---------- R4 ---------- */
-{t:"Motors & movement",e:"⚙️",
-lessons:[
-{t:"Actuators",pages:[
-pg("DC motors",`A **DC motor** spins continuously when you give it voltage. More volts means a faster spin. Swap the two wires and it spins the other way. It is great for **wheels**.`,null,null,null,IMG_DCM),
-pg("Servo motors",`A **servo** doesn’t spin freely. You tell it an **angle** (usually 0° to 180°) and it moves there and holds. That makes servos perfect for robot arms, grippers and steering.`,null,null,null,IMG_SERVO),
-pg("Stepper motors",`A **stepper** moves in small, exact **steps**, for example 200 steps per full turn. 3D printers use steppers because they are precise and need no extra position sensor.`)
-]},
-{t:"Driving motors",pages:[
-pg("H-bridge: forward and reverse",`A microcontroller pin can’t drive a motor directly. It gives only a tiny current. A **motor driver** with an **H-bridge** switches the big current for it, and can **reverse** the motor by flipping which switches are on.`,null,null,null,IMG_HB),
-pg("PWM controls speed",`To change speed, we switch the power on and off very fast. This is **PWM** (pulse width modulation). The **duty cycle** is the percentage of time the signal is ON. 25% duty means a slow motor, 90% means a fast one.`,null,null,null,IMG_PWM),
-pg("Gears: torque versus speed",`Gears trade speed for strength (**torque**). A small gear driving a big gear turns slower but pushes harder. The **gear ratio** is output teeth ÷ input teeth.`,`teeth_in = 10
-teeth_out = 30
-ratio = teeth_out / teeth_in
-print(ratio)`,"3.0",`Ratio 3:1 means the output turns three times slower, with about three times the torque.`,IMG_GEAR)
-]}],
-hand:[
-M("A DC motor, given power, will…",null,"spin continuously",["move to an exact angle","count steps","measure distance"],"DC motors spin as long as they have power."),
-M("A servo motor is used to…",null,"move to a chosen angle and hold it",["spin freely forever","store energy","measure speed"],"Servos take an angle command."),
-M("Which motor moves in small, exact steps?",null,"A stepper motor",["A DC motor","A servo gearbox","A battery"],"Steppers advance one step at a time."),
-WI(M("Look at the diagram. What is an H-bridge used for?",null,"Reversing a motor’s direction",["Measuring distance","Storing energy","Making the motor lighter"],"Flipping which switches are on reverses the current."),IMG_HB),
-Fl("PWM stands for pulse ___ modulation.",null,["width"],"Pulse width modulation."),
-WI(M("Look at the waveforms. A motor driven with a 50% duty cycle runs…",null,"at about half speed",["at full speed","backwards","not at all"],"Half the time ON gives about half the average power."),IMG_PWM),
-M("A small gear drives a big gear. The big gear turns…",null,"slower, with more torque",["faster, with less torque","at the same speed","only backwards"],"Gears trade speed for torque."),
-M("The gear ratio is 30 : 10. How fast does the output turn compared to the input?",null,"One third as fast",["Three times as fast","The same speed","Half as fast"],"A 3:1 ratio makes the output 3× slower."),
-M("Which actuator would you choose for a robot arm joint that must hold an exact angle?",null,"A servo",["A plain DC motor","A light bulb","A fan"],"Servos can hold a commanded angle."),
-Od("Put the steps from command to motion in order.",`The program sets the speed to 50%
-The controller outputs a PWM signal
-The motor driver switches the power
-The wheel turns`,"The command flows down from software to hardware."),
-M("You swap the + and − wires of a DC motor. What happens?",null,"It spins the opposite way",["It stops forever","It spins faster","Nothing changes"],"Reversing the current reverses the rotation."),
-Fl("The percentage of time a PWM signal is ON is called the ___ cycle.",null,["duty"],"Duty cycle."),
-M("Why can’t a microcontroller pin power a big motor directly?",null,"A pin supplies only a tiny current, so a motor driver is needed",["Motors don’t use electricity","Pins are made of wood","Motors only work with batteries"],"Motors need far more current than a pin can give."),
-M("A hobby servo usually turns about…",null,"0° to 180°",["0° to 10°","0° to 3600°","exactly 1 turn only"],"Typical servos cover a half circle.")
-]},
-
-/* ---------- R5 ---------- */
-{t:"Controllers & code",e:"🧠",
-lessons:[
-{t:"Microcontrollers",pages:[
-pg("The robot brain",`A **microcontroller** (like an **Arduino**) is a tiny computer on one chip, built to read sensors and control motors. A **Raspberry Pi** is closer to a small full computer that can run Linux, cameras and AI.`,null,null,`Many robots use both: a Pi for thinking, an Arduino for fast motor control.`,IMG_BOARD),
-pg("Digital and analog pins",`A **digital** pin knows two states: **HIGH** (5 V) or **LOW** (0 V). An **analog** input measures a voltage anywhere between 0 and 5 V and converts it to a number from **0 to 1023** (a 10-bit ADC).`,null,null,null,IMG_ADC),
-pg("Power and wiring",`A sensor needs three wires: power (**VCC**, often 5 V), **ground** (GND, 0 V), and a **signal** wire. The sensor and the board must share the same ground so they agree on what 0 V is.`,null,null,null,IMG_WIRE)
-]},
-{t:"Programming the loop",pages:[
-pg("setup() and loop()",`Arduino programs have two parts. **setup()** runs **once** at the start. **loop()** then repeats **forever**.`,`void setup() {
-  pinMode(13, OUTPUT);
-}
-
-void loop() {
-  digitalWrite(13, HIGH);
-  delay(500);
-  digitalWrite(13, LOW);
-  delay(500);
-}`,"LED on for 0.5 s, off for 0.5 s, repeating",`«delay(500)» waits 500 milliseconds, which is half a second.`),
-pg("The same idea in Python",`Robots can also run **MicroPython**. The structure is the same: set up the pin, then repeat forever.`,`from machine import Pin
-from time import sleep
-
-led = Pin(25, Pin.OUT)
-while True:
-    led.value(1)
-    sleep(0.5)
-    led.value(0)
-    sleep(0.5)`,"LED blinks every second"),
-pg("Read, decide, act",`Real robot code is the control loop from Unit 1: read a sensor, decide, then act.`,`while True:
-    d = read_distance()
-    if d < 20:
-        stop()
-    else:
-        forward()`,null,`If this loop had no stop() branch, the robot would drive into the wall!`)
-]}],
-hand:[
-M("Which of these is a microcontroller board?",null,"Arduino",["A printer","A gearbox","A servo horn"],"Arduino boards are popular microcontrollers."),
-M("A Raspberry Pi is closest to…",null,"a small full computer",["a single switch","a motor","a battery"],"It can run an operating system."),
-M("A digital pin can read…",null,"only HIGH or LOW",["any number from 0 to 1023","colours","sound"],"Digital means two states."),
-M("A 10-bit ADC reads 0 to 1023. A sensor outputs half of 5 V. About what number does it read?",null,"512",["255","1023","5"],"Half of 1023 is about 512."),
-Fl("The wire that connects to 0 V is called ___.",null,["ground","gnd"],"Ground (GND) is the 0 V reference."),
-M("In Arduino code, which function runs once at the start?",null,"setup()",["loop()","delay()","start()"],"setup() runs once."),
-M("In Arduino code, which function repeats forever?",null,"loop()",["setup()","pinMode()","once()"],"loop() restarts as soon as it finishes."),
-Od("Put the blink program lines in order.",`pinMode(13, OUTPUT);
-digitalWrite(13, HIGH);
-delay(500);
-digitalWrite(13, LOW);`,"Set the pin up, switch it on, wait, switch it off."),
-M("What does pinMode(13, OUTPUT) do?",null,"Sets pin 13 to send signals out",["Reads a sensor on pin 13","Waits 13 seconds","Turns the board off"],"OUTPUT means the board drives the pin."),
-Fl("Complete the code so the robot stops when something is close.",`while True:\n    d = read_distance()\n    if d < 20:\n        ___()\n    else:\n        forward()`,["stop"],"Close obstacle → stop()."),
-M("How long does delay(500) wait?",null,"500 milliseconds (half a second)",["500 seconds","5 seconds","50 microseconds"],"Arduino delay() uses milliseconds."),
-WI(M("Look at the diagram. Why must the sensor and the board share a ground?",null,"So both agree on what 0 V is",["To make it brighter","To save battery","To make the wire look neat"],"A shared ground gives a common voltage reference."),IMG_WIRE),
-M("Which logic voltage do many classic Arduino boards use?",null,"5 V",["120 V","230 V","0.1 V"],"Classic Arduinos use 5 V logic; some boards use 3.3 V."),
-M("What happens when loop() reaches its last line?",null,"It starts again from the top",["The program ends","The board turns off","setup() runs again"],"loop() repeats forever.")
-]},
-
-/* ---------- R6 ---------- */
-{t:"Moving the robot",e:"🚗",
-lessons:[
-{t:"Driving",pages:[
-pg("Differential drive",`The simplest mobile robot has **two driven wheels**, left and right. Steering needs no steering wheel. You just run the wheels at **different speeds**.`,null,null,null,IMG_DIFF),
-pg("Turning",`Both wheels the same speed: straight. Left slower than right: curves **left**. Wheels in opposite directions: the robot **spins on the spot**.`,null,null,null,IMG_TURN),
-pg("Distance and speed",`**distance = speed × time**. A wheel’s **circumference** is π × diameter, and that is how far the robot rolls in one turn.`,`import math
-d = 0.065              # wheel diameter in metres
-C = math.pi * d
-rotations = 10
-print(round(C * rotations, 2))`,"2.04")
-]},
-{t:"Arms & degrees of freedom",pages:[
-pg("Degrees of freedom",`Each independent way a robot can move is a **degree of freedom (DOF)**. A simple hinge joint gives **1 DOF**. A robot arm with 6 joints has 6 DOF, enough to reach a point and also tilt the tool.`,null,null,null,IMG_ARM),
-pg("Grippers",`The tool at the end of an arm is the **end effector**. It might be a two-finger gripper, a suction cup, a welding torch or a screwdriver.`),
-pg("Counting position: odometry",`Encoders count **ticks**. If an encoder gives 360 ticks per turn and the robot counts 720 ticks, the wheel turned 2 times. Adding up wheel movement to estimate position is called **odometry**.`,`ticks_per_turn = 360
-ticks = 720
-print(ticks / ticks_per_turn)`,"2.0")
-]}],
-hand:[
-M("A differential-drive robot turns by…",null,"running its left and right wheels at different speeds",["tilting its battery","moving its sensor","changing its program colour"],"Different wheel speeds cause the turn."),
-WI(M("Look at the diagram. To spin in place, the wheels must turn…",null,"in opposite directions",["both forward at the same speed","both backward at the same speed","not at all"],"Opposite wheel directions rotate the robot on the spot."),IMG_TURN),
-M("The left wheel runs slower than the right wheel. The robot curves…",null,"left",["right","straight","upward"],"The slower side is the inside of the curve."),
-M("Which formula gives distance?",null,"speed × time",["speed ÷ time","time − speed","speed + time"],"distance = speed × time."),
-M("A robot drives at 0.5 m/s for 6 s. How far does it go?",null,"3 m",["12 m","0.3 m","6.5 m"],"0.5 × 6 = 3."),
-Fl("The distance a wheel rolls in one full turn is its ___.",null,["circumference"],"Circumference = π × diameter."),
-M("What does this print?",`import math\nprint(round(math.pi * 0.1, 2))`,"0.31",["0.1","3.14","0.03"],"π × 0.1 ≈ 0.314, rounded to 0.31."),
-WI(M("Look at the diagram. How many degrees of freedom does one simple hinge joint give?",null,"1",["2","6","0"],"A hinge rotates about one axis."),IMG_ARM),
-M("A robot arm with 6 joints has about how many DOF?",null,"6",["1","3","12"],"Each joint adds one DOF."),
-Od("Put a pick-and-place task in order.",`Move the arm above the object
-Lower the gripper
-Close the gripper
-Lift and move to the target`,"Approach, lower, grip, then move."),
-M("The tool at the end of a robot arm is called the…",null,"end effector",["base plate","battery pack","chassis"],"Grippers and torches are end effectors."),
-M("An encoder gives 360 ticks per turn and reads 1080 ticks. How many turns?",null,"3",["2","4","360"],"1080 ÷ 360 = 3."),
-M("Odometry estimates…",null,"position from wheel movement",["battery voltage","colour of the floor","sound volume"],"It adds up how far the wheels have rolled."),
-M("Both wheels turn forward at exactly the same speed. The robot goes…",null,"straight",["in a circle","backward","nowhere"],"Equal speeds mean no turning.")
-]}
-]);
-/* ===== diagrams for units 7-8 ===== */
-var IMG_FB=SV(148,tx(160,18,'error = target − actual',YL)+bx(8,40,56,36,'TARGET',PU)+ar(64,58,80,58)+ci(90,58,10,PN)+tx(90,62,'±',CR,'middle',12,1)+ar(100,58,112,58)+bx(112,40,68,36,'CONTROL',YL)+ar(180,58,196,58)+bx(196,40,52,36,'MOTOR',PK)+ar(248,58,304,58)+tx(284,48,'robot',CR,'middle',10)+pa('M274 58 V118 H192',CR,2,1)+bx(112,102,80,30,'SENSOR',TL)+pa('M112 118 H90 V70',CR,2,1),'Feedback control loop');
-var IMG_PID=SV(138,ln(30,110,300,110)+ln(30,110,30,15)+ln(30,40,300,40,YL,1.5,'5 4')+pa('M30 110 C70 110 90 22 125 28 S170 56 200 41 S240 39 300 40',TL,3)+tx(40,34,'target',YL,'start',10)+tx(125,16,'overshoot',PK,'middle',10)+tx(300,126,'time →',CR,'end',10)+tx(26,18,'',CR),'Response with overshoot');
-var IMG_STATE=SV(138,bx(10,20,80,40,'SEARCH',TL)+bx(120,20,80,40,'APPROACH',YL)+bx(230,20,80,40,'GRAB',PK)+ar(90,40,118,40)+ar(200,40,228,40)+tx(105,76,'sees ball',CR,'middle',9)+tx(215,76,'close enough',CR,'middle',9)+pa('M270 62 V104 H50 V64',CR,2,1)+tx(160,122,'lost it → search again',PK,'middle',10),'State machine');
-var IMG_AUTO=SV(150,bx(20,100,90,40,'REMOTE|human drives',TL)+bx(115,70,90,70,'ASSISTED|robot helps',YL)+bx(210,40,90,100,'AUTONOMOUS|self-driving',PK)+tx(160,24,'more autonomy →',CR,'middle',11),'Levels of autonomy');
-var IMG_VIS=(function(){var s='',r,c,blob={'1,5':1,'1,6':1,'2,5':1,'2,6':1,'3,5':1};for(r=0;r<6;r++)for(c=0;c<9;c++)s+='<rect x="'+(30+c*26)+'" y="'+(10+r*26)+'" width="26" height="26" fill="'+(blob[r+','+c]?PK:PN)+'" stroke="'+GR+'" stroke-width="1"/>';return SV(186,s+ci(183,70,5,YL,DK)+tx(160,180,'find the red pixels → find their centre',YL,'middle',10),'Camera image grid with a red blob')})();
-var IMG_MAP=(function(){var s='',r,c,ob={'1,2':1,'2,2':1,'3,2':1,'1,5':1,'2,5':1},pts=[[2,0],[2,1],[1,1],[0,1],[0,2],[0,3],[1,3],[2,3],[2,4],[3,4],[3,5],[3,6],[2,6],[2,7]],d='';for(r=0;r<5;r++)for(c=0;c<8;c++)s+='<rect x="'+(40+c*30)+'" y="'+(10+r*30)+'" width="30" height="30" fill="'+(ob[r+','+c]?PU:PN)+'" stroke="'+GR+'" stroke-width="1"/>';pts.forEach(function(p,i){d+=(i?' L':'M')+(40+p[1]*30+15)+' '+(10+p[0]*30+15)});return SV(190,s+pa(d,YL,3)+ci(55,85,7,TL,DK)+ci(265,85,7,PK,DK)+tx(55,112,'start',TL,'middle',9)+tx(265,112,'goal',PK,'middle',9)+tx(160,178,'path planning: find a clear route',YL,'middle',10),'Map with a planned path')})();
-var IMG_CYC=(function(){var n=['Ask','Imagine','Plan','Create','Test','Improve'],cl=[TL,YL,PK,PU,OR,TL],s=ci(160,85,60,'none',GR),i,a;for(i=0;i<6;i++){a=(-90+i*60)*Math.PI/180;s+=ci((160+Math.cos(a)*60).toFixed(1),(85+Math.sin(a)*60).toFixed(1),23,cl[i],CR)+tx((160+Math.cos(a)*60).toFixed(1),(89+Math.sin(a)*60).toFixed(1),n[i],DK,'middle',9,1)}return SV(172,s+tx(160,89,'repeat',CR,'middle',10),'Engineering design cycle')})();
-
-/* ===== Robotics units 7-8 ===== */
-ROBO=ROBO.concat([
-/* ---------- R7 ---------- */
-{t:"Control & feedback",e:"🎯",
-lessons:[
-{t:"Feedback control",pages:[
-pg("Error: the gap to the goal",`Closed-loop control works by measuring the **error**, which is the gap between where you want to be and where you are.
-
-**error = target − actual**
-
-The controller turns this error into a motor command, then measures again.`,null,null,null,IMG_FB),
-pg("Proportional control",`The simplest rule: make the correction **proportional** to the error. Big error means a big push. Small error means a gentle push. The constant **Kp** sets how strong the push is.`,`target = 100
-actual = 80
-error = target - actual
-Kp = 0.5
-print(error * Kp)`,"10.0",`Too large a Kp makes the robot overshoot and wobble. Too small makes it slow.`),
-pg("PID in one minute",`**PID** adds two more ideas to P:
-
-• **P**: react to the error **now**
-• **I**: react to error **built up in the past**
-• **D**: react to how **fast** the error is changing, to calm the overshoot
-
-PID is used in drones, cruise control and robot arms.`,null,null,null,IMG_PID)
-]},
-{t:"Line following & behaviours",pages:[
-pg("Line follower logic",`Put two IR sensors on either side of a black line. If the line is centred between them, both see white, so go **straight**. If the **left** sensor sees black, the line has moved left, so **steer left**. If the **right** sensor sees black, **steer right**.`,null,null,null,IMG_LINE),
-pg("Obstacle avoidance",`A simple avoidance routine is a list of if-statements the robot runs forever:`,`while True:
-    d = read_distance()
-    if d < 20:
-        stop()
-        turn_right()
-    else:
-        forward()`),
-pg("State machines",`Complex behaviour is easier if you split it into **states**. In each state the robot follows simple rules, and events (like “sees ball”) move it from one state to the next.`,null,null,null,IMG_STATE)
-]}],
-hand:[
-M("What is the error in a control loop?",null,"target − actual",["actual + target","target × actual","battery − motor"],"Error is how far you are from the goal."),
-M("A P controller has Kp = 2 and an error of 5. What is the output?",null,"10",["7","2.5","3"],"2 × 5 = 10."),
-M("The I term of a PID controller reacts to…",null,"error that has built up over time",["the colour of the floor","the battery voltage","the wheel size"],"I stands for integral, the sum of past error."),
-M("The D term of a PID controller reacts to…",null,"how quickly the error is changing",["how long the robot has run","the robot’s weight","the sensor colour"],"D stands for derivative, the rate of change."),
-Fl("A controller that uses sensor readings to correct itself is a ___-loop controller.",null,["closed"],"Closed loop means feedback."),
-WI(M("Look at the diagram. The left sensor sees black and the right sees white. The robot should…",null,"steer left",["steer right","go straight","stop forever"],"The line has drifted to the left, so steer toward it."),IMG_LINE),
-WI(M("Look at the diagram. Both sensors see white, so the line is centred between them. The robot should…",null,"go straight",["spin around","turn left","turn right"],"No error means keep going straight."),IMG_LINE),
-Od("Put the obstacle-avoidance steps in order.",`Measure the distance ahead
-If it is under 20 cm, stop
-Turn to a clear direction
-Drive forward again`,"Sense, decide, act, then repeat."),
-M("A Kp that is far too large will usually cause…",null,"overshoot and wobbling",["the robot to be too slow","a dead battery","perfect control"],"A strong push overshoots the target."),
-M("A state machine is…",null,"a set of states and rules for moving between them",["a machine that makes states","a type of battery","a kind of wheel"],"The robot is in one state at a time."),
-Fl("Complete the formula.",`error = ___ - actual`,["target"],"error = target − actual."),
-M("A home thermostat that measures the room temperature is an example of…",null,"closed-loop control",["open-loop control","a teleoperated robot","a servo"],"It uses a sensor to correct itself."),
-M("Overshoot means the robot…",null,"goes past the target before settling",["never reaches the target","stops at the start","loses power"],"It passes the target, then comes back."),
-WI(M("Look at the state machine. The robot in SEARCH sees the ball. What state comes next?",null,"APPROACH",["GRAB","SLEEP","SEARCH"],"“Sees ball” moves it from SEARCH to APPROACH."),IMG_STATE)
-]},
-
-/* ---------- R8 ---------- */
-{t:"Smart robots & safety",e:"🌍",
-lessons:[
-{t:"Autonomy & AI",pages:[
-pg("Levels of autonomy",`Robots range from **remote controlled** (a human does everything), to **assisted** (the robot helps, like lane-keeping in a car), to **autonomous** (the robot decides for itself).`,null,null,null,IMG_AUTO),
-pg("Computer vision",`A camera image is a grid of **pixels**, each one a tiny dot of colour. Software can search the grid, for example for all the red pixels, then find their **centre** to know where an object is.`,null,null,`Modern robots also use AI to recognise objects, faces and signs.`,IMG_VIS),
-pg("Maps and path planning",`To move around, a robot needs a **map** and its own **position** on it. Building a map while tracking its position is called **SLAM** (Simultaneous Localization and Mapping). Then **path planning** finds a clear route to the goal.`,null,null,null,IMG_MAP)
-]},
-{t:"Building & safety",pages:[
-pg("The engineering design process",`Engineers don’t guess. They go around a cycle: **Ask** what the problem is, **Imagine** ideas, **Plan** a design, **Create** a prototype, **Test** it, and **Improve** it. Then they repeat.`,null,null,`A **prototype** is a first working model used to test ideas. Failing early is cheap!`,IMG_CYC),
-pg("Safety first",`• Fit an **emergency stop** that cuts the power instantly.
-• Before the first test of a wheeled robot, **lift it** so the wheels spin in the air.
-• Keep fingers away from moving parts and gears.
-• Check batteries for damage, and never leave them charging unattended.`),
-pg("Robots and responsibility",`Engineers are responsible for building robots that are **safe**, that **respect privacy** (cameras see a lot), and that help people. Always think about who could be affected by your robot.`)
-]}],
-hand:[
-M("An autonomous robot is one that…",null,"decides and acts by itself",["is always remote controlled","has no battery","never moves"],"Autonomy means self-directed action."),
-M("Computer vision lets a robot…",null,"understand images from a camera",["measure battery power","count wheel turns","charge itself"],"It analyses camera pixels."),
-M("SLAM stands for…",null,"Simultaneous Localization and Mapping",["Simple Light And Motion","Sensor Loop And Memory","Servo Lock And Move"],"The robot maps and locates itself at the same time."),
-WI(M("Look at the map. Path planning is used to…",null,"find a clear route to the goal",["charge the battery","paint the walls","speed up the motors"],"The planner avoids the blocked cells."),IMG_MAP),
-Fl("A button that instantly cuts power in danger is called an ___ stop.",null,["emergency"],"Emergency stop (E-stop)."),
-Od("Put the engineering design process in order.",`Ask: define the problem
-Imagine: brainstorm ideas
-Plan: draw and choose a design
-Create: build a prototype
-Test: try it and measure
-Improve: fix what failed`,"Ask, imagine, plan, create, test, improve."),
-M("Before the first test of a wheeled robot, what is safest?",null,"Lift it so the wheels spin in the air",["Test it on a table edge","Hold the wheels","Test with no off switch"],"Then it can’t drive away or fall."),
-WI(M("In the camera grid, what is a pixel?",null,"One tiny dot of colour in the image",["A kind of battery","A type of motor","A wire"],"An image is a grid of pixels."),IMG_VIS),
-M("Why should engineers test early and often?",null,"Problems are cheaper and easier to fix early",["Because testing is fun","To use up batteries","So they never need to improve anything"],"Early tests catch mistakes before they get expensive."),
-M("Which is a responsibility of a robot engineer?",null,"Making robots safe and respecting privacy",["Making robots as fast as possible at any cost","Hiding bugs","Skipping tests"],"Safety and privacy matter."),
-Fl("Mapping and locating the robot at the same time is called ___.",null,["slam"],"SLAM = Simultaneous Localization and Mapping."),
-M("A drone that follows you using its camera relies on…",null,"computer vision",["a gearbox","an H-bridge only","a light bulb"],"It must recognise and track you in the image."),
-M("A prototype is…",null,"a first working model used to test ideas",["the final product","a spare battery","a type of sensor"],"Prototypes are built to be tested and improved."),
-M("A teleoperated robot is controlled by…",null,"a human operator",["itself","a random number","its battery"],"Teleoperated means remotely operated by a person.")
-]}
-]);
 var UC=['#19c6b7','#ffc93c','#ff5c8a','#9b8cff','#ff8a3d','#4f8cff','#3ddc97','#ff7ab6','#f4ecd8','#19c6b7','#ffc93c','#ff5c8a','#9b8cff'];
 var COURSES=[
-{id:'python',t:'Python',e:'🐍',d:'From print() to decorators',units:PYUNITS,gens:{2:OP,3:ST,5:LP,6:LS,7:DS,8:FN,9:CP,11:OO}},
-{id:'robotics',t:'Robotics',e:'🤖',d:'Sensors, motors, control and autonomy',units:ROBO,gens:{}}];
+{id:'python',t:'Python',e:'🐍',d:'From print() to decorators',units:PYUNITS,gens:{2:OP,3:ST,5:LP,6:LS,7:DS,8:FN,9:CP,11:OO}}];
 var LEVELS=[],UNITS=[],CUR=COURSES[0];
 function build(c){
   CUR=c;UNITS=c.units;LEVELS=[];
@@ -1598,10 +1225,10 @@ function build(c){
   });
 }
 function courseSize(c){return c.units.reduce(function(n,u){return n+u.lessons.length+3},0)}
-var S={xp:0,streak:0,last:"",course:"python",dn:{python:[],robotics:[]},done:[]},L=null;
+var S={xp:0,streak:0,last:"",course:"python",dn:{python:[]},done:[]},L=null;
 try{
   var raw=localStorage.getItem("newengineer");
-  if(raw){var o=JSON.parse(raw);S.xp=o.xp||0;S.streak=o.streak||0;S.last=o.last||"";S.course=o.course||"python";S.dn=Object.assign({python:[],robotics:[]},o.dn||{})}
+  if(raw){var o=JSON.parse(raw);S.xp=o.xp||0;S.streak=o.streak||0;S.last=o.last||"";S.course=o.course||"python";S.dn=Object.assign({python:[]},o.dn||{})}
   else{var old=localStorage.getItem("pypath2");if(old){var o2=JSON.parse(old);S.xp=o2.xp||0;S.streak=o2.streak||0;S.last=o2.last||"";S.dn.python=o2.done||[]}}
 }catch(e){}
 function save(){try{localStorage.setItem("newengineer",JSON.stringify({xp:S.xp,streak:S.streak,last:S.last,course:S.course,dn:S.dn}))}catch(e){}}
@@ -1968,7 +1595,7 @@ function jumpTo(ui){
 /* ===== Bottom tabs ===== */
 function nav(on){
   var P=X.profile,ic=P.gender&&P.av?'<span class="ni">'+avRender(P.gender,P.av,{vb:'50 16 170 170'})+'</span>':'<span class="ni">👤</span>';
-  return '<div class="nav"><div><button class="'+(on==='learn'?'on':'')+'" onclick="home()"><span class="ni">🗺️</span>Learn</button><button class="rk-tab'+(on==='ranks'?' on':'')+'" onclick="socialScreen()"><span class="ni">🏆</span>Ranks'+(typeof SO!=='undefined'&&SO.badge?'<i class="bdg">'+SO.badge+'</i>':'')+'</button><button class="'+(on==='me'?'on':'')+'" onclick="PF.pick=false;profile()">'+ic+'Profile</button><button class="'+(on==='code'?'on':'')+'" onclick="codeScreen()"><span class="ni">⌨️</span>Code</button></div></div>';
+  return '<div class="nav"><div><button class="'+(on==='learn'?'on':'')+'" onclick="home()"><span class="ni">🗺️</span>Learn</button><button class="rk-tab'+(on==='ranks'?' on':'')+'" onclick="socialScreen()"><span class="ni">🏆</span>Ranks'+(typeof SO!=='undefined'&&SO.badge?'<i class="bdg">'+SO.badge+'</i>':'')+'</button><button class="'+(on==='me'?'on':'')+'" onclick="PF.pick=false;profile()">'+ic+'Profile</button></div></div>';
 }
 
 /* ===== Profile ===== */
@@ -2041,6 +1668,7 @@ function home(){
   var n=LEVELS.length,next=nextIdx(),dn=next>=n,gap=124,y=16,pts=[],nodes="",ban="",xs=[50,24,50,76],kx=0;
   var h='<div class="top"><div class="logo">py<i>Path</i><span class="by">Powered by<b>AHMED FARID</b></span></div><div class="stats"><span class="pill">🔥 '+S.streak+'</span><span class="pill">⭐ '+S.xp+'</span></div></div>';
   var nx=Math.min(next,n-1);
+  h+='<button class="course" onclick="codeScreen()"><span>⌨️ Code editor</span><small>Run code ▾</small></button>';
   h+='<button class="course" onclick="picker()"><span>'+CUR.e+' '+CUR.t+'</span><small>Change course ▾</small></button>';
   h+='<button class="course" onclick="jumper()"><span>⏩ Jump to a unit</span><small>Pick ▾</small></button>';
   h+='<div class="hero"><div class="hl"><b>'+(dn?'All '+n+' levels done':'Unit '+(LEVELS[nx].u+1)+' · '+esc(LEVELS[nx].t))+'</b><span>'+(dn?'You finished the course':esc(UNITS[LEVELS[nx].u].t)+' · '+esc(LEVELS[nx].sub))+'</span></div>'+(dn?'':'<button class="go" onclick="start('+nx+')">'+(S.done.length?'Continue':'Start')+'</button>')+'<div class="meter"><i style="width:'+(S.done.length/n*100)+'%"></i></div></div>';
@@ -2210,14 +1838,14 @@ function mergeState(a,b){
 function applyState(st,keepCourse){
   var p=st.progress,e=st.extra||{},pr=e.profile||{};
   S.xp=p.xp|0;S.streak=p.streak|0;S.last=p.last||'';
-  S.dn=Object.assign({python:[],robotics:[]},p.dn||{});
+  S.dn=Object.assign({python:[]},p.dn||{});
   if(!keepCourse)S.course=p.course||'python';
   X.g=gFix(e.g);X.from=e.from||{};X.ex=e.ex&&typeof e.ex==='object'?e.ex:{};X.t=e.t||0;
   X.profile.gender=pr.gender==='f'||pr.gender==='m'?pr.gender:'';
   X.profile.av=X.profile.gender&&pr.av&&Object.keys(pr.av).length?pr.av:null;
   useCourse(S.course);
 }
-function resetLocal(){S.xp=0;S.streak=0;S.last='';S.dn={python:[],robotics:[]};X.from={};X.ex={};X.t=0;X.g=null;X.profile.gender='';X.profile.av=null;X.profile.name='';S.course='python';useCourse('python')}
+function resetLocal(){S.xp=0;S.streak=0;S.last='';S.dn={python:[]};X.from={};X.ex={};X.t=0;X.g=null;X.profile.gender='';X.profile.av=null;X.profile.name='';S.course='python';useCourse('python')}
 function sig(){return JSON.stringify([S.xp,S.streak,S.dn,X.ex,X.profile.gender,X.profile.av,X.from,X.g])}
 function setStatus(t){AC.sync=t;var e=document.getElementById('acStatus');if(e)e.textContent=t}
 function refreshView(){if(L!==null||AC.mode!=='app')return;if(AC.view==='profile'&&!PF.pick)profile();else if(AC.view==='home')home()}
@@ -2260,7 +1888,7 @@ function acSyncNow(){setStatus('Syncing…');acPull().then(acPush)}
 function authShell(h){AC.mode='auth';L=null;clearTimeout(AC.timer);app.innerHTML='<div class="top"><div class="logo">py<i>Path</i></div></div>'+h+'<p class="pwr">Powered by <b>AHMED FARID</b></p>';window.scrollTo(0,0)}
 function fld(id,label,type,ph,ac,extra){return '<label class="fl"><span>'+label+'</span><input class="fin" id="'+id+'" type="'+type+'" placeholder="'+ph+'" autocomplete="'+ac+'" '+(extra||'')+'></label>'}
 function authScreen(mode,msg,kind){
-  var reg=mode==='register',mine=!lsGet('pypath_owner')&&(S.xp>0||S.dn.python.length||S.dn.robotics.length);
+  var reg=mode==='register',mine=!lsGet('pypath_owner')&&(S.xp>0||S.dn.python.length);
   authShell('<div class="atabs"><button class="'+(reg?'':'on')+'" onclick="authScreen(\'login\')">Log in</button><button class="'+(reg?'on':'')+'" onclick="authScreen(\'register\')">Create account</button></div>'+
     '<p class="lead">'+(reg?'Fill in your details. It is free and takes 30 seconds. Your progress comes with you.':'Welcome back! Log in to pick up where you left off, on any device.')+'</p>'+
     (mine?'<div class="tip">💡 The progress already on this device ('+S.xp+' XP) will be saved to your account when you log in.</div>':'')+
@@ -2398,7 +2026,7 @@ function codeScreen(){
    edHTML('ceCode',saved,12)+
    (lang==='py'?'<label class="fl"><span>Input for input() — one line per question</span><textarea class="ed small" id="ceIn" rows="2" spellcheck="false" oninput="lsSet(\'pypath_stdin\',this.value)">'+esc(stdin)+'</textarea></label>':'')+
    '<div class="cact"><button class="cbtn run" id="ceRun" onclick="edRun()">▶ Run</button><button class="cbtn" onclick="ceReset()">Reset</button><small>Ctrl + Enter to run</small></div>'+
-   '<pre class="cout" id="ceOut" aria-live="polite">Press Run to see the output here.</pre>'+nav('code');
+   '<pre class="cout" id="ceOut" aria-live="polite">Press Run to see the output here.</pre>'+nav('learn');
   var ta=elx('ceCode');ta.addEventListener('input',function(){lsSet('pypath_code_'+CE.lang,ta.value)});
   window.scrollTo(0,0);
 }
@@ -2825,7 +2453,6 @@ function onLevelDone(perfect){var d=dEnsure();d.l++;if(perfect){d.p++;G().ms++}g
 var RV_INT=[1,2,4,7,14,30];
 function gInitRids(){
   PYUNITS.forEach(function(u,ui){u.hand.forEach(function(q,qi){q.rid='p'+ui+'q'+qi})});
-  ROBO.forEach(function(u,ui){u.hand.forEach(function(q,qi){q.rid='r'+ui+'q'+qi})});
   PYX.forEach(function(u,ui){u.hard.forEach(function(q,qi){q.rid='p'+ui+'h'+qi})});
 }
 function rvFind(id){var rv=G().rv;for(var i=0;i<rv.length;i++)if(rv[i].i===id)return rv[i];return null}
@@ -2841,7 +2468,6 @@ function rvLookup(id){
   var m=/^([pr])(\d+)([qh])(\d+)$/.exec(id),u,i,q=null;if(!m)return null;u=+m[2];i=+m[4];
   try{
     if(m[1]==='p'&&m[3]==='q')q=PYUNITS[u].hand[i];
-    else if(m[1]==='r'&&m[3]==='q')q=ROBO[u].hand[i];
     else if(m[1]==='p'&&m[3]==='h')q=xq(PYX[u].hard[i],5);
   }catch(e){q=null}
   return q?Object.assign({},q,{rid:id,xp:5}):null;
@@ -2876,7 +2502,6 @@ var BADGES=[
   {id:'placed',ic:'🎯',n:'Skipped ahead',d:'Take the placement test',t:function(){return G().pd===1&&G().pl>1}},
   {id:'half',ic:'⛰️',n:'Halfway',d:'Finish half of the Python course',t:function(){return(S.dn.python||[]).length>=Math.ceil(courseSize(COURSES[0])/2)}},
   {id:'pygrad',ic:'🎓',n:'Python graduate',d:'Finish the whole Python course',t:function(){return courseDone(COURSES[0])}},
-  {id:'robograd',ic:'🤖',n:'Robot builder',d:'Finish the Robotics course',t:function(){return courseDone(COURSES[1])}},
   {id:'sharer',ic:'📤',n:'Show-off',d:'Share a card',t:function(){return G().sh>=1}},
   {id:'group',ic:'🎓',n:'Study buddy',d:'Join or start a study group',t:function(){return false}}];
 function badgeGive(id){var g=G();if(g.bd.indexOf(id)<0){g.bd.push(id);gSave();return true}return false}
@@ -3677,9 +3302,9 @@ function pfRank(){
 function pfTabs(){
   var d=PFD.d,t=AC.token?[['posts','Posts'+(d?' · '+d.posts:'')],['friends','Friends'+(d?' · '+d.friends.length:'')],['progress','Progress']]:[['progress','Progress']];
   if(!AC.token)PFD.pt='progress';
-  return t.map(function(x){return'<button role="tab" aria-selected="'+(PFD.pt===x[0])+'" class="'+(PFD.pt===x[0]?'on':'')+'" onclick="pfTab(\''+x[0]+'\')">'+x[1]+'</button>'}).join('');
+  return t.map(function(x){return'<button role="tab" aria-selected="'+(PFD.pt===x[0])+'" class="'+(PFD.pt===x[0]?'on':'')+'" onclick="pfSec(\''+x[0]+'\')">'+x[1]+'</button>'}).join('');
 }
-function pfTab(t){PFD.pt=t;var e=elx('pfTabs');if(e)e.innerHTML=pfTabs();pfBody()}
+function pfSec(t){PFD.pt=t;var e=elx('pfTabs');if(e)e.innerHTML=pfTabs();pfBody()}
 function pfBody(){
   var el=elx('pfBody');if(!el)return;
   if(PFD.pt==='progress'){el.innerHTML=(AC.token?'':'<div class="gban"><span>💾 Guest mode: progress is only on this device.</span><button class="mini go2" onclick="authScreen(\'register\')">Create account</button></div><div class="gnote">Create a free account to post, add friends and get a rank.</div>')+gProfileHTML().replace(/<div class="gban">.*?<\/div>/,'');offStatus();return}
