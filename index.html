@@ -394,6 +394,21 @@ pre.ex{white-space:pre-wrap;word-break:break-word}
 .pfr .pfbar{height:14px;border-radius:99px;background:#0d0b22;border:2px solid #3a3470;overflow:hidden;margin:8px 0}
 .pfr .pfbar i{display:block;height:100%;background:#ffc93c}
 .mini.pfedit{min-height:44px}
+
+.lnk{cursor:pointer}
+.chbdg{display:inline-block;min-width:18px;height:18px;border-radius:9px;background:#ff5c8a;color:#15122e;font:800 11px/18px system-ui;text-align:center;padding:0 5px;margin-left:5px}
+.chat{display:flex;flex-direction:column;gap:6px;margin:8px 0 14px}
+.cb{max-width:82%;padding:8px 12px;border-radius:14px;background:#1d1946;border:2px solid #3a3470;align-self:flex-start;overflow-wrap:anywhere;white-space:pre-wrap}
+.cb small{display:block;font-size:11px;color:#9a93d0;margin-bottom:2px;white-space:normal}
+.cb.me{align-self:flex-end;background:#ffc93c;color:#15122e;border-color:#f4ecd8}
+.cb .cbt{display:block;font-size:10px;opacity:.7;margin-top:3px;text-align:right}
+.cb .cbx{background:none;border:0;color:inherit;font-size:12px;opacity:.6;padding:0 0 0 6px;cursor:pointer}
+.chrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px dashed #3a3470;cursor:pointer}
+.chrow .rn{flex:1;min-width:0}.chrow .rn small{display:block;color:#9a93d0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chrow .gico{font-size:26px;width:36px;text-align:center}
+.uvh{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;margin:6px 0 10px}
+.uvb{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0 14px}
+.uvb span{border:2px solid #6a62b0;background:#15122e;border-radius:99px;padding:3px 10px;font-size:13px}
 </style>
 <link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#15122e"></head>
 <body>
@@ -2185,7 +2200,7 @@ setTimeout(soPoll,4000);
 
 function socialScreen(seg){
   btStop();L=null;AC.view='ranks';if(seg)SO.seg=seg;soOwner();
-  app.innerHTML='<div class="top"><div class="logo">Ranks &amp; <i>friends</i></div></div>'+
+  app.innerHTML='<div class="top"><div class="logo">Ranks &amp; <i>friends</i></div><button class="mini chbtn" onclick="chatsScreen()">💬 Chats'+chBadge()+'</button></div>'+
    '<div class="seg" role="tablist"><button id="sgLb" onclick="soSeg(\'lb\')">🏆 Leaderboard</button><button id="sgFr" onclick="soSeg(\'fr\')">👥 Friends</button></div>'+
    '<div id="soBody"><p class="lead">Loading…</p></div>'+nav('ranks');
   soSetBadge(SO.badge);soSegMark();soDraw();soLoad(true);
@@ -2211,7 +2226,7 @@ function relBtn(x){
   return '<button class="mini" onclick="soFriend(\'request\',\''+x.id+'\')">+ Add</button>';
 }
 function pRow(x,right,extra){
-  return '<div class="rw'+(x.rel==='me'?' me':'')+'">'+(extra||'')+avMini(x.g,x.av)+'<span class="rn"><b>'+esc(x.name)+'</b><small>🔥 '+x.streak+' · ✓ '+x.levels+' levels</small></span><span class="rx">⭐ '+x.xp+'</span>'+(right||'')+'</div>';
+  return '<div class="rw'+(x.rel==='me'?' me':'')+'">'+(extra||'')+'<span class="lnk" onclick="userOpen(\''+x.id+'\')">'+avMini(x.g,x.av)+'</span><span class="rn lnk" onclick="userOpen(\''+x.id+'\')"><b>'+esc(x.name)+'</b><small>🔥 '+x.streak+' · ✓ '+x.levels+' levels</small></span><span class="rx">⭐ '+x.xp+'</span>'+(right||'')+'</div>';
 }
 function bRow(b,me){
   var inc=b.b.id===me,opp=inc?b.a:b.b,info=LGN[b.lang]+' · '+LVN[b.level];
@@ -2237,7 +2252,7 @@ function soDraw(){
     if(d.incoming.length)h+='<div class="kick">Friend requests</div>'+d.incoming.map(function(x){return pRow(x,'<button class="mini go2" onclick="soFriend(\'accept\',\''+x.id+'\')">Accept</button><button class="mini" onclick="soFriend(\'decline\',\''+x.id+'\')">✕</button>')}).join('');
     if(d.outgoing.length)h+='<div class="kick">Sent requests</div>'+d.outgoing.map(function(x){return pRow(x,'<button class="mini" onclick="soFriend(\'cancel\',\''+x.id+'\')">Cancel</button>')}).join('');
     h+='<div class="kick">Your friends ('+d.friends.length+')</div>';
-    h+=d.friends.length?d.friends.map(function(x){return pRow(x,'<button class="mini go2" onclick="soChallenge(\''+x.id+'\')">⚔️ Challenge</button><button class="mini" aria-label="Remove friend" onclick="soFriend(\'remove\',\''+x.id+'\')">✕</button>')}).join(''):'<p class="lead">No friends yet. Add someone from the leaderboard or with their code.</p>';
+    h+=d.friends.length?d.friends.map(function(x){return pRow(x,'<button class="mini" onclick="chatOpen(\'dm:'+x.id+'\',\''+qa(x.name).replace(/'/g,'')+'\')" aria-label="Message">💬</button><button class="mini go2" onclick="soChallenge(\''+x.id+'\')">⚔️ Challenge</button><button class="mini" aria-label="Remove friend" onclick="soFriend(\'remove\',\''+x.id+'\')">✕</button>')}).join(''):'<p class="lead">No friends yet. Add someone from the leaderboard or with their code.</p>';
   }
   el.innerHTML=h;
   var c=elx('soCode');if(c&&keep)c.value=keep;
@@ -3034,7 +3049,7 @@ soDraw=function(){
 };
 var FEED_IC={unit:'🏅',streak:'🔥',badge:'🏅',cert:'🎓',daily:'📅',battle:'⚔️',level:'✅'};
 function ago(t){var m=Math.round((Date.now()-t)/6e4);return m<1?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' d ago'}
-function feedRow(f){return'<div class="rw">'+avMini(f.g,f.av)+'<span class="rn"><b>'+esc(f.name)+'</b><small>'+(FEED_IC[f.k]||'')+' '+esc(f.x)+'</small></span><span class="rx" style="font-size:12px;font-weight:500">'+ago(f.t)+'</span></div>'}
+function feedRow(f){return'<div class="rw"><span class="lnk" onclick="userOpen(\''+f.id+'\')">'+avMini(f.g,f.av)+'</span><span class="rn lnk" onclick="userOpen(\''+f.id+'\')"><b>'+esc(f.name)+'</b><small>'+(FEED_IC[f.k]||'')+' '+esc(f.x)+'</small></span><span class="rx" style="font-size:12px;font-weight:500">'+ago(f.t)+'</span></div>'}
 
 /* ---- study groups / classes ---- */
 var GR={d:null,msg:'',open:null,busy:false};
@@ -3066,10 +3081,10 @@ function grDraw(){
     if(owner)h+='<div class="gcode"><span>Join code</span><b>'+esc(g.code)+'</b><button class="mini" onclick="grCopy(\''+esc(g.code)+'\',\''+g.id+'\')">Invite</button></div>';
     h+=g.members.map(function(m){
       var isMe=SO.d&&SO.d.me&&m.id===SO.d.me.id,open=owner&&GR.open===g.id+':'+m.id;
-      return'<div class="gm"><div class="rw'+(isMe?' me':'')+'" '+(owner&&m.dn?'onclick="grOpen(\''+g.id+':'+m.id+'\')" style="cursor:pointer"':'')+'>'+avMini(m.g,m.av)+'<span class="rn"><b>'+esc(m.name)+(m.role==='owner'?' 🎓':'')+'</b><small>🔥 '+m.streak+' · ✓ '+m.levels+' levels · '+dayAgo(m.last)+'</small></span><span class="rx">⭐ '+m.xp+'</span></div>'+
+      return'<div class="gm"><div class="rw'+(isMe?' me':'')+'" '+(owner&&m.dn?'onclick="grOpen(\''+g.id+':'+m.id+'\')" style="cursor:pointer"':'')+'><span class="lnk" onclick="event.stopPropagation();userOpen(\''+m.id+'\')">'+avMini(m.g,m.av)+'</span><span class="rn"><b>'+esc(m.name)+(m.role==='owner'?' 🎓':'')+'</b><small>🔥 '+m.streak+' · ✓ '+m.levels+' levels · '+dayAgo(m.last)+'</small></span><span class="rx">⭐ '+m.xp+'</span></div>'+
         (open?'<div class="gdet">'+unitStrip(m.dn)+'<small>Units done (green), in progress (yellow) · daily challenges: '+m.dc+' · badges: '+m.bd+'</small>'+(m.role!=='owner'?'<button class="mini" onclick="grAct(\'remove\',\''+g.id+'\',\''+m.id+'\')">Remove from group</button>':'')+'</div>':'')+'</div>';
     }).join('');
-    h+='<div class="row" style="margin:10px 0 0">'+(owner?'<button class="mini" onclick="grRename(\''+g.id+'\')">Rename</button><button class="mini" onclick="grAct(\'delete\',\''+g.id+'\')">Delete group</button>':'<button class="mini" onclick="grAct(\'leave\',\''+g.id+'\')">Leave group</button>')+'</div></div>';
+    h+='<div class="row" style="margin:10px 0 0"><button class="mini go2" onclick="chatOpen(\'g:'+g.id+'\',\''+qa(g.name).replace(/'/g,'')+'\')">💬 Group chat</button>'+(owner?'<button class="mini" onclick="grRename(\''+g.id+'\')">Rename</button><button class="mini" onclick="grAct(\'delete\',\''+g.id+'\')">Delete group</button>':'<button class="mini" onclick="grAct(\'leave\',\''+g.id+'\')">Leave group</button>')+'</div></div>';
   });
   el.innerHTML=h;
   if(elx('grName')&&keepN)elx('grName').value=keepN;if(elx('grCode')&&keepC)elx('grCode').value=keepC;
@@ -3113,7 +3128,7 @@ function postHTML(p,ctx){
   var a=p.author||{},big=ctx==='detail';
   return'<article class="pc" data-pid="'+p.id+'" data-ctx="'+(ctx||'')+'"'+(p.by?' data-by="'+qa(p.by.name)+'"':'')+'>'+
    (p.by?'<div class="pcr">🔁 '+esc(p.by.name)+' reposted</div>':'')+
-   '<div class="pch">'+avMini(a.g,a.av)+'<div class="pcn"><b>'+esc(a.name)+'</b><small>⭐ '+a.xp+' · '+ago(p.postedAt)+'</small></div><span class="ptag k-'+p.kind+'">'+(KIND_LBL[p.kind]||'')+'</span></div>'+
+   '<div class="pch"><span class="lnk" onclick="userOpen(\''+a.id+'\')">'+avMini(a.g,a.av)+'</span><div class="pcn lnk" onclick="userOpen(\''+a.id+'\')"><b>'+esc(a.name)+'</b><small>⭐ '+a.xp+' · '+ago(p.postedAt)+'</small></div><span class="ptag k-'+p.kind+'">'+(KIND_LBL[p.kind]||'')+'</span></div>'+
    '<div class="pcb">'+esc(p.body)+'</div>'+(p.code?'<pre class="pcc">'+esc(p.code)+'</pre>':'')+
    '<div class="pca">'+
     '<button class="pab'+(p.liked?' on':'')+'" onclick="pLike(\''+p.id+'\')" aria-pressed="'+!!p.liked+'" aria-label="Like, '+p.likes+'"><span aria-hidden="true">'+(p.liked?'❤️':'🤍')+'</span> '+p.likes+'</button>'+
@@ -3167,7 +3182,7 @@ function communityScreen(tab){
   L=null;AC.view='feed';if(tab)CM.tab=tab;
   if(!AC.token){guestWall2('Com<i>munity</i>','💬','Share what you build, ask questions and cheer other learners on.');return}
   var P=X.profile;
-  app.innerHTML='<div class="top"><div class="logo">Com<i>munity</i></div><button class="mini" onclick="cmLoad(true)" aria-label="Refresh feed">↻ Refresh</button></div>'+
+  app.innerHTML='<div class="top"><div class="logo">Com<i>munity</i></div><span><button class="mini chbtn" onclick="chatsScreen()">💬 Chats'+chBadge()+'</button> <button class="mini" onclick="cmLoad(true)" aria-label="Refresh feed">↻</button></span></div>'+
    '<div class="cmtabs" role="tablist" aria-label="Feed">'+[['all','All'],['friends','Friends']].map(function(t){return'<button role="tab" aria-selected="'+(CM.tab===t[0])+'" class="'+(CM.tab===t[0]?'on':'')+'" onclick="cmTab(\''+t[0]+'\')">'+t[1]+'</button>'}).join('')+'</div>'+
    '<button class="cmcomp" onclick="composeOpen()">'+(P.gender?avMini(P.gender,P.av):'<span class="mav">👤</span>')+'<span>Share a project or ask a question…</span><b>Post</b></button>'+
    '<div id="cmList"></div><div id="cmMore"></div>'+nav('feed');
@@ -3231,7 +3246,7 @@ function postOpen(id){
 function postBack(){if(PO.from==='profile')profile();else communityScreen()}
 function commentHTML(c){
   var a=c.author||{};
-  return'<div class="cmt">'+avMini(a.g,a.av)+'<div class="cmb"><div><b>'+esc(a.name)+'</b> <small>'+ago(c.t)+'</small></div><p>'+esc(c.body)+'</p></div>'+(c.mine?'<button class="pab" onclick="poDel(\''+c.id+'\')" aria-label="Delete my comment">🗑️</button>':'')+'</div>';
+  return'<div class="cmt"><span class="lnk" onclick="userOpen(\''+a.id+'\')">'+avMini(a.g,a.av)+'</span><div class="cmb"><div><b class="lnk" onclick="userOpen(\''+a.id+'\')">'+esc(a.name)+'</b> <small>'+ago(c.t)+'</small></div><p>'+esc(c.body)+'</p></div>'+(c.mine?'<button class="pab" onclick="poDel(\''+c.id+'\')" aria-label="Delete my comment">🗑️</button>':'')+'</div>';
 }
 function poLoad(keepScroll){
   var y=window.scrollY;
@@ -3315,7 +3330,7 @@ function pfBody(){
       (PFD.posts&&PFD.posts.length?PFD.posts.map(function(p){return postHTML(p,'profile')}).join(''):'<div class="gnote">You have not posted yet. Share a project you built or ask a question.</div>');
   }else{
     var f=PFD.d.friends;
-    el.innerHTML=(f.length?f.map(function(x){return'<div class="rw">'+avMini(x.g,x.av)+'<span class="rn"><b>'+esc(x.name)+'</b><small>🔥 '+x.streak+' · ✓ '+x.levels+' levels</small></span><span class="rx">⭐ '+x.xp+'</span></div>'}).join(''):'<div class="gnote">No friends yet. Find people in Ranks and send a request.</div>')+
+    el.innerHTML=(f.length?f.map(function(x){return'<div class="rw"><span class="lnk" onclick="userOpen(\''+x.id+'\')">'+avMini(x.g,x.av)+'</span><span class="rn lnk" onclick="userOpen(\''+x.id+'\')"><b>'+esc(x.name)+'</b><small>🔥 '+x.streak+' · ✓ '+x.levels+' levels</small></span><span class="rx">⭐ '+x.xp+'</span><button class="mini" onclick="chatOpen(\'dm:'+x.id+'\',\''+qa(x.name).replace(/'/g,'')+'\')" aria-label="Message">💬</button></div>'}).join(''):'<div class="gnote">No friends yet. Find people in Ranks and send a request.</div>')+
       '<button class="share" onclick="socialScreen(\'fr\')">👥 Find friends</button>';
   }
 }
@@ -3338,6 +3353,109 @@ function profileMain(){
    '<div class="cmtabs" id="pfTabs" role="tablist" aria-label="Profile sections">'+pfTabs()+'</div><div id="pfBody"></div>'+
    accCard()+nav('me');
   avDraw();pfBody();pfLoad();window.scrollTo(0,0);
+}
+
+
+/* ===== Part B: other players' profiles and private chat ===== */
+var UV={id:'',back:null};
+var CH={d:null,unread:0,cur:null,poll:null,timer:null,from:null};
+function chBadge(){return CH.unread?'<i class="chbdg">'+CH.unread+'</i>':''}
+function chRefreshBadges(){[].forEach.call(document.querySelectorAll('.chbtn'),function(b){var i=b.querySelector('.chbdg');if(i)i.remove();if(CH.unread)b.insertAdjacentHTML('beforeend','<i class="chbdg">'+CH.unread+'</i>')})}
+function chPoll(){
+  if(!AC.token||AC.mode!=='app'||document.hidden||AC.view==='chat')return;
+  api('GET','/api/chats').then(function(d){var n=d.unread;if(n>CH.unread&&AC.view!=='chats')toastX('💬 New message',function(){chatsScreen()});CH.unread=n;CH.d=d;chRefreshBadges();if(AC.view==='chats')chatsDraw()}).catch(function(){});
+}
+CH.timer=setInterval(chPoll,12000);
+function userBackFn(){
+  var v=AC.view,id=PO&&PO.id;
+  if(v==='ranks')return function(){socialScreen()};
+  if(v==='feed')return function(){communityScreen()};
+  if(v==='profile')return function(){profile()};
+  if(v==='post')return function(){postOpen(id)};
+  if(v==='chat'&&CH.cur){var c=CH.cur;return function(){chatOpen(c.chan,c.title)}}
+  if(v==='user'&&UV.back)return UV.back;
+  return function(){home()};
+}
+function userOpen(id){
+  if(!AC.token||!id)return;
+  if(AC.view!=='user')UV.back=userBackFn();
+  chStop();L=null;AC.view='user';UV.id=id;
+  app.innerHTML='<div class="top"><button class="mini" onclick="userBack()" aria-label="Back">← Back</button><div class="logo">Player</div></div><div id="uvBody"><p class="lead">Loading…</p></div>'+nav('ranks');
+  window.scrollTo(0,0);
+  Promise.all([api('GET','/api/user?id='+id),api('GET','/api/posts?scope=user&uid='+id)]).then(function(r){
+    if(AC.view!=='user'||UV.id!==id)return;
+    var d=r[0],u=d.user,posts=r[1].posts;pcKeep(posts);
+    if(d.rel==='me'){profile();return}
+    var rel=d.rel,act=rel==='friend'?'<button class="cbtn run" onclick="chatOpen(\'dm:'+u.id+'\',\''+qa(u.name).replace(/'/g,'')+'\')">💬 Message</button><button class="cbtn" onclick="userFr(\'remove\',\''+u.id+'\')">Remove friend</button>':
+      rel==='in'?'<button class="cbtn run" onclick="userFr(\'accept\',\''+u.id+'\')">Accept request</button><button class="cbtn" onclick="userFr(\'decline\',\''+u.id+'\')">Decline</button>':
+      rel==='out'?'<button class="cbtn" onclick="userFr(\'cancel\',\''+u.id+'\')">Request sent · Cancel</button>':
+      '<button class="cbtn run" onclick="userFr(\'request\',\''+u.id+'\')">+ Add friend</button>';
+    var bd=d.badges.map(function(id2){var b=badgeById(id2);return b?'<span>'+b.ic+' '+esc(b.n)+'</span>':''}).join('');
+    elx('uvBody').innerHTML='<div class="uvh"><div class="pfav" id="uvAv"></div><div class="uname uro">'+esc(u.name)+'</div><small class="pfm">Rank #'+d.rank+' of '+d.total.toLocaleString()+'</small></div>'+
+      '<div class="pfst"><div class="pft"><b style="color:#ffc93c">'+u.xp.toLocaleString()+'</b><small>XP</small></div><div class="pft"><b style="color:#19c6b7">'+u.streak+'</b><small>Streak</small></div><div class="pft"><b>'+d.friends+'</b><small>Friends</small></div><div class="pft"><b>'+d.posts+'</b><small>Posts</small></div></div>'+
+      '<div class="row" style="flex-wrap:wrap;margin:10px 0">'+act+'</div>'+(bd?'<div class="kick">Badges</div><div class="uvb">'+bd+'</div>':'')+
+      '<div class="kick">Posts</div>'+(posts.length?posts.map(function(p){return postHTML(p,'user')}).join(''):'<div class="gnote">No posts yet.</div>');
+    elx('uvAv').innerHTML=u.g?avRender(u.g,avClean(u.av,u.g)):'<span style="font-size:64px">👤</span>';
+  }).catch(function(e){var b=elx('uvBody');if(b)b.innerHTML='<div class="gnote">'+esc(e.offline?'You are offline.':(e.message||'Could not load this player'))+'</div>'});
+}
+function userBack(){var f=UV.back||function(){home()};f()}
+function userFr(act,id){
+  if(act==='remove'&&!confirm('Remove this friend?'))return;
+  api('POST','/api/friends',{action:act,id:id}).then(function(){userOpen(id)}).catch(pErr);
+}
+
+/* ---- chat list ---- */
+function chStop(){clearInterval(CH.poll);CH.poll=null}
+function chatsScreen(){
+  chStop();L=null;AC.view='chats';
+  if(!AC.token){guestWall2('Cha<i>ts</i>','💬','Log in to message your friends and study groups.');return}
+  app.innerHTML='<div class="top"><div class="logo">Cha<i>ts</i></div></div><p class="lead">Private messages with your friends and groups. Add friends in Ranks to start a chat.</p><div id="chList"><p class="lead">Loading…</p></div>'+nav('ranks');
+  window.scrollTo(0,0);
+  api('GET','/api/chats').then(function(d){CH.d=d;CH.unread=d.unread;chatsDraw()}).catch(function(e){var b=elx('chList');if(b)b.innerHTML='<div class="gnote">'+esc(e.offline?'You are offline.':(e.message||'Could not load chats'))+'</div>'});
+}
+function chatsDraw(){
+  var el=elx('chList'),d=CH.d;if(!el||!d)return;
+  el.innerHTML=d.chats.length?d.chats.map(function(c){
+    var ico=c.kind==='g'?'<span class="gico">👥</span>':avMini(c.card&&c.card.g,c.card&&c.card.av);
+    return '<div class="chrow" onclick="chatOpen(\''+c.chan+'\',\''+qa(c.title).replace(/'/g,'')+'\')">'+ico+'<span class="rn"><b>'+esc(c.title)+(c.kind==='g'?' · group':'')+'</b><small>'+(c.last?(c.last.mine?'You: ':'')+esc(c.last.body):'No messages yet')+'</small></span>'+(c.last?'<small class="rx" style="font-size:12px;font-weight:500">'+ago(c.last.t)+'</small>':'')+(c.unread?'<i class="chbdg">'+c.unread+'</i>':'')+'</div>'}).join(''):'<div class="gnote">No chats yet. Add a friend or join a group first.</div>';
+}
+
+/* ---- one conversation ---- */
+function chatOpen(chan,title){
+  if(!AC.token)return;
+  if(AC.view!=='chat')CH.from=AC.view==='chats'?function(){chatsScreen()}:userBackFn();
+  chStop();L=null;AC.view='chat';CH.cur={chan:chan,title:title,last:0,seen:{}};
+  app.innerHTML='<div class="top"><button class="mini" onclick="chatBack()" aria-label="Back">← Back</button><div class="logo" style="font-size:20px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(title)+'</div></div><div class="chat" id="chMsgs"><p class="lead">Loading…</p></div>'+
+   '<form class="coform" onsubmit="return chatSend(event)"><label class="sr" for="chIn">Message</label><input class="fin" id="chIn" maxlength="500" autocomplete="off" placeholder="Write a message…"><button class="cbtn run" type="submit">Send</button></form><div style="height:70px"></div>'+nav('ranks');
+  chatLoad(true);CH.poll=setInterval(function(){if(AC.view==='chat'&&!document.hidden)chatLoad(false)},3000);
+  window.scrollTo(0,0);
+}
+function chatBack(){chStop();var f=CH.from||function(){chatsScreen()};CH.cur=null;CH.from=null;AC.view='chats';f()}
+function chatMsgHTML(m){
+  return '<div class="cb'+(m.mine?' me':'')+'" id="m'+m.id+'">'+(m.mine?'':'<small class="lnk" onclick="userOpen(\''+m.by.id+'\')">'+esc(m.by.name)+'</small>')+esc(m.body)+'<span class="cbt">'+ago(m.t)+(m.mine?'<button class="cbx" onclick="chatDel(\''+m.id+'\')" aria-label="Delete message">🗑️</button>':'')+'</span></div>';
+}
+function chatLoad(first){
+  var c=CH.cur;if(!c)return;
+  api('GET','/api/chat?chan='+encodeURIComponent(c.chan)+(first||!c.last?'':'&after='+c.last)).then(function(d){
+    if(CH.cur!==c||AC.view!=='chat')return;
+    var box=elx('chMsgs');if(!box)return;
+    var nearBottom=window.innerHeight+window.scrollY>=document.body.scrollHeight-120;
+    if(first)box.innerHTML=d.messages.length?'':'<div class="gnote">No messages yet. Say hello 👋</div>';
+    else if(d.messages.length&&box.querySelector('.gnote'))box.innerHTML='';
+    d.messages.forEach(function(m){if(c.seen[m.id])return;c.seen[m.id]=1;c.last=Math.max(c.last,m.t);box.insertAdjacentHTML('beforeend',chatMsgHTML(m))});
+    if(first||nearBottom)window.scrollTo(0,document.body.scrollHeight);
+    CH.unread=0;chRefreshBadges();
+  }).catch(function(e){if(first){var b=elx('chMsgs');if(b)b.innerHTML='<div class="gnote">'+esc(e.offline?'You are offline.':(e.message||'Could not open this chat'))+'</div>'}});
+}
+function chatSend(ev){
+  ev.preventDefault();var c=CH.cur,i=elx('chIn'),t=i.value.trim();if(!c||!t)return false;
+  i.disabled=true;
+  api('POST','/api/chat',{chan:c.chan,body:t}).then(function(){i.value='';i.disabled=false;i.focus();chatLoad(false)}).catch(function(e){i.disabled=false;pErr(e)});
+  return false;
+}
+function chatDel(id){
+  var c=CH.cur;if(!c||!confirm('Delete this message?'))return;
+  api('POST','/api/chat',{chan:c.chan,action:'delete',id:id}).then(function(){var e=elx('m'+id);if(e)e.remove()}).catch(pErr);
 }
 
 useCourse(S.course);
