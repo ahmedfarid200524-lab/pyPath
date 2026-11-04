@@ -117,7 +117,7 @@ Depends on `lang`:
 { "title": "My Profile Card", "brief": "...", "starter": "<!doctype html>...<!-- TODO -->...", "solution": "<!doctype html>...",
   "tests": [ { "label": "Has an h1 with text", "expr": "document.querySelector('h1') && document.querySelector('h1').textContent.trim().length > 0" }, ... 5-8 tests ] }
 ```
-`expr` is a JavaScript expression using `document`; it must be truthy for a correct page. Scripts in the page do not run. Use `getComputedStyle` only if the unit teaches inline styles (jsdom supports inline `style` attributes and `<style>` rules for simple selectors).
+`expr` is a JavaScript expression using `document`; it must be truthy for a correct page. Scripts in the page do not run. Available names in `expr`: `document`, `window`, `getComputedStyle`, and `sameColor(a, b)`. **Never compare colours with `===`**: browsers return `rgb(255, 0, 0)` while the checker returns `red`; write `sameColor(getComputedStyle(el).color, 'red')` (understands names, #hex and rgb(); common colour names only). Compare lengths only for values the learner writes in `px`, and prefer `el.style.xxx` for inline styles.
 
 **cpp** and **cs** (no compiler in the browser, so the app checks that the program has the required building blocks and shows a reference solution when the learner passes)
 ```json

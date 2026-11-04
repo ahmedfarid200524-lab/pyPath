@@ -409,6 +409,7 @@ pre.ex{white-space:pre-wrap;word-break:break-word}
 .uvh{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;margin:6px 0 10px}
 .uvb{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0 14px}
 .uvb span{border:2px solid #6a62b0;background:#15122e;border-radius:99px;padding:3px 10px;font-size:13px}
+.pprev{width:100%;height:300px;background:#fff;border:3px solid #f4ecd8;border-radius:12px;margin:0 0 14px}
 </style>
 <link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#15122e"></head>
 <body>
@@ -1239,16 +1240,31 @@ function build(c){
       return shuffle(q)}});
   });
 }
-function courseSize(c){return c.units.reduce(function(n,u){return n+u.lessons.length+3},0)}
-var S={xp:0,streak:0,last:"",course:"python",dn:{python:[]},done:[]},L=null;
+function courseSize(c){return c.units?c.units.reduce(function(n,u){return n+u.lessons.length+3},0):(c.size||0)}
+var S={xp:0,streak:0,last:"",course:"python",want:"",dn:{python:[]},done:[]},L=null;
 try{
   var raw=localStorage.getItem("newengineer");
   if(raw){var o=JSON.parse(raw);S.xp=o.xp||0;S.streak=o.streak||0;S.last=o.last||"";S.course=o.course||"python";S.dn=Object.assign({python:[]},o.dn||{})}
   else{var old=localStorage.getItem("pypath2");if(old){var o2=JSON.parse(old);S.xp=o2.xp||0;S.streak=o2.streak||0;S.last=o2.last||"";S.dn.python=o2.done||[]}}
 }catch(e){}
 function save(){try{localStorage.setItem("newengineer",JSON.stringify({xp:S.xp,streak:S.streak,last:S.last,course:S.course,dn:S.dn}))}catch(e){}}
-function useCourse(id){var c=COURSES.filter(function(x){return x.id===id})[0]||COURSES[0];S.course=c.id;if(!S.dn[c.id])S.dn[c.id]=[];S.done=S.dn[c.id];build(c)}
-function switchCourse(id){var ov=document.querySelector(".ov");if(ov)ov.remove();useCourse(id);save();home()}
+function courseById(id){return COURSES.filter(function(x){return x.id===id})[0]}
+/* Courses other than Python are fetched on first use from /content/<id>/ (see content/SCHEMA.md). */
+function useCourse(id){
+  var c=courseById(id);
+  if(!c||(c.lazy&&!c.units)){
+    S.want=id==='python'?'':id;
+    if(c)loadCourse(c);else loadRegistry().then(function(){var c2=courseById(id);if(c2)loadCourse(c2);else S.want=''});
+    c=COURSES[0];
+  }else if(S.want===id)S.want='';
+  S.course=c.id;if(!S.dn[c.id])S.dn[c.id]=[];S.done=S.dn[c.id];build(c);
+}
+function switchCourse(id){
+  var ov=document.querySelector(".ov");if(ov)ov.remove();
+  var c=courseById(id);
+  if(c&&c.lazy&&!c.units){gToast('Loading '+c.t+'…');loadCourse(c).then(function(){if(!c.units)return;useCourse(id);save();home()});return}
+  useCourse(id);save();home();
+}
 function picker(){
   var o=document.createElement('div');o.className='ov';
   o.innerHTML='<h2 style="margin:0">Choose a course</h2>'+COURSES.map(function(c){var n=(S.dn[c.id]||[]).length,t=courseSize(c);return '<button class="opt cp'+(c.id===S.course?' sel':'')+'" onclick="switchCourse(\''+c.id+'\')"><span class="ce">'+c.e+'</span><span><b>'+c.t+'</b><small>'+esc(c.d)+'</small><small>'+n+' of '+t+' levels done</small></span></button>'}).join('')+'<p>Your progress in each course is saved.</p><button class="go" onclick="this.parentNode.remove()">Close</button>';
@@ -1686,11 +1702,15 @@ function home(){
   h+='<button class="course" onclick="codeScreen()"><span>⌨️ Code editor</span><small>Run code ▾</small></button>';
   h+='<button class="course" onclick="picker()"><span>'+CUR.e+' '+CUR.t+'</span><small>Change course ▾</small></button>';
   h+='<button class="course" onclick="jumper()"><span>⏩ Jump to a unit</span><small>Pick ▾</small></button>';
-  h+='<div class="hero"><div class="hl"><b>'+(dn?'All '+n+' levels done':'Unit '+(LEVELS[nx].u+1)+' · '+esc(LEVELS[nx].t))+'</b><span>'+(dn?'You finished the course':esc(UNITS[LEVELS[nx].u].t)+' · '+esc(LEVELS[nx].sub))+'</span></div>'+(dn?'':'<button class="go" onclick="start('+nx+')">'+(S.done.length?'Continue':'Start')+'</button>')+'<div class="meter"><i style="width:'+(S.done.length/n*100)+'%"></i></div></div>';
+  var pend=pendingExtra(),showP=pend&&(dn||!unitOpen(LEVELS[nx].u));
+  var hb=showP?'Unit '+(pend.u+1)+' · '+esc(pend.t):(dn?'All '+n+' levels done':'Unit '+(LEVELS[nx].u+1)+' · '+esc(LEVELS[nx].t));
+  var hs=showP?'Needed to '+(dn?'finish the course':'unlock the next unit')+' · '+esc(pend.sub):(dn?'You finished the course':esc(UNITS[LEVELS[nx].u].t)+' · '+esc(LEVELS[nx].sub));
+  var hbtn=showP?'<button class="go" onclick="startX(\''+pend.id+'\')">Start</button>':(dn?'':'<button class="go" onclick="start('+nx+')">'+(S.done.length?'Continue':'Start')+'</button>');
+  h+='<div class="hero"><div class="hl"><b>'+hb+'</b><span>'+hs+'</span></div>'+hbtn+'<div class="meter"><i style="width:'+(S.done.length/n*100)+'%"></i></div></div>';
   h+='<button class="share" onclick="card()">Save streak card</button>';
   LEVELS.forEach(function(lv,i){
     if(i===0||lv.u!==LEVELS[i-1].u){ban+='<div class="unit" style="top:'+y+'px;--tc:'+UC[lv.u%UC.length]+'"><small>Unit '+(lv.u+1)+' of '+UNITS.length+'</small><b>'+UNITS[lv.u].e+' '+esc(UNITS[lv.u].t)+'</b></div>';y+=92}
-    var x=xs[kx%4],done=S.done.indexOf(i)>-1,lock=i>next&&!done,now=i===next;kx++;
+    var x=xs[kx%4],done=S.done.indexOf(i)>-1,lock=(i>next||!unitOpen(lv.u))&&!done,now=i===next&&!lock;kx++;
     pts.push([x*3.6,y+38]);
     var ic=done?"✓":lock?"🔒":lv.k==="lesson"?"📖":lv.k==="test"?"🏆":"✏️";
     nodes+='<button class="node '+(done?"done":lock?"lock":"")+(now?" now":"")+'" style="left:'+x+'%;top:'+y+'px;--tc:'+UC[lv.u%UC.length]+'" '+(lock?'disabled aria-label="Locked"':'onclick="start('+i+')"')+'><span class="dot">'+ic+'</span><b>'+esc(lv.t)+'</b><small>'+esc(lv.sub)+'</small></button>';
@@ -1707,8 +1727,29 @@ function home(){
   app.innerHTML=h;
   var nw=document.querySelector(".node.now");if(nw&&next>0)nw.scrollIntoView({block:"center"});
 }
+
+/* ---- unit gating: a unit is passed only when ALL its levels are done, including the Hard level and the Project ---- */
+function fromUnit(){var f=Math.max(0,Math.min(LEVELS.length-1,Math.floor(+X.from[S.course])||0));return LEVELS.length?LEVELS[f].u:0}
+function levelsDoneIn(ui){var ok=true;LEVELS.forEach(function(lv,i){if(lv.u===ui&&S.done.indexOf(i)<0)ok=false});return ok}
+function unitComplete(ui){return levelsDoneIn(ui)&&exDefs(ui).slice(0,2).every(function(d){return exDone(d.id)})}
+/* a unit is open when it is the first one, when you jumped to it, when the unit before it is complete,
+   or when you already have progress in it or later (accounts made before this rule are never locked out) */
+function unitOpen(ui){
+  if(ui<=0||ui<=fromUnit()||unitComplete(ui-1))return true;
+  for(var i=0;i<LEVELS.length;i++)if(LEVELS[i].u>=ui&&S.done.indexOf(i)>-1)return true;
+  return false;
+}
+/* the first required extra level (Hard level or Project) that is still missing in a unit whose normal levels are all done */
+function pendingExtra(){
+  for(var ui=0;ui<UNITS.length;ui++){
+    if(!levelsDoneIn(ui))continue;
+    var d=exDefs(ui).slice(0,2).filter(function(x){return!exDone(x.id)})[0];
+    if(d)return d;
+  }
+  return null;
+}
 function prep(q){var c=Object.assign({},q);if(c.k==="mc"){var t=c.o[c.a];c.o=shuffle(c.o);c.a=c.o.indexOf(t)}return c}
-function start(i){var lv=LEVELS[i],qs=lv.k==="lesson"?[]:(lv.g?lv.g():lv.q).map(prep);L={lv:i,i:0,hp:6,ok:0,qs:qs};setup();draw();window.scrollTo(0,0)}
+function start(i){if(LEVELS[i]&&!unitOpen(LEVELS[i].u)){gToast('Finish the Hard level and the Project of the previous unit first');return}var lv=LEVELS[i],qs=lv.k==="lesson"?[]:(lv.g?lv.g():lv.q).map(prep);L={lv:i,i:0,hp:6,ok:0,qs:qs};setup();draw();window.scrollTo(0,0)}
 function setup(){var q=L.qs[L.i];L.sel=null;L.val="";L.pick=[];L.res=null;if(q&&q.k==="ord"){var idx=q.l.map(function(_,i){return i}),s;do{s=shuffle(idx)}while(s.join()===idx.join());L.shuf=s}}
 function ready(q){return q.k==="mc"||q.k==="bug"?L.sel!==null:q.k==="fill"?L.val.trim()!=="":L.pick.length===q.l.length}
 function norm(s){return s.replace(/\s+/g,"").replace(/'/g,'"').toLowerCase()}
@@ -1771,10 +1812,10 @@ function finish(){
   var today=new Date().toDateString();
   if(S.last!==today){var y=new Date(Date.now()-864e5).toDateString();S.streak=S.last===y?S.streak+1:1;S.last=today}
   save();
-  var more=lv+1<LEVELS.length,nx=more?LEVELS[lv+1]:null,ud=!more||nx.u!==cur.u;
+  var more=lv+1<LEVELS.length,nx=more?LEVELS[lv+1]:null,ud=!more||nx.u!==cur.u,pend=pendingExtra(),gate=pend&&(!more||(nx.u!==cur.u&&!unitOpen(nx.u)));
   var lead=isL?'Lesson done. Now put it into practice.':L.ok+' of '+L.qs.length+' right';
   lead+=first?' · +'+(isL?10:20)+' bonus XP':'';
-  app.innerHTML='<div class="end"><div class="big">'+(isL?'📖':'🎉')+'</div><h1>'+(isL?'Lesson complete':'Level complete')+'</h1><p class="lead">'+lead+'</p>'+(ud?'<p class="lead">🏅 Unit '+(cur.u+1)+' complete: '+esc(UNITS[cur.u].t)+'</p>':'')+'<div class="row"><span class="pill">⭐ '+S.xp+' XP</span><span class="pill">🔥 '+S.streak+' day streak</span></div>'+(more?'<button class="go" onclick="start('+(lv+1)+')">'+(nx.u!==cur.u?'Start Unit '+(nx.u+1)+': '+esc(UNITS[nx.u].t):'Next: '+esc(nx.t))+'</button>':'<p><b>You’ve finished every level. Nice work!</b></p>')+'<button class="reset" onclick="home()">Back to levels</button></div>';
+  app.innerHTML='<div class="end"><div class="big">'+(isL?'📖':'🎉')+'</div><h1>'+(isL?'Lesson complete':'Level complete')+'</h1><p class="lead">'+lead+'</p>'+(ud?'<p class="lead">'+(unitComplete(cur.u)?'🏅 Unit '+(cur.u+1)+' complete: '+esc(UNITS[cur.u].t):'🏁 Unit '+(cur.u+1)+' levels done. Finish the Hard level and the Project to pass the unit.')+'</p>':'')+'<div class="row"><span class="pill">⭐ '+S.xp+' XP</span><span class="pill">🔥 '+S.streak+' day streak</span></div>'+(gate?'<button class="go" onclick="startX(\''+pend.id+'\')">Next: '+esc(pend.t)+'</button>':more?'<button class="go" onclick="start('+(lv+1)+')">'+(nx.u!==cur.u?'Start Unit '+(nx.u+1)+': '+esc(UNITS[nx.u].t):'Next: '+esc(nx.t))+'</button>':'<p><b>You’ve finished every level. Nice work!</b></p>')+'<button class="reset" onclick="home()">Back to levels</button></div>';
   window.scrollTo(0,0);
 }
 function card(){
@@ -2024,24 +2065,24 @@ function edKey(e){
   if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();if(el.id==='ceCode')edRun();else if(el.id==='pjCode')pjRun();else if(el.id==='btCode')btRun();return}
   if(e.key==='Enter'&&!e.shiftKey&&el.selectionStart===el.selectionEnd){
     var v=el.value,p=el.selectionStart,ls=v.lastIndexOf('\n',p-1)+1,line=v.slice(ls,p),ind=(line.match(/^\s*/)||[''])[0];
-    if(/[:{(\[]\s*$/.test(line))ind+=((el.id==='ceCode'&&CE.lang==='js')||(el.id==='btCode'&&BT&&BT.lang==='js')?'  ':'    ');
+    if(/[:{(\[]\s*$/.test(line))ind+=((el.id==='ceCode'&&(CE.lang==='js'||CE.lang==='html'))||(el.id==='btCode'&&BT&&BT.lang==='js')||(el.id==='pjCode'&&PJ&&(PJ.lang==='js'||PJ.lang==='html'))?'  ':'    ');
     e.preventDefault();edIns(el,'\n'+ind);
   }
 }
 
 /* ---- Code tab ---- */
 var CE={lang:'py',busy:false};
-var CE_SAMPLE={py:'name = input("Your name? ")\nfor i in range(3):\n    print("Hello,", name, i)\n',js:'const nums = [1, 2, 3];\nconsole.log(nums.map(n => n * 2));\n'};
+var CE_SAMPLE={html:'<!doctype html>\n<html lang="en">\n<head>\n  <title>My page</title>\n</head>\n<body>\n  <h1>Hello!</h1>\n  <p>This is my first page.</p>\n</body>\n</html>\n',py:'name = input("Your name? ")\nfor i in range(3):\n    print("Hello,", name, i)\n',js:'const nums = [1, 2, 3];\nconsole.log(nums.map(n => n * 2));\n'};
 function codeScreen(){
   L=null;AC.view='code';
   var lang=CE.lang,saved=lsGet('pypath_code_'+lang);if(saved===null)saved=CE_SAMPLE[lang];
   var stdin=lsGet('pypath_stdin')||'Ada';
   app.innerHTML='<div class="top"><div class="logo">Code <i>editor</i></div></div>'+
-   '<div class="seg" role="tablist"><button class="'+(lang==='py'?'on':'')+'" onclick="ceLang(\'py\')">🐍 Python</button><button class="'+(lang==='js'?'on':'')+'" onclick="ceLang(\'js\')">🟨 JavaScript</button></div>'+
+   '<div class="seg" role="tablist"><button class="'+(lang==='py'?'on':'')+'" onclick="ceLang(\'py\')">🐍 Python</button><button class="'+(lang==='js'?'on':'')+'" onclick="ceLang(\'js\')">🟨 JavaScript</button><button class="'+(lang==='html'?'on':'')+'" onclick="ceLang(\'html\')">🌐 HTML</button></div>'+
    edHTML('ceCode',saved,12)+
    (lang==='py'?'<label class="fl"><span>Input for input() — one line per question</span><textarea class="ed small" id="ceIn" rows="2" spellcheck="false" oninput="lsSet(\'pypath_stdin\',this.value)">'+esc(stdin)+'</textarea></label>':'')+
    '<div class="cact"><button class="cbtn run" id="ceRun" onclick="edRun()">▶ Run</button><button class="cbtn" onclick="ceReset()">Reset</button><small>Ctrl + Enter to run</small></div>'+
-   '<pre class="cout" id="ceOut" aria-live="polite">Press Run to see the output here.</pre>'+nav('learn');
+   (lang==='html'?'<div class="kick">Preview</div><iframe id="cePrev" class="pprev" sandbox="" title="Preview"></iframe>':'<pre class="cout" id="ceOut" aria-live="polite">Press Run to see the output here.</pre>')+nav('learn');
   var ta=elx('ceCode');ta.addEventListener('input',function(){lsSet('pypath_code_'+CE.lang,ta.value)});
   window.scrollTo(0,0);
 }
@@ -2054,6 +2095,7 @@ function showOut(el,r){
 }
 function edRun(){
   if(CE.busy||!elx('ceCode'))return;
+  if(CE.lang==='html'){elx('cePrev').srcdoc=elx('ceCode').value;return}
   var kind=CE.lang,code=elx('ceCode').value,o=elx('ceOut'),b=elx('ceRun');
   CE.busy=true;b.disabled=true;o.className='cout';o.textContent=kind==='py'&&!WK.py?'Loading Python… the first run takes a few seconds.':'Running…';
   runJob(kind,{kind:'run',code:code,stdin:kind==='py'&&elx('ceIn')?elx('ceIn').value+'\n':''},8000).then(function(r){
@@ -2062,9 +2104,9 @@ function edRun(){
 }
 
 /* ---- extra levels (hard / project / bug finder) ---- */
+function xdata(ui){if(CUR.id==='python')return PYX[ui]||null;var u=UNITS[ui];return u&&u.x||null}
 function exDefs(ui){
-  if(CUR.id!=='python'||!PYX[ui])return[];
-  var d=PYX[ui];
+  var d=xdata(ui);if(!d)return[];
   return[
     {id:'h'+ui,k:'hard',u:ui,t:'Hard level',sub:'3 hearts · '+d.hard.length+' questions',ic:'🔥'},
     {id:'p'+ui,k:'proj',u:ui,t:'Project',sub:d.project.title,ic:'🛠️'},
@@ -2076,17 +2118,17 @@ function exDone(id){return(X.ex[S.course]||[]).indexOf(id)>-1}
 function exAdd(id){var a=X.ex[S.course]||(X.ex[S.course]=[]);if(a.indexOf(id)<0){a.push(id);_saveX();queueSync()}}
 function xq(q,xp){
   var o;
-  if(q.type==='out')o=M('What does this print?',q.code,q.answer,q.wrong,q.why);
+  if(q.type==='out')o=M(q.q||'What does this print?',q.code,q.answer,q.wrong,q.why);
   else if(q.type==='mc')o=M(q.q,q.code||null,q.ans,q.wrong,q.why);
-  else if(q.type==='fill')o=Fl('Fill in the blank so the code works.',q.code,q.ans,q.why);
-  else o=Od('Put the lines in the right order.',q.lines.join('\n'),q.why);
+  else if(q.type==='fill')o=Fl(q.q||'Fill in the blank so the code works.',q.code,q.ans,q.why);
+  else o=Od(q.q||'Put the lines in the right order.',q.lines.join('\n'),q.why);
   if(q.rid)o.rid=q.rid;o.xp=xp;return o;
 }
 function xbug(it,xp){var l=it.code.split('\n');return{k:'bug',q:'Which line has the bug?',sym:it.symptom,l:l,a:it.line,xp:xp,w:it.why+' The fixed line is: «'+it.fixed.split('\n')[it.line].trim()+'»'}}
 function startX(id){
   var d=exDef(id);if(!d)return;
   if(d.k==='proj'){projScreen(d);return}
-  var u=PYX[d.u],qs;
+  var u=xdata(d.u),qs;
   if(d.k==='hard')qs=u.hard.map(function(q){return xq(q,15)});
   else qs=u.bugs[d.n].items.map(function(it){return xbug(it,15)});
   L={lv:-1,xl:d,i:0,hp:3,ok:0,qs:qs.map(prep)};setup();draw();window.scrollTo(0,0);
@@ -2101,45 +2143,93 @@ function pickLine(i){if(L.res===null){L.sel=i;draw()}}
 function finishX(){
   var d=L.xl,first=!exDone(d.id),bonus=d.k==='hard'?30:25;
   if(first){exAdd(d.id);S.xp+=bonus}
+  var uc=unitComplete(d.u);
   var today=new Date().toDateString();
   if(S.last!==today){var y=new Date(Date.now()-864e5).toDateString();S.streak=S.last===y?S.streak+1:1;S.last=today}
   save();
   var nm=d.k==='hard'?'Hard level complete':'Bugs squashed';
-  app.innerHTML='<div class="end"><div class="big">'+(d.k==='hard'?'🔥':'🐞')+'</div><h1>'+nm+'</h1><p class="lead">'+L.ok+' of '+L.qs.length+' right'+(first?' · +'+bonus+' bonus XP':'')+'</p><div class="row"><span class="pill">⭐ '+S.xp+' XP</span><span class="pill">🔥 '+S.streak+' day streak</span></div><button class="reset" onclick="home()">Back to levels</button></div>';
+  app.innerHTML='<div class="end"><div class="big">'+(d.k==='hard'?'🔥':'🐞')+'</div><h1>'+nm+'</h1><p class="lead">'+L.ok+' of '+L.qs.length+' right'+(first?' · +'+bonus+' bonus XP':'')+'</p><div class="row"><span class="pill">⭐ '+S.xp+' XP</span><span class="pill">🔥 '+S.streak+' day streak</span></div>'+(uc&&d.k==='hard'||uc&&d.k==='bug'?'<p class="lead">🏅 Unit '+(d.u+1)+' complete. The next unit is open.</p>':'')+'<button class="reset" onclick="home()">Back to levels</button></div>';
   window.scrollTo(0,0);
 }
 
 /* ---- Projects ---- */
 var PJ=null;
+function pjKey(d){return 'pypath_proj_'+(S.course==='python'?'':S.course+'_')+d.id}
+var PJ_LBL={py:'Python',js:'JavaScript',html:'HTML',cpp:'C++',cs:'C#'};
 function projScreen(d){
-  L=null;AC.view='proj';PJ={d:d,p:PYX[d.u].project,busy:false};
-  var p=PJ.p,draft=lsGet('pypath_proj_'+d.id);if(draft===null)draft=p.starter;
+  L=null;AC.view='proj';var p=xdata(d.u).project,lang=CUR.lang||'py';PJ={d:d,p:p,lang:lang,busy:false};
+  var draft=lsGet(pjKey(d));if(draft===null)draft=p.starter;
+  var run=lang==='html'?'▶ Preview &amp; check':(lang==='cpp'||lang==='cs')?'▶ Check my code':'▶ Run tests';
+  var note=(lang==='cpp'||lang==='cs')?'<p class="lead">The app cannot compile '+PJ_LBL[lang]+' in the browser, so it checks that your program has the building blocks the project asks for. Test it for real on your own computer if you can.</p>':'';
+  var samples=(p.samples&&(lang==='cpp'||lang==='cs'))?'<div class="kick">Sample run'+(p.samples.length>1?'s':'')+'</div><pre class="cout">'+esc(p.samples.map(function(x){return(x.stdin?'Input:\n'+x.stdin.replace(/\n$/,'')+'\n':'')+'Output:\n'+x.out.replace(/\n$/,'')}).join('\n\n'))+'</pre>':'';
   app.innerHTML='<div class="lesson pj"><div class="bar"><button class="x" onclick="home()" aria-label="Back to levels">✕</button><div class="prog"><div style="width:'+(exDone(d.id)?100:0)+'%"></div></div><span class="hp">🛠️</span></div>'+
-   '<div class="kick">Unit '+(d.u+1)+' project'+(exDone(d.id)?' · done ✓':'')+'</div><h2>'+esc(p.title)+'</h2>'+paras(p.brief)+
+   '<div class="kick">Unit '+(d.u+1)+' project'+(exDone(d.id)?' · done ✓':'')+'</div><h2>'+esc(p.title)+'</h2>'+paras(p.brief)+note+samples+
    '<ul class="tl" id="pjTests">'+p.tests.map(function(t){return '<li><span class="ti">○</span> '+esc(t.label)+'</li>'}).join('')+'</ul>'+
    edHTML('pjCode',draft,14)+
-   '<div class="cact"><button class="cbtn run" id="pjRun" onclick="pjRun()">▶ Run tests</button><button class="cbtn" onclick="pjReset()">Reset</button><small>Ctrl + Enter</small></div>'+
-   '<pre class="cout" id="pjOut" aria-live="polite">Write your code, then run the tests.</pre></div>';
-  var ta=elx('pjCode');ta.addEventListener('input',function(){lsSet('pypath_proj_'+d.id,ta.value)});
+   '<div class="cact"><button class="cbtn run" id="pjRun" onclick="pjRun()">'+run+'</button><button class="cbtn" onclick="pjReset()">Reset</button><small>Ctrl + Enter</small></div>'+
+   '<pre class="cout" id="pjOut" aria-live="polite">Write your code, then check it.</pre>'+
+   (lang==='html'?'<div class="kick">Preview</div><iframe id="pjPrev" class="pprev" sandbox="allow-same-origin" title="Preview of your page"></iframe>':'')+'</div>';
+  var ta=elx('pjCode');ta.addEventListener('input',function(){lsSet(pjKey(d),ta.value)});
   window.scrollTo(0,0);
 }
-function pjReset(){if(confirm('Replace your code with the starter?')){lsSet('pypath_proj_'+PJ.d.id,null);projScreen(PJ.d)}}
+function pjReset(){if(confirm('Replace your code with the starter?')){lsSet(pjKey(PJ.d),null);projScreen(PJ.d)}}
+function codeTests(code,p){
+  var clean=code.replace(/\/\*[\s\S]*?\*\//g,' ').replace(/\/\/[^\n]*/g,' ').replace(/\s+/g,' ').trim();
+  return p.tests.map(function(t){
+    var ok=true;
+    try{ok=(t.must||[]).every(function(r){return new RegExp(r).test(clean)})&&(t.mustNot||[]).every(function(r){return!new RegExp(r).test(clean)})}catch(e){ok=false}
+    return{label:t.label,ok:ok,msg:ok?'':'Your code does not do this yet.'};
+  });
+}
+function sameColor(a,b){
+  var N={black:'0,0,0',white:'255,255,255',red:'255,0,0',green:'0,128,0',blue:'0,0,255',yellow:'255,255,0',orange:'255,165,0',purple:'128,0,128',gray:'128,128,128',grey:'128,128,128',pink:'255,192,203',brown:'165,42,42',navy:'0,0,128',teal:'0,128,128',lime:'0,255,0',maroon:'128,0,0',silver:'192,192,192',aqua:'0,255,255',cyan:'0,255,255',fuchsia:'255,0,255',magenta:'255,0,255',gold:'255,215,0',coral:'255,127,80',crimson:'220,20,60',tomato:'255,99,71',skyblue:'135,206,235',lightblue:'173,216,230',lightgray:'211,211,211',lightgrey:'211,211,211',darkblue:'0,0,139',darkgreen:'0,100,0',darkred:'139,0,0',indigo:'75,0,130',violet:'238,130,238',beige:'245,245,220',ivory:'255,255,240',khaki:'240,230,140',salmon:'250,128,114',orchid:'218,112,214',plum:'221,160,221',tan:'210,180,140',turquoise:'64,224,208',transparent:'0,0,0'};
+  function n(v){v=String(v==null?'':v).trim().toLowerCase();var m;
+    if(N[v])return N[v];
+    if((m=/^#([0-9a-f]{3})$/.exec(v)))return m[1].split('').map(function(h){return parseInt(h+h,16)}).join(',');
+    if((m=/^#([0-9a-f]{6})$/.exec(v)))return[0,2,4].map(function(i){return parseInt(m[1].substr(i,2),16)}).join(',');
+    if((m=/^rgba?\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)/.exec(v)))return+m[1]+','+ +m[2]+','+ +m[3];
+    return v}
+  return n(a)===n(b);
+}
+function htmlTests(code,p){
+  return new Promise(function(res){
+    var f=elx('pjPrev'),done=false;
+    function go(){
+      if(done)return;done=true;var w=f.contentWindow,doc=f.contentDocument;
+      res(p.tests.map(function(t){var ok=false;try{ok=!!(new Function('document','window','getComputedStyle','sameColor','return ('+t.expr+')')(doc,w,w.getComputedStyle.bind(w),sameColor))}catch(e){ok=false}return{label:t.label,ok:ok,msg:ok?'':'Not true yet in your page.'}}));
+    }
+    f.onload=function(){f.onload=null;go()};
+    setTimeout(go,3000);
+    f.srcdoc=code+'\n<!-- '+Date.now()+' -->';
+  });
+}
+function pjShow(res,d,p){
+  var o2=elx('pjOut');if(!o2||!PJ||PJ.d.id!==d.id)return;
+  var ok=res.filter(function(x){return x.ok}).length,all=ok===res.length;
+  var li=elx('pjTests');if(li)li.innerHTML=res.map(function(x){return '<li class="'+(x.ok?'ok':'bad')+'"><span class="ti">'+(x.ok?'✓':'✗')+'</span> '+esc(x.label)+'</li>'}).join('');
+  var first=res.filter(function(x){return!x.ok})[0];
+  var msg=all?'All '+ok+' tests passed!':ok+' of '+res.length+' tests passed.'+(first?'\n\nFirst problem — '+first.label+(first.msg?':\n'+first.msg:''):'');
+  if(all&&(PJ.lang==='cpp'||PJ.lang==='cs')&&p.solution)msg+='\n\nOne possible solution:\n'+p.solution;
+  if(all&&!exDone(d.id)){exAdd(d.id);S.xp+=50;save();msg+='\n\n🎉 Project complete! +50 XP'+(unitComplete(d.u)?'\n🏅 Unit '+(d.u+1)+' complete. The next unit is open.':'')}
+  else if(all)msg+='\n\n🎉 Project complete!';
+  o2.className='cout'+(all?' good':' bad');o2.textContent=msg;
+}
 function pjRun(){
   if(!PJ||PJ.busy||!elx('pjCode'))return;
-  var d=PJ.d,p=PJ.p,o=elx('pjOut'),b=elx('pjRun');
-  PJ.busy=true;b.disabled=true;o.className='cout';o.textContent=!WK.py?'Loading Python… the first run takes a few seconds.':'Running tests…';
-  runJob('py',{kind:'tests',code:elx('pjCode').value,tests:p.tests},10000).then(function(r){
-    PJ.busy=false;var b2=elx('pjRun');if(b2)b2.disabled=false;
-    var o2=elx('pjOut');if(!o2||!PJ||PJ.d.id!==d.id)return;
-    if(!r.res){showOut(o2,{out:'',err:r.err||'Something went wrong.'});return}
-    var ok=r.res.filter(function(x){return x.ok}).length,all=ok===r.res.length;
-    var li=elx('pjTests');if(li)li.innerHTML=r.res.map(function(x){return '<li class="'+(x.ok?'ok':'bad')+'"><span class="ti">'+(x.ok?'✓':'✗')+'</span> '+esc(x.label)+'</li>'}).join('');
-    var first=r.res.filter(function(x){return!x.ok})[0];
-    var msg=all?'All '+ok+' tests passed!':ok+' of '+r.res.length+' tests passed.'+(first?'\n\nFirst problem — '+first.label+':\n'+first.msg:'');
-    if(all&&!exDone(d.id)){exAdd(d.id);S.xp+=50;save();msg+='\n\n🎉 Project complete! +50 XP'}
-    else if(all)msg+='\n\n🎉 Project complete!';
-    o2.className='cout'+(all?' good':' bad');o2.textContent=msg;
-  });
+  var d=PJ.d,p=PJ.p,lang=PJ.lang,o=elx('pjOut'),b=elx('pjRun'),code=elx('pjCode').value;
+  function fin(res){if(PJ)PJ.busy=false;var b2=elx('pjRun');if(b2)b2.disabled=false;pjShow(res,d,p)}
+  PJ.busy=true;b.disabled=true;o.className='cout';
+  if(lang==='py'||lang==='js'){
+    o.textContent=lang==='py'&&!WK.py?'Loading Python… the first run takes a few seconds.':'Running tests…';
+    var msg=lang==='py'?{kind:'tests',code:code,tests:p.tests}:{kind:'tests',code:code,fn:p.fn,tests:p.tests.map(function(t){return{label:t.label,args:t.args,want:t.want}})};
+    runJob(lang,msg,10000).then(function(r){
+      if(PJ)PJ.busy=false;var b2=elx('pjRun');if(b2)b2.disabled=false;
+      var o2=elx('pjOut');if(!o2||!PJ||PJ.d.id!==d.id)return;
+      if(!r.res){showOut(o2,{out:'',err:r.err||'Something went wrong.'});return}
+      pjShow(r.res,d,p);
+    });
+  }else if(lang==='html'){o.textContent='Checking your page…';htmlTests(code,p).then(fin)}
+  else fin(codeTests(code,p));
 }
 
 /* ===== Part 2: leaderboard, friends, coding battles ===== */
@@ -2480,6 +2570,8 @@ function rvAnswer(id,ok){
 }
 function rvDue(){var t=gDayN();return G().rv.filter(function(x){return x.d<=t}).sort(function(a,b){return a.d-b.d})}
 function rvLookup(id){
+  var cm=/^(\w+):(\d+)q(\d+)$/.exec(id);
+  if(cm){var cc=courseById(cm[1]);if(!cc||!cc.units||!cc.units[+cm[2]]||!cc.units[+cm[2]].hand[+cm[3]])return null;return Object.assign({},cc.units[+cm[2]].hand[+cm[3]],{rid:id,xp:5})}
   var m=/^([pr])(\d+)([qh])(\d+)$/.exec(id),u,i,q=null;if(!m)return null;u=+m[2];i=+m[4];
   try{
     if(m[1]==='p'&&m[3]==='q')q=PYUNITS[u].hand[i];
@@ -2494,7 +2586,13 @@ function rvNextText(){
 
 /* ---- badges ---- */
 function exCount(prefix){var n=0;Object.keys(X.ex||{}).forEach(function(c){(X.ex[c]||[]).forEach(function(id){if(id.charAt(0)===prefix)n++})});return n}
-function courseDone(c){return(S.dn[c.id]||[]).length>=courseSize(c)}
+function courseDone(c){
+  if((S.dn[c.id]||[]).length<courseSize(c))return false;
+  if(!c.units)return false;
+  var ex=X.ex[c.id]||[];
+  for(var ui=0;ui<c.units.length;ui++)if(ex.indexOf('h'+ui)<0||ex.indexOf('p'+ui)<0)return false;
+  return true;
+}
 var BADGES=[
   {id:'rookie',ic:'🐣',n:'First steps',d:'Finish the 60-second start',t:function(){return false}},
   {id:'first',ic:'🌱',n:'First level',d:'Complete your first level',t:function(){return gTotalDone()>=1}},
@@ -2675,7 +2773,7 @@ function dailyDone(d){
 /* ---- spaced review ---- */
 function reviewStart(){
   var due=rvDue().slice(0,10),qs=[],g=G();
-  due.forEach(function(x){var q=rvLookup(x.i);if(q)qs.push(q);else g.rv.splice(g.rv.indexOf(x),1)});
+  due.forEach(function(x){var q=rvLookup(x.i);if(q)qs.push(q);else{var wc=/^(\w+):/.exec(x.i),w=wc&&courseById(wc[1]);if(!(w&&w.lazy&&!w.units))g.rv.splice(g.rv.indexOf(x),1)}});
   if(!qs.length){gToast('Nothing to review right now');return}
   gQuiz('review','Review',qs,5);
 }
@@ -3457,6 +3555,33 @@ function chatDel(id){
   var c=CH.cur;if(!c||!confirm('Delete this message?'))return;
   api('POST','/api/chat',{chan:c.chan,action:'delete',id:id}).then(function(){var e=elx('m'+id);if(e)e.remove()}).catch(pErr);
 }
+
+/* ===== downloadable courses (JavaScript, C++, C#, HTML) ===== */
+var REGP=null;
+function loadRegistry(){
+  if(REGP)return REGP;
+  REGP=(API===null?Promise.resolve([]):fetch('/content/index.json',{cache:'no-cache'}).then(function(r){return r.ok?r.json():[]}).catch(function(){return[]})).then(function(list){
+    (Array.isArray(list)?list:[]).forEach(function(m){if(m&&/^[a-z0-9]{1,12}$/.test(m.id)&&!courseById(m.id))COURSES.push({id:m.id,t:m.t,e:m.e,d:m.d,lang:m.lang,lazy:true,size:m.size|0,units:null,gens:{}})});
+    return COURSES;
+  });
+  return REGP;
+}
+function convertUnit(c,u,ui){
+  return{t:u.t,e:u.e,lessons:u.lessons,hand:u.hand.map(function(q,qi){var o=xq(q,10);o.rid=c.id+':'+ui+'q'+qi;return o}),x:{hard:u.hard,project:u.project,bugs:u.bugs}};
+}
+function loadCourse(c){
+  if(c.loading)return c.loading;
+  function j(r){if(!r.ok)throw new Error('Could not load '+c.t);return r.json()}
+  c.loading=fetch('/content/'+c.id+'/course.json').then(j).then(function(m){
+    return Promise.all(m.units.map(function(f){return fetch('/content/'+c.id+'/'+f+'.json').then(j)}));
+  }).then(function(us){
+    c.units=us.map(function(u,ui){return convertUnit(c,u,ui)});c.size=courseSize(c);c.loading=null;
+    if(S.want===c.id){var id=c.id;S.want='';useCourse(id);save();if(AC.mode==='app'&&L===null&&AC.view==='home')home()}
+    return c;
+  }).catch(function(e){c.loading=null;gToast(e&&e.message?e.message:'Could not load the course. Check your connection.');return c});
+  return c.loading;
+}
+loadRegistry();
 
 useCourse(S.course);
 boot();

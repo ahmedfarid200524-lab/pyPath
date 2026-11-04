@@ -236,6 +236,8 @@ async function checkBugItem(it, lang, label) {
   }
 }
 
+/* the colour helper is read straight from index.html so the checker and the app can never disagree */
+const helperSrc = (() => { const h = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8'); const i = h.indexOf('function sameColor(a,b){'); const j = h.indexOf('function htmlTests(code,p){'); return h.slice(i, j); })();
 async function checkProject(p, lang, label) {
   ['title', 'brief', 'starter'].forEach((k) => textOk(p[k], label + ' ' + k));
   if (!Array.isArray(p.tests) || p.tests.length < 4) return err(label + ' needs at least 4 tests');
@@ -255,7 +257,8 @@ async function checkProject(p, lang, label) {
     p.tests.forEach((t) => { if (bad(t.expr)) err(label + ' test "' + t.label + '" needs expr'); });
     const m = await htmlValidate(p.solution); if (m.length) err(label + ' solution html is not valid: ' + m.slice(0, 3).join('; '));
     const dsol = htmlDom(p.solution).window, dst = htmlDom(p.starter).window;
-    const evalT = (win, t) => { try { return !!new win.Function('document', 'window', 'return (' + t.expr + ')')(win.document, win); } catch (e) { return false; } };
+    const sameColor = new Function(helperSrc + '; return sameColor;')();
+    const evalT = (win, t) => { try { return !!new win.Function('document', 'window', 'getComputedStyle', 'sameColor', 'return (' + t.expr + ')')(win.document, win, win.getComputedStyle.bind(win), sameColor); } catch (e) { return false; } };
     p.tests.forEach((t) => { if (!evalT(dsol, t)) err(label + ' reference solution fails "' + t.label + '"'); });
     if (p.tests.every((t) => evalT(dst, t))) err(label + ' the starter already passes every test');
     if (!p.tests.some((t) => !evalT(dst, t))) err(label + ' no test fails on the starter');

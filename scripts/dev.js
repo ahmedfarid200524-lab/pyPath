@@ -11,6 +11,7 @@ const STATIC = { '/sw.js': 'application/javascript', '/manifest.webmanifest': 'a
 http.createServer((req, res) => {
   const p = (req.url || '/').split('?')[0];
   if (p.startsWith('/api/')) return handler(req, res);
+  if (p.startsWith('/content/') && /^\/content\/[\w-]+(\/[\w-]+)?\.json$|^\/content\/[\w-]+\/[\w-]+\.json$/.test(p)) { const f = path.join(ROOT, p); if (fs.existsSync(f)) { res.writeHead(200, { 'Content-Type': 'application/json' }); return res.end(fs.readFileSync(f)); } res.writeHead(404); return res.end('Not found'); }
   if (FILES[p]) { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' }); return res.end(fs.readFileSync(path.join(ROOT, FILES[p]))); }
   if (STATIC[p]) { res.writeHead(200, { 'Content-Type': STATIC[p], 'Cache-Control': 'no-cache' }); return res.end(fs.readFileSync(path.join(ROOT, p))); }
   res.writeHead(404); res.end('Not found');
