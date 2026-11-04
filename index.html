@@ -3153,7 +3153,7 @@ function pRepost(id){
 function pMore(id){
   var p=PC.posts[id];if(!p)return;
   gDlg('<h2 style="margin:0">Post options</h2><button class="opt" onclick="pShare(\''+id+'\')">📤 Share this post</button>'+
-   (p.mine?'<button class="opt" onclick="pDelete(\''+id+'\')">🗑️ Delete my post</button>':'<button class="opt" onclick="pReport(\''+id+'\')">🚩 Report this post</button>')+
+   (p.mine?'<button class="opt" onclick="pDelete(\''+id+'\')">🗑️ Delete my post</button>':'<button class="opt" onclick="pReport(\''+id+'\')">🚩 Report this post</button>'+(p.canDel?'<button class="opt" onclick="pDelete(\''+id+'\')">🛡️ Delete this post (admin)</button>':''))+
    '<button class="reset" onclick="gClose()">Close</button>');
 }
 function pShare(id){
@@ -3246,7 +3246,7 @@ function postOpen(id){
 function postBack(){if(PO.from==='profile')profile();else communityScreen()}
 function commentHTML(c){
   var a=c.author||{};
-  return'<div class="cmt"><span class="lnk" onclick="userOpen(\''+a.id+'\')">'+avMini(a.g,a.av)+'</span><div class="cmb"><div><b class="lnk" onclick="userOpen(\''+a.id+'\')">'+esc(a.name)+'</b> <small>'+ago(c.t)+'</small></div><p>'+esc(c.body)+'</p></div>'+(c.mine?'<button class="pab" onclick="poDel(\''+c.id+'\')" aria-label="Delete my comment">🗑️</button>':'')+'</div>';
+  return'<div class="cmt"><span class="lnk" onclick="userOpen(\''+a.id+'\')">'+avMini(a.g,a.av)+'</span><div class="cmb"><div><b class="lnk" onclick="userOpen(\''+a.id+'\')">'+esc(a.name)+'</b> <small>'+ago(c.t)+'</small></div><p>'+esc(c.body)+'</p></div>'+((c.mine||c.canDel)?'<button class="pab" onclick="poDel(\''+c.id+'\')" aria-label="Delete my comment">🗑️</button>':'')+'</div>';
 }
 function poLoad(keepScroll){
   var y=window.scrollY;

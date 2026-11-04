@@ -67,23 +67,29 @@ function load(){
 }
 function fmt(t){return t?new Date(t).toLocaleString([], {dateStyle:'medium',timeStyle:'short'}):''}
 function draw(){
-  var c={pending:0,approved:0,rejected:0};USERS.forEach(function(u){c[u.status]++});
-  var list=USERS.filter(function(u){return u.status===TAB});
+  var c={pending:0,approved:0,rejected:0,admins:0};USERS.forEach(function(u){c[u.status]++;if(u.role==='admin'&&u.status==='approved')c.admins++});
+  var list=USERS.filter(function(u){return TAB==='admins'?(u.role==='admin'&&u.status==='approved'):u.status===TAB});
   var h='<div class="top"><h1>py<i>Path</i> admin</h1><button class="btn" onclick="logout()">Log out</button></div>';
   if(!MAIL.installed)h+='<div class="warn"><b>Email is off.</b> Run <code>npm install</code> inside the server folder, then restart the server. Emails are only used when you restore access for a blocked member.</div>';
   else if(!MAIL.configured)h+='<div class="warn"><b>Email is not set up.</b> Approving works, but people are NOT emailed yet. Add your SMTP details in <code>server/config.json</code> (see README) and restart. Messages are saved in <code>server/data/outbox.log</code>.</div>';
-  h+='<div class="tabs">'+['approved','rejected'].map(function(s){return '<button class="btn'+(TAB===s?' on':'')+'" onclick="TAB=\''+s+'\';draw()">'+(s==='approved'?'Members':'Blocked')+'<b>'+c[s]+'</b></button>'}).join('')+'</div>';
-  h+='<p style="color:var(--mute);margin:0 0 12px">Anyone can sign up and start right away. Use this page to block or restore someone if you ever need to.</p>';
+  h+='<div class="tabs">'+['approved','admins','rejected'].map(function(s){return '<button class="btn'+(TAB===s?' on':'')+'" onclick="TAB=\''+s+'\';draw()">'+(s==='approved'?'Members':s==='admins'?'Admins':'Blocked')+'<b>'+c[s]+'</b></button>'}).join('')+'</div>';
+  h+='<p style="color:var(--mute);margin:0 0 12px">Anyone can sign up and start right away. Use this page to block or restore someone, or to make a member an <b>admin</b>: admins can delete any post or comment in the community.</p>';
   if(!list.length)h+='<div class="empty">Nobody here yet.</div>';
   list.forEach(function(u){
-    h+='<div class="user"><div><h3>'+esc(u.name)+'</h3><small>'+esc(u.email)+'</small><div class="meta"><span>Age '+u.age+'</span><span>'+esc(u.college)+'</span><span>Joined '+fmt(u.created)+'</span>'+(u.status==='approved'?'<span>⭐ '+u.xp+' XP</span><span>🔥 '+u.streak+'</span><span>✓ '+u.levels+' levels</span>':'')+'</div></div><div class="acts">';
+    h+='<div class="user"><div><h3>'+esc(u.name)+(u.role==='admin'?' <span style="font-size:13px;background:var(--yel);color:#15122e;border-radius:99px;padding:1px 9px">🛡️ Admin</span>':'')+'</h3><small>'+esc(u.email)+'</small><div class="meta"><span>Age '+u.age+'</span><span>'+esc(u.college)+'</span><span>Joined '+fmt(u.created)+'</span>'+(u.status==='approved'?'<span>⭐ '+u.xp+' XP</span><span>🔥 '+u.streak+'</span><span>✓ '+u.levels+' levels</span>':'')+'</div></div><div class="acts">';
     var e=esc(u.email).replace(/'/g,'');
     if(u.status!=='approved')h+='<button class="btn ok" onclick="act(this,\'approve\',\''+e+'\')">Restore access</button>';
     if(u.status==='approved')h+='<button class="btn" onclick="act(this,\'resend\',\''+e+'\')">Resend email</button>';
+    if(u.status==='approved')h+=u.role==='admin'?'<button class="btn" onclick="setRole(this,false,\''+e+'\')">Remove admin</button>':'<button class="btn go" onclick="setRole(this,true,\''+e+'\')">Make admin</button>';
     if(u.status!=='rejected')h+='<button class="btn bad" onclick="act(this,\'reject\',\''+e+'\')">'+'Block'+'</button>';
     h+='</div></div>';
   });
   m.innerHTML=h;
+}
+function setRole(btn,make,email){
+  if(make&&!confirm('Make this person an admin? They will be able to delete any post or comment.'))return;
+  btn.disabled=true;
+  api('POST','/api/admin/role',{email:email,admin:make}).then(function(){toast(make?'Now an admin.':'Admin rights removed.');load()}).catch(function(er){toast(er.message);btn.disabled=false});
 }
 function act(btn,kind,email){
   if(kind==='reject'&&!confirm('Block this person? They will not be able to log in.'))return;
