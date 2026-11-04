@@ -1,0 +1,469 @@
+{
+ "t": "Variables & types",
+ "e": "📦",
+ "lessons": [
+  {
+   "t": "Variables",
+   "pages": [
+    {
+     "h": "What is a variable?",
+     "p": "A **variable** is a named box that stores a value. Make one with the keyword «let», then a name, then «=» and the value. The «=» sign means \"store this\", not \"is equal to\" like in maths.",
+     "c": "let age = 12;\nlet name = \"Zoe\";\nconsole.log(name, age);",
+     "o": "Zoe 12",
+     "tip": "Making a variable is called **declaring** it. A keyword is a special word that JavaScript already knows."
+    },
+    {
+     "h": "Changing a variable",
+     "p": "A variable created with «let» can get a new value later. Write the name and «=» again, without «let». JavaScript remembers only the latest value. You can use the old value to make the new one.",
+     "c": "let score = 10;\nscore = score + 5;\nconsole.log(score);\nscore = 0;\nconsole.log(score);",
+     "o": "15\n0"
+    },
+    {
+     "h": "const: a box that stays shut",
+     "p": "Use «const» for a value that should never change. If you try to give it a new value, JavaScript stops with a «TypeError».\n\nGood habit: start with «const». Use «let» only when the value really has to change.",
+     "c": "const planet = \"Earth\";\nlet visitors = 0;\nvisitors = visitors + 1;\nconsole.log(planet, visitors);",
+     "o": "Earth 1",
+     "tip": "Writing «planet = \"Mars\";» later would cause the error «Assignment to constant variable»."
+    },
+    {
+     "h": "Naming rules",
+     "p": "A name can have letters, digits, «_» and «$». It cannot start with a digit. It cannot have spaces or dashes. Names are case-sensitive: «score» and «Score» are different. You also cannot use keywords like «let» or «const».\n\nFor names with several words, JavaScript programmers use **camelCase**: «firstName».",
+     "c": "let playerOne = \"Ana\";   // good\nlet score2 = 5;          // good\n// let 2score = 5;       // bad: starts with a digit\n// let my-score = 5;     // bad: has a dash\nconsole.log(playerOne, score2);",
+     "o": "Ana 5",
+     "tip": "Pick names that explain the content: «totalPrice» is better than «x»."
+    }
+   ]
+  },
+  {
+   "t": "Types of values",
+   "pages": [
+    {
+     "h": "Three basic types",
+     "p": "Every value has a **type**:\n\n• **number**: 7, -3, 3.14 (whole numbers and decimals are the same type)\n• **string**: text in quotes, like «\"hi\"»\n• **boolean**: «true» or «false»\n\nThe word «typeof» tells you the type of a value.",
+     "c": "console.log(typeof 7);\nconsole.log(typeof 3.14);\nconsole.log(typeof \"hi\");\nconsole.log(typeof true);",
+     "o": "number\nnumber\nstring\nboolean"
+    },
+    {
+     "h": "Quotes make text",
+     "p": "«\"5\"» is text and «5» is a number. They behave differently. With two numbers, «+» adds. With two strings, «+» **joins** them.",
+     "c": "console.log(5 + 5);\nconsole.log(\"5\" + \"5\");\nconsole.log(typeof \"5\");",
+     "o": "10\n55\nstring",
+     "tip": "Quotes can be single, double, or backticks. The value is a string in all three cases."
+    },
+    {
+     "h": "undefined and null",
+     "p": "Two special values mean \"no value\":\n\n• «undefined»: JavaScript uses it when a variable has no value yet.\n• «null»: you use it when you want to say \"empty on purpose\".",
+     "c": "let nothingYet;\nlet empty = null;\nconsole.log(nothingYet);\nconsole.log(empty);\nconsole.log(typeof nothingYet);",
+     "o": "undefined\nnull\nundefined"
+    },
+    {
+     "h": "Converting types",
+     "p": "Use «Number()» to turn text into a number and «String()» to turn a value into text. This matters when text arrives from somewhere else, like a form on a web page.",
+     "c": "console.log(Number(\"7\") + 1);\nconsole.log(String(5) + \"5\");\nconsole.log(typeof String(5));",
+     "o": "8\n55\nstring",
+     "tip": "Converting does not change the original variable. It gives you a new value."
+    }
+   ]
+  },
+  {
+   "t": "Working with text",
+   "pages": [
+    {
+     "h": "Template literals",
+     "p": "A **template literal** is text between backticks «`». Inside it, «${...}» puts a value or a small expression into the text. It is easier than joining many pieces with «+».",
+     "c": "const name = \"Zoe\";\nconst age = 12;\nconsole.log(`${name} is ${age} years old`);\nconsole.log(`Next year: ${age + 1}`);",
+     "o": "Zoe is 12 years old\nNext year: 13",
+     "tip": "The backtick key is usually next to the number 1 or below Esc."
+    },
+    {
+     "h": "Length and letter case",
+     "p": "A string has built-in tools. Write a dot, then the tool name. «length» counts the characters. «toUpperCase()» and «toLowerCase()» change the case. A tool that does something is called a **method**, and it has round brackets.",
+     "c": "const word = \"Hello\";\nconsole.log(word.length);\nconsole.log(word.toUpperCase());\nconsole.log(word.toLowerCase());",
+     "o": "5\nHELLO\nhello",
+     "tip": "«length» has no brackets. Methods like «toUpperCase()» always do."
+    },
+    {
+     "h": "slice and includes",
+     "p": "«slice(start, end)» cuts out a piece of text. Counting starts at **0**. It includes the start position but not the end position. «includes(text)» answers «true» or «false». It is case-sensitive.",
+     "c": "const word = \"JavaScript\";\nconsole.log(word.slice(0, 4));\nconsole.log(word.slice(4));\nconsole.log(word.includes(\"Script\"));\nconsole.log(word.includes(\"script\"));",
+     "o": "Java\nScript\ntrue\nfalse",
+     "tip": "With only one number, «slice» goes from there to the end."
+    },
+    {
+     "h": "trim, and strings never change",
+     "p": "«trim()» removes spaces from both ends. It is useful for text typed by people.\n\nAn important fact: methods never change the original string. They give back a **new** one. Save it in a variable if you need it.",
+     "c": "let name = \"  mia  \";\nconsole.log(name.trim().length);\nname.toUpperCase();\nconsole.log(name.trim());\nname = name.trim().toUpperCase();\nconsole.log(name);",
+     "o": "3\nmia\nMIA"
+    }
+   ]
+  }
+ ],
+ "hand": [
+  {
+   "type": "mc",
+   "q": "Which keyword makes a variable whose value can change later?",
+   "code": null,
+   "ans": "let",
+   "wrong": [
+    "const",
+    "int",
+    "set"
+   ],
+   "why": "«let» creates a variable that you can assign again. «const» cannot be changed, and «int» belongs to other languages."
+  },
+  {
+   "type": "out",
+   "code": "let n = 5;\nn = n + 2;\nconsole.log(n);",
+   "answer": "7",
+   "wrong": [
+    "5",
+    "2",
+    "n + 2"
+   ],
+   "why": "The new value is built from the old one: 5 + 2 = 7."
+  },
+  {
+   "type": "mc",
+   "q": "Which is a valid variable name?",
+   "code": null,
+   "ans": "player1",
+   "wrong": [
+    "1player",
+    "my name",
+    "my-score"
+   ],
+   "why": "Names cannot start with a digit, and cannot contain spaces or dashes. Digits are fine after the first character."
+  },
+  {
+   "type": "out",
+   "code": "const a = \"Hi\";\nconsole.log(typeof a);",
+   "answer": "string",
+   "wrong": [
+    "Hi",
+    "text",
+    "String"
+   ],
+   "why": "«typeof» gives the type name in lowercase. A value in quotes is a string."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the template literal so it prints Hello, Zoe!",
+   "code": "const name = \"Zoe\";\nconsole.log(`Hello, ___!`);",
+   "ans": [
+    "${name}"
+   ],
+   "why": "Inside backticks, «${name}» is replaced by the value of the variable."
+  },
+  {
+   "type": "out",
+   "code": "console.log(\"5\" + \"5\");",
+   "answer": "55",
+   "wrong": [
+    "10",
+    "5 5",
+    "\"55\""
+   ],
+   "why": "Both values are strings, so «+» joins them instead of adding."
+  },
+  {
+   "type": "order",
+   "q": "Put the lines in order to print 7.",
+   "lines": [
+    "let coins = 5;",
+    "coins = coins + 2;",
+    "console.log(coins);"
+   ],
+   "why": "The variable must exist first. Then it changes, and only then do we print its latest value."
+  },
+  {
+   "type": "out",
+   "code": "let word = \"banana\";\nconsole.log(word.length);",
+   "answer": "6",
+   "wrong": [
+    "5",
+    "banana",
+    "7"
+   ],
+   "why": "«length» counts every character. «banana» has six."
+  },
+  {
+   "type": "out",
+   "code": "console.log(\"hello\".toUpperCase());",
+   "answer": "HELLO",
+   "wrong": [
+    "Hello",
+    "hello",
+    "HELLO()"
+   ],
+   "why": "«toUpperCase()» gives a new string with all letters in capitals."
+  },
+  {
+   "type": "out",
+   "code": "let x;\nconsole.log(x);",
+   "answer": "undefined",
+   "wrong": [
+    "null",
+    "0",
+    "x"
+   ],
+   "why": "A variable declared without a value holds «undefined»."
+  },
+  {
+   "type": "out",
+   "code": "console.log(\"JavaScript\".slice(0, 4));",
+   "answer": "Java",
+   "wrong": [
+    "Jav",
+    "avaS",
+    "JavaS"
+   ],
+   "why": "«slice(0, 4)» takes positions 0, 1, 2 and 3. The end position is not included."
+  },
+  {
+   "type": "out",
+   "code": "console.log(Number(\"42\") + 1);",
+   "answer": "43",
+   "wrong": [
+    "421",
+    "42 + 1",
+    "41"
+   ],
+   "why": "«Number(\"42\")» turns the text into the number 42, so «+» adds."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the method so the line prints true.",
+   "code": "console.log(\"sunny day\".___(\"sun\"));",
+   "ans": [
+    "includes"
+   ],
+   "why": "«includes» checks whether the text contains the piece we give."
+  },
+  {
+   "type": "mc",
+   "q": "What happens if you assign a new value to a «const» variable?",
+   "code": null,
+   "ans": "JavaScript stops with an error",
+   "wrong": [
+    "The value changes anyway",
+    "JavaScript silently ignores the new value",
+    "The variable turns into a «let» variable"
+   ],
+   "why": "A constant cannot be reassigned. JavaScript reports a TypeError, which protects you from changing it by mistake."
+  }
+ ],
+ "hard": [
+  {
+   "type": "out",
+   "code": "const first = \"Ada\";\nconst last = \"Lovelace\";\nconsole.log(`${first} ${last.slice(0, 1)}.`);",
+   "answer": "Ada L.",
+   "wrong": [
+    "Ada Lovelace.",
+    "Ada Lo.",
+    "Ada L"
+   ],
+   "why": "«last.slice(0, 1)» is only the first letter. The dot after the closing brace is plain text."
+  },
+  {
+   "type": "out",
+   "code": "let s = \"  hi  \";\nconsole.log(s.trim().length);",
+   "answer": "2",
+   "wrong": [
+    "6",
+    "4",
+    "0"
+   ],
+   "why": "After «trim()» only «hi» is left. Its length is 2. The spaces are gone."
+  },
+  {
+   "type": "out",
+   "code": "let a = \"7\";\nlet b = 3;\nconsole.log(a + b);",
+   "answer": "73",
+   "wrong": [
+    "10",
+    "7 3",
+    "\"73\""
+   ],
+   "why": "One side is a string, so «+» joins instead of adding. The number 3 is turned into text."
+  },
+  {
+   "type": "out",
+   "code": "console.log(typeof \"5\", typeof 5, typeof true);",
+   "answer": "string number boolean",
+   "wrong": [
+    "number number boolean",
+    "string string string",
+    "string number string"
+   ],
+   "why": "The quotes make «\"5\"» a string. «5» is a number, and «true» is a boolean."
+  },
+  {
+   "type": "out",
+   "code": "let name = \"mia\";\nname.toUpperCase();\nconsole.log(name);",
+   "answer": "mia",
+   "wrong": [
+    "MIA",
+    "Mia",
+    "undefined"
+   ],
+   "why": "«toUpperCase()» returns a new string. We did not save it, and the original is unchanged."
+  },
+  {
+   "type": "out",
+   "code": "const price = 4;\nconsole.log(`Cost: ${price + 1}`);",
+   "answer": "Cost: 5",
+   "wrong": [
+    "Cost: 4 + 1",
+    "Cost: ${price + 1}",
+    "Cost: price + 1"
+   ],
+   "why": "Whatever is inside «${ }» is worked out first, then its result is put in the text."
+  },
+  {
+   "type": "mc",
+   "q": "Which variable holds a boolean?",
+   "code": "let a = \"true\";\nlet b = true;\nlet c = \"false\";\nlet d = 'yes';",
+   "ans": "b",
+   "wrong": [
+    "a",
+    "c",
+    "d"
+   ],
+   "why": "Only «true» without quotes is a boolean. In «a» and «c» the quotes make strings."
+  },
+  {
+   "type": "out",
+   "code": "console.log(\"Pineapple\".includes(\"Apple\"));",
+   "answer": "false",
+   "wrong": [
+    "true",
+    "Pineapple",
+    "Apple"
+   ],
+   "why": "«includes» is case-sensitive. «Pineapple» contains «apple» with a small a, not «Apple» with a capital A, so the answer is false."
+  },
+  {
+   "type": "fill",
+   "q": "Print the first three letters in capitals: MON.",
+   "code": "console.log(\"monday\".___(0, 3).toUpperCase());",
+   "ans": [
+    "slice"
+   ],
+   "why": "«slice(0, 3)» gives «mon», and then «toUpperCase()» changes that piece to «MON»."
+  },
+  {
+   "type": "out",
+   "code": "let n = Number(\"12\");\nlet t = String(n);\nconsole.log(t + t);",
+   "answer": "1212",
+   "wrong": [
+    "24",
+    "12 12",
+    "1212 1212"
+   ],
+   "why": "«String(n)» makes the text «12». Two strings joined with «+» give «1212», not 24."
+  }
+ ],
+ "bugs": [
+  {
+   "title": "Bug hunt 1",
+   "items": [
+    {
+     "code": "const lives = 3;\nlives = lives - 1;\nconsole.log(lives);",
+     "fixed": "let lives = 3;\nlives = lives - 1;\nconsole.log(lives);",
+     "line": 0,
+     "symptom": "TypeError: Assignment to constant variable.",
+     "why": "A «const» can never get a new value. Use «let» for values that change."
+    },
+    {
+     "code": "const name = \"Zoe\";\nconsole.log('Hi, ${name}!');",
+     "fixed": "const name = \"Zoe\";\nconsole.log(`Hi, ${name}!`);",
+     "line": 1,
+     "symptom": "It prints Hi, ${name}! instead of Hi, Zoe!",
+     "why": "«${ }» only works inside backticks. Single quotes make plain text."
+    },
+    {
+     "code": "const a = \"20\";\nconst b = 5;\nconsole.log(a + b);",
+     "fixed": "const a = Number(\"20\");\nconst b = 5;\nconsole.log(a + b);",
+     "line": 0,
+     "symptom": "It prints 205, but 25 was expected.",
+     "why": "«\"20\"» is a string, so «+» joins it with 5. «Number()» makes it a real number."
+    }
+   ]
+  },
+  {
+   "title": "Bug hunt 2",
+   "items": [
+    {
+     "code": "const word = \"hello\";\nconsole.log(word.toUpperCase);\nconsole.log(word.length);",
+     "fixed": "const word = \"hello\";\nconsole.log(word.toUpperCase());\nconsole.log(word.length);",
+     "line": 1,
+     "symptom": "It does not print HELLO. It prints something about a function.",
+     "why": "A method needs round brackets to run. Without them you only point at the method."
+    },
+    {
+     "code": "let score = 5;\nlet 1stPlace = \"Ana\";\nconsole.log(score);",
+     "fixed": "let score = 5;\nlet firstPlace = \"Ana\";\nconsole.log(score);",
+     "line": 1,
+     "symptom": "SyntaxError: Invalid or unexpected token.",
+     "why": "A variable name cannot start with a digit."
+    },
+    {
+     "code": "const text = \"I love Pizza\";\nconsole.log(text.includes(\"pizza\"));",
+     "fixed": "const text = \"I love Pizza\";\nconsole.log(text.includes(\"Pizza\"));",
+     "line": 1,
+     "symptom": "It prints false, but the sentence mentions pizza.",
+     "why": "«includes» is case-sensitive: «pizza» and «Pizza» are different pieces of text."
+    }
+   ]
+  }
+ ],
+ "project": {
+  "title": "Username Maker",
+  "brief": "Write a function «username» with two inputs, «first» and «last» (both text, they may have extra spaces at the ends).\n\nIt must return the first 3 letters of the first name followed by the first 3 letters of the last name, all in lower case. Remove spaces at the ends first. If a name has fewer than 3 letters, use all of it.\n\nExample: «username(\"Ada\", \"Lovelace\")» returns «\"adalov\"».",
+  "fn": "username",
+  "starter": "function username(first, last) {\n  // your code here\n}\n",
+  "solution": "function username(first, last) {\n  const a = first.trim().slice(0, 3).toLowerCase();\n  const b = last.trim().slice(0, 3).toLowerCase();\n  return `${a}${b}`;\n}\n",
+  "tests": [
+   {
+    "label": "username(\"Ada\", \"Lovelace\")",
+    "args": [
+     "Ada",
+     "Lovelace"
+    ],
+    "want": "adalov"
+   },
+   {
+    "label": "username(\"  Grace \", \"Hopper\")",
+    "args": [
+     "  Grace ",
+     "Hopper"
+    ],
+    "want": "grahop"
+   },
+   {
+    "label": "username(\"Al\", \"Wu\") (short names)",
+    "args": [
+     "Al",
+     "Wu"
+    ],
+    "want": "alwu"
+   },
+   {
+    "label": "username(\"MARIA\", \"SILVA\")",
+    "args": [
+     "MARIA",
+     "SILVA"
+    ],
+    "want": "marsil"
+   },
+   {
+    "label": "username(\"Kai\", \" Tanaka  \")",
+    "args": [
+     "Kai",
+     " Tanaka  "
+    ],
+    "want": "kaitan"
+   }
+  ]
+ }
+}

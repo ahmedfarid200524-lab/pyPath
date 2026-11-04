@@ -1,0 +1,471 @@
+{
+ "t": "Operators & maths",
+ "e": "➕",
+ "lessons": [
+  {
+   "t": "Maths operators",
+   "pages": [
+    {
+     "h": "Arithmetic",
+     "p": "An **operator** is a symbol that does something with values. The maths ones are «+», «-», «*» (times) and «/» (divide). JavaScript follows normal maths order: «*» and «/» come before «+» and «-». Brackets go first.",
+     "c": "console.log(7 + 3);\nconsole.log(10 / 4);\nconsole.log(2 + 3 * 4);\nconsole.log((2 + 3) * 4);",
+     "o": "10\n2.5\n14\n20",
+     "tip": "There is only one number type, so «10 / 4» is simply 2.5. No special rule for whole numbers."
+    },
+    {
+     "h": "Remainder with %",
+     "p": "The «%» operator gives the **remainder** after a division. Think of sharing sweets: 10 sweets for 3 friends is 3 each, and 1 is left over.\n\nA classic use: a number is even when «n % 2» is 0.",
+     "c": "console.log(10 % 3);\nconsole.log(8 % 2);\nconsole.log(7 % 2);",
+     "o": "1\n0\n1"
+    },
+    {
+     "h": "Powers with **",
+     "p": "Two stars mean \"to the power of\". «2 ** 3» is 2 times 2 times 2. Powers are worked out before «*» and «/».",
+     "c": "console.log(2 ** 3);\nconsole.log(5 ** 2);\nconsole.log(1 + 2 * 3 ** 2);",
+     "o": "8\n25\n19",
+     "tip": "Last line: first 3 ** 2 = 9, then 2 * 9 = 18, then 1 + 18 = 19."
+    },
+    {
+     "h": "Changing a variable quickly",
+     "p": "Updating a variable is so common that JavaScript has shortcuts. «n += 5» means «n = n + 5». The same works for «-=», «*=» and «/=». For adding or taking away exactly 1, use «++» and «--».",
+     "c": "let n = 10;\nn += 5;\nconsole.log(n);\nn *= 2;\nconsole.log(n);\nn++;\nconsole.log(n);\nn--;\nn--;\nconsole.log(n);",
+     "o": "15\n30\n31\n29",
+     "tip": "These only work on variables made with «let», because the value changes."
+    }
+   ]
+  },
+  {
+   "t": "Comparing and combining",
+   "pages": [
+    {
+     "h": "Comparison gives true or false",
+     "p": "A comparison asks a question and the answer is a boolean. Use «===» for \"is equal to\", «!==» for \"is not equal to\", and «<», «>», «<=», «>=».\n\nRemember: one «=» stores a value. Three «===» compare.",
+     "c": "console.log(5 > 3);\nconsole.log(5 === 5);\nconsole.log(5 !== 5);\nconsole.log(4 <= 3);",
+     "o": "true\ntrue\nfalse\nfalse"
+    },
+    {
+     "h": "=== also checks the type",
+     "p": "«===» is strict: the types must match too. The number 5 and the text «\"5\"» look alike, but they are different types, so they are not equal. Always use «===», not the older «==».",
+     "c": "console.log(5 === 5);\nconsole.log(5 === \"5\");\nconsole.log(\"a\" === \"a\");\nconsole.log(\"a\" === \"A\");",
+     "o": "true\nfalse\ntrue\nfalse",
+     "tip": "Capital letters matter too: «\"a\"» is not «\"A\"»."
+    },
+    {
+     "h": "Logical operators",
+     "p": "Join booleans with logical operators:\n\n• «&&» (and): true only if **both** sides are true\n• «||» (or): true if **at least one** side is true\n• «!» (not): flips true to false and false to true",
+     "c": "console.log(true && false);\nconsole.log(true || false);\nconsole.log(!true);\nconsole.log(!false);",
+     "o": "false\ntrue\nfalse\ntrue"
+    },
+    {
+     "h": "Combining comparisons",
+     "p": "Put a comparison on each side of «&&» or «||» to ask a bigger question. Comparisons are worked out first.\n\nHere we check if a number is between 1 and 10.",
+     "c": "const n = 7;\nconsole.log(n >= 1 && n <= 10);\nconsole.log(n < 0 || n > 100);\nconsole.log(!(n === 7));",
+     "o": "true\nfalse\nfalse",
+     "tip": "Write «n >= 1 && n <= 10». Writing «1 <= n <= 10» does not work the way you expect."
+    }
+   ]
+  },
+  {
+   "t": "Math and tricky plus",
+   "pages": [
+    {
+     "h": "The Math toolbox",
+     "p": "JavaScript has a ready-made toolbox called «Math».\n\n• «Math.round(x)»: nearest whole number\n• «Math.floor(x)»: round **down**\n• «Math.ceil(x)»: round **up**\n• «Math.max(a, b, ...)» and «Math.min(a, b, ...)»: the biggest and smallest",
+     "c": "console.log(Math.round(4.6));\nconsole.log(Math.floor(4.6));\nconsole.log(Math.ceil(4.2));\nconsole.log(Math.max(3, 9, 4));\nconsole.log(Math.min(3, 9, 4));",
+     "o": "5\n4\n5\n9\n3"
+    },
+    {
+     "h": "Down and up with negatives",
+     "p": "«floor» goes toward the **smaller** number and «ceil» toward the **bigger** number. For positive numbers that looks like \"cut the decimals\" and \"round up\", but with negatives it is different.",
+     "c": "console.log(Math.floor(-1.5));\nconsole.log(Math.ceil(-1.5));\nconsole.log(Math.ceil(10 / 3));",
+     "o": "-2\n-1\n4",
+     "tip": "Need whole boxes to fit 10 items, 3 per box? «Math.ceil(10 / 3)» gives 4."
+    },
+    {
+     "h": "The two faces of +",
+     "p": "With two numbers, «+» adds. If one side is a string, «+» joins, and the number turns into text. JavaScript reads from left to right. The other operators «-», «*» and «/» always do maths, and turn text that looks like a number into a number.",
+     "c": "console.log(\"5\" + 2);\nconsole.log(5 + 2 + \"!\");\nconsole.log(\"Total: \" + 5 + 2);\nconsole.log(\"5\" - 2);",
+     "o": "52\n7!\nTotal: 52\n3"
+    },
+    {
+     "h": "NaN: not a number",
+     "p": "When a maths operation makes no sense, you get «NaN», which means \"Not a Number\". It appears if you convert text that is not a number. Odd but true: «NaN» is a number type, and it is not equal to itself.",
+     "c": "console.log(Number(\"abc\"));\nconsole.log(\"hello\" * 2);\nconsole.log(typeof NaN);\nconsole.log(NaN === NaN);",
+     "o": "NaN\nNaN\nnumber\nfalse",
+     "tip": "Seeing NaN in your output? A value that you expected to be a number is not one."
+    }
+   ]
+  }
+ ],
+ "hand": [
+  {
+   "type": "out",
+   "code": "console.log(7 + 3 * 2);",
+   "answer": "13",
+   "wrong": [
+    "20",
+    "16",
+    "12"
+   ],
+   "why": "Multiplication comes first: 3 * 2 = 6, then 7 + 6 = 13. Brackets would be needed to get 20."
+  },
+  {
+   "type": "out",
+   "code": "console.log(10 % 3);",
+   "answer": "1",
+   "wrong": [
+    "3",
+    "0",
+    "3.33"
+   ],
+   "why": "10 divided by 3 is 3 with 1 left over. «%» gives that remainder."
+  },
+  {
+   "type": "out",
+   "code": "console.log(2 ** 3);",
+   "answer": "8",
+   "wrong": [
+    "6",
+    "9",
+    "23"
+   ],
+   "why": "«2 ** 3» means 2 * 2 * 2, which is 8. It is not 2 * 3."
+  },
+  {
+   "type": "out",
+   "code": "console.log(\"3\" + 4);",
+   "answer": "34",
+   "wrong": [
+    "7",
+    "3 4",
+    "NaN"
+   ],
+   "why": "One side is a string, so «+» joins the pieces: the text «34»."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the line so total becomes 14.",
+   "code": "let total = 10;\ntotal ___ 4;\nconsole.log(total);",
+   "ans": [
+    "+="
+   ],
+   "why": "«total += 4» is the short form of «total = total + 4»."
+  },
+  {
+   "type": "out",
+   "code": "console.log(5 === \"5\");",
+   "answer": "false",
+   "wrong": [
+    "true",
+    "5",
+    "undefined"
+   ],
+   "why": "«===» also compares types. A number and a string are never strictly equal."
+  },
+  {
+   "type": "out",
+   "code": "console.log(8 > 3, 8 < 3);",
+   "answer": "true false",
+   "wrong": [
+    "true true",
+    "false true",
+    "true, false"
+   ],
+   "why": "Each comparison gives its own boolean. «8 > 3» is true, and «8 < 3» is false."
+  },
+  {
+   "type": "mc",
+   "q": "Which operator means \"is not equal to\"?",
+   "code": null,
+   "ans": "!==",
+   "wrong": [
+    "=!",
+    "<>",
+    "=/="
+   ],
+   "why": "«!==» is the strict \"not equal\". It is the opposite of «===»."
+  },
+  {
+   "type": "out",
+   "code": "console.log(true && false);",
+   "answer": "false",
+   "wrong": [
+    "true",
+    "true false",
+    "null"
+   ],
+   "why": "«&&» needs both sides to be true. One false side makes everything false."
+  },
+  {
+   "type": "out",
+   "code": "console.log(!(3 > 5));",
+   "answer": "true",
+   "wrong": [
+    "false",
+    "!false",
+    "3 > 5"
+   ],
+   "why": "«3 > 5» is false, and «!» flips it to true."
+  },
+  {
+   "type": "out",
+   "code": "console.log(Math.round(4.6), Math.floor(4.6), Math.ceil(4.2));",
+   "answer": "5 4 5",
+   "wrong": [
+    "5 5 5",
+    "4 4 4",
+    "5 4 4"
+   ],
+   "why": "«round» goes to the nearest (5), «floor» goes down (4), and «ceil» always goes up, so 4.2 becomes 5."
+  },
+  {
+   "type": "out",
+   "code": "console.log(Math.max(3, 9, 4));",
+   "answer": "9",
+   "wrong": [
+    "3",
+    "4",
+    "16"
+   ],
+   "why": "«Math.max» returns the biggest of the values you give it."
+  },
+  {
+   "type": "order",
+   "q": "Put the lines in order so that 2 is printed.",
+   "lines": [
+    "let lives = 3;",
+    "lives--;",
+    "console.log(lives);"
+   ],
+   "why": "The variable is created first. «lives--» takes one away, and then the new value is printed."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the test for an even number.",
+   "code": "console.log(10 ___ 2 === 0);",
+   "ans": [
+    "%"
+   ],
+   "why": "A number is even when dividing by 2 leaves remainder 0. The «%» operator gives the remainder."
+  }
+ ],
+ "hard": [
+  {
+   "type": "out",
+   "code": "let x = 10;\nx -= 3;\nx *= 2;\nconsole.log(x);",
+   "answer": "14",
+   "wrong": [
+    "7",
+    "4",
+    "20"
+   ],
+   "why": "First x becomes 10 - 3 = 7, then 7 * 2 = 14. Each step uses the latest value."
+  },
+  {
+   "type": "out",
+   "code": "console.log(\"10\" - 4, \"10\" + 4);",
+   "answer": "6 104",
+   "wrong": [
+    "6 14",
+    "14 6",
+    "104 104"
+   ],
+   "why": "«-» does maths and turns «\"10\"» into a number: 6. «+» joins text: «104»."
+  },
+  {
+   "type": "out",
+   "code": "let a = 17;\nconsole.log(a % 5, a % 2 === 1);",
+   "answer": "2 true",
+   "wrong": [
+    "3 true",
+    "2 false",
+    "3 false"
+   ],
+   "why": "17 = 3 * 5 + 2, so the remainder is 2. And 17 % 2 is 1, so the comparison is true."
+  },
+  {
+   "type": "out",
+   "code": "console.log(Math.floor(-1.5), Math.ceil(-1.5));",
+   "answer": "-2 -1",
+   "wrong": [
+    "-1 -2",
+    "-1 -1",
+    "-2 -2"
+   ],
+   "why": "«floor» goes toward the smaller number, -2. «ceil» goes toward the bigger one, -1."
+  },
+  {
+   "type": "out",
+   "code": "console.log(typeof NaN, NaN === NaN);",
+   "answer": "number false",
+   "wrong": [
+    "NaN true",
+    "number true",
+    "NaN false"
+   ],
+   "why": "NaN has the type number, but it is never equal to anything, not even itself."
+  },
+  {
+   "type": "out",
+   "code": "let n = 7;\nlet isBig = n > 5 && n % 2 === 0;\nconsole.log(isBig);",
+   "answer": "false",
+   "wrong": [
+    "true",
+    "7",
+    "n > 5"
+   ],
+   "why": "7 is bigger than 5 (true), but 7 % 2 is 1, not 0 (false). «&&» needs both to be true."
+  },
+  {
+   "type": "out",
+   "code": "console.log(2 + 3 * 4 ** 2);",
+   "answer": "50",
+   "wrong": [
+    "400",
+    "196",
+    "20"
+   ],
+   "why": "Power first: 4 ** 2 = 16. Then 3 * 16 = 48. Then 2 + 48 = 50."
+  },
+  {
+   "type": "mc",
+   "q": "Which test is true when age is from 13 to 19, including both ends?",
+   "code": null,
+   "ans": "age >= 13 && age <= 19",
+   "wrong": [
+    "age >= 13 || age <= 19",
+    "age > 13 && age < 19",
+    "age === 13 && age === 19"
+   ],
+   "why": "Both conditions must hold, so we need «&&». With «||» every number passes, and «>» or «<» would leave out 13 and 19."
+  },
+  {
+   "type": "fill",
+   "q": "Boxes hold 10 items. How many boxes do 25 items need?",
+   "code": "const items = 25;\nconst perBox = 10;\nconsole.log(Math.___(items / perBox));",
+   "ans": [
+    "ceil"
+   ],
+   "why": "25 / 10 = 2.5, but you cannot buy half a box. «Math.ceil» rounds up to 3."
+  },
+  {
+   "type": "out",
+   "code": "console.log(\"Total: \" + 2 + 3);",
+   "answer": "Total: 23",
+   "wrong": [
+    "Total: 5",
+    "Total: 2 3",
+    "Total 23"
+   ],
+   "why": "JavaScript reads left to right. «\"Total: \" + 2» becomes text, and then 3 is joined to that text."
+  }
+ ],
+ "bugs": [
+  {
+   "title": "Bug hunt 1",
+   "items": [
+    {
+     "code": "let secret = 7;\nlet guess = 7;\nconsole.log(secret = guess);",
+     "fixed": "let secret = 7;\nlet guess = 7;\nconsole.log(secret === guess);",
+     "line": 2,
+     "symptom": "It prints 7, but true was expected.",
+     "why": "One «=» stores a value. To compare, use three: «===»."
+    },
+    {
+     "code": "const a = 4;\nconst b = 8;\nconsole.log(a + b / 2);",
+     "fixed": "const a = 4;\nconst b = 8;\nconsole.log((a + b) / 2);",
+     "line": 2,
+     "symptom": "The average of 4 and 8 should be 6, but it prints 8.",
+     "why": "Division happens before addition. Brackets make the sum happen first."
+    },
+    {
+     "code": "const n = 8;\nconst isEven = n / 2 === 0;\nconsole.log(isEven);",
+     "fixed": "const n = 8;\nconst isEven = n % 2 === 0;\nconsole.log(isEven);",
+     "line": 1,
+     "symptom": "It prints false, but 8 is an even number.",
+     "why": "Even means the remainder is 0, so use «%». «n / 2» is 4."
+    }
+   ]
+  },
+  {
+   "title": "Bug hunt 2",
+   "items": [
+    {
+     "code": "let lives = 3;\nlives =- 1;\nconsole.log(lives);",
+     "fixed": "let lives = 3;\nlives -= 1;\nconsole.log(lives);",
+     "line": 1,
+     "symptom": "It prints -1, but 2 was expected.",
+     "why": "«=-» stores minus one. The shortcut for subtracting is «-=», in that order."
+    },
+    {
+     "code": "const items = 21;\nconst perPage = 10;\nconsole.log(Math.round(items / perPage));",
+     "fixed": "const items = 21;\nconst perPage = 10;\nconsole.log(Math.ceil(items / perPage));",
+     "line": 2,
+     "symptom": "It prints 2 pages, but 21 items need 3 pages.",
+     "why": "«round» turns 2.1 into 2. «ceil» always rounds up, so no item is left out."
+    },
+    {
+     "code": "const hour = 3;\nconst isOpen = hour >= 9 || hour <= 17;\nconsole.log(isOpen);",
+     "fixed": "const hour = 3;\nconst isOpen = hour >= 9 && hour <= 17;\nconsole.log(isOpen);",
+     "line": 1,
+     "symptom": "It prints true, but the shop is closed at 3.",
+     "why": "With «||» one true side is enough, and every hour passes one of them. Use «&&» so both must hold."
+    }
+   ]
+  }
+ ],
+ "project": {
+  "title": "Bill Splitter",
+  "brief": "Write a function «splitBill» with three inputs: «total» (the bill), «people» (how many share it) and «tipPercent» (the tip, like 10 for 10%).\n\nAdd the tip to the bill, divide by the number of people, and **round up** to a whole number, so nobody pays too little. Return that number.\n\nExample: «splitBill(100, 3, 15)» returns «39» (115 split 3 ways is 38.33, rounded up).",
+  "fn": "splitBill",
+  "starter": "function splitBill(total, people, tipPercent) {\n  // your code here\n}\n",
+  "solution": "function splitBill(total, people, tipPercent) {\n  return Math.ceil(total * (100 + tipPercent) / 100 / people);\n}\n",
+  "tests": [
+   {
+    "label": "splitBill(100, 3, 15)",
+    "args": [
+     100,
+     3,
+     15
+    ],
+    "want": 39
+   },
+   {
+    "label": "splitBill(90, 3, 10) (exact result)",
+    "args": [
+     90,
+     3,
+     10
+    ],
+    "want": 33
+   },
+   {
+    "label": "splitBill(60, 4, 10)",
+    "args": [
+     60,
+     4,
+     10
+    ],
+    "want": 17
+   },
+   {
+    "label": "splitBill(45, 2, 0) (no tip)",
+    "args": [
+     45,
+     2,
+     0
+    ],
+    "want": 23
+   },
+   {
+    "label": "splitBill(20, 1, 20) (one person)",
+    "args": [
+     20,
+     1,
+     20
+    ],
+    "want": 24
+   }
+  ]
+ }
+}
