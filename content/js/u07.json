@@ -1,0 +1,478 @@
+{
+ "t": "Arrays",
+ "e": "📚",
+ "lessons": [
+  {
+   "t": "Lists of things",
+   "pages": [
+    {
+     "h": "What is an array?",
+     "p": "So far a variable held one value. An **array** holds a whole list of values in one variable. You write it with square brackets and put commas between the items.\n\n«.length» tells you how many items the array has.",
+     "c": "const fruits = [\"apple\", \"banana\", \"cherry\"];\nconsole.log(fruits.length);\nconst empty = [];\nconsole.log(empty.length);",
+     "o": "3\n0",
+     "tip": "An array can hold numbers, text, true/false, or a mix. Most of the time all items are the same kind."
+    },
+    {
+     "h": "Counting starts at 0",
+     "p": "Each item has a position number called an **index**. The first item has index **0**, the second has index 1, and so on. You read an item with square brackets: «fruits[0]».\n\nIf you ask for an index that does not exist, you get «undefined».",
+     "c": "const fruits = [\"apple\", \"banana\", \"cherry\"];\nconsole.log(fruits[0]);\nconsole.log(fruits[2]);\nconsole.log(fruits[3]);",
+     "o": "apple\ncherry\nundefined",
+     "tip": "An array with 3 items has indexes 0, 1 and 2. There is no index 3."
+    },
+    {
+     "h": "The last item",
+     "p": "The last index is always «length - 1». So you can find the last item even when you do not know how long the array is.\n\nYou can also change an item: put the index on the left of «=».",
+     "c": "const colors = [\"red\", \"green\", \"blue\"];\nconsole.log(colors[colors.length - 1]);\ncolors[1] = \"yellow\";\nconsole.log(colors.join(\" \"));",
+     "o": "blue\nred yellow blue",
+     "tip": "«const» does not stop you changing the items. It only stops you from putting a different array in the variable."
+    },
+    {
+     "h": "Printing an array",
+     "p": "«join» glues all the items into one piece of text. You choose the glue between the quotes. It is the easiest way to print an array in a clear way.\n\nTwo names can point to the **same** array. If you change it through one name, the other name sees the change too.",
+     "c": "const a = [1, 2, 3];\nconst b = a;\nb[0] = 99;\nconsole.log(a.join(\"-\"));\nconsole.log(b.join(\", \"));",
+     "o": "99-2-3\n99, 2, 3",
+     "tip": "«const b = a» does not make a copy. It gives the same array a second name."
+    }
+   ]
+  },
+  {
+   "t": "Adding and removing",
+   "pages": [
+    {
+     "h": "push and pop: the end",
+     "p": "Arrays can grow and shrink. «push» adds an item to the **end**. «pop» removes the **last** item and gives it back to you.\n\nBoth change the array itself.",
+     "c": "const list = [\"a\", \"b\"];\nlist.push(\"c\");\nconsole.log(list.join(\"\"));\nconst last = list.pop();\nconsole.log(last);\nconsole.log(list.length);",
+     "o": "abc\nc\n2",
+     "tip": "«push» adds many times in a row, like «list.push(\"x\"); list.push(\"y\");»."
+    },
+    {
+     "h": "unshift and shift: the start",
+     "p": "Two more methods work on the **front** of the array. «unshift» adds an item at the start. «shift» removes the first item and gives it back.\n\nA tip to remember: «push/pop» work at the end, «unshift/shift» work at the start.",
+     "c": "const queue = [\"Ana\", \"Bo\"];\nqueue.unshift(\"Zed\");\nconsole.log(queue.join(\" \"));\nconst first = queue.shift();\nconsole.log(first);\nconsole.log(queue.join(\" \"));",
+     "o": "Zed Ana Bo\nZed\nAna Bo",
+     "tip": "Every item moves one place when you add or remove at the start. The indexes change."
+    },
+    {
+     "h": "Build an array step by step",
+     "p": "A very common pattern: start with an empty array and push into it. Here we collect the first three square numbers.",
+     "c": "const squares = [];\nsquares.push(1 * 1);\nsquares.push(2 * 2);\nsquares.push(3 * 3);\nconsole.log(squares.join(\",\"));\nconsole.log(squares.length);",
+     "o": "1,4,9\n3",
+     "tip": "Using «const» for an empty array that you fill later is fine and very common."
+    }
+   ]
+  },
+  {
+   "t": "Loops, searching and slicing",
+   "pages": [
+    {
+     "h": "A for loop over an array",
+     "p": "Loops and arrays are best friends. Use the counter «i» as the index, and stop when «i» is smaller than «length». Then you visit every item once.\n\nUse «<» and not «<=». Index «length» does not exist.",
+     "c": "const nums = [4, 8, 15];\nlet total = 0;\nfor (let i = 0; i < nums.length; i++) {\n  total += nums[i];\n}\nconsole.log(total);",
+     "o": "27",
+     "tip": "Read «i < nums.length» as: while there are items left."
+    },
+    {
+     "h": "for...of: the easy loop",
+     "p": "When you only need the items and not their index, use **for...of**. On each round the variable holds the next item.\n\nRead it as: for each name of the names.",
+     "c": "const names = [\"Ana\", \"Bo\", \"Cy\"];\nfor (const name of names) {\n  console.log(\"Hello \" + name);\n}",
+     "o": "Hello Ana\nHello Bo\nHello Cy",
+     "tip": "«const» works here because a fresh variable is made on each round."
+    },
+    {
+     "h": "Is it in the array?",
+     "p": "«includes» answers yes or no with «true» or «false». «indexOf» gives the index of the item, or **-1** if it is not there.\n\nThe match must be exact, so capital letters matter.",
+     "c": "const pets = [\"cat\", \"dog\", \"fish\"];\nconsole.log(pets.includes(\"dog\"));\nconsole.log(pets.indexOf(\"fish\"));\nconsole.log(pets.indexOf(\"bird\"));\nconsole.log(pets.includes(\"Cat\"));",
+     "o": "true\n2\n-1\nfalse",
+     "tip": "Careful: «indexOf» can return 0 for a found item. Check «!== -1», not just the number."
+    },
+    {
+     "h": "slice: take a piece",
+     "p": "«slice(start, end)» gives you a **new** array with the items from «start» up to, but **not including**, «end». The original array does not change.\n\nWith only one number, «slice» goes from there to the end.",
+     "c": "const days = [\"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\"];\nconsole.log(days.slice(1, 3).join(\",\"));\nconsole.log(days.slice(3).join(\",\"));\nconsole.log(days.length);",
+     "o": "Tue,Wed\nThu,Fri\n5",
+     "tip": "You met «slice» on text in unit 2. On arrays it works the same way."
+    },
+    {
+     "h": "split and join",
+     "p": "«split» cuts a text into an array. You say where to cut. «join» does the opposite and glues an array back into text.\n\nThis is great for words: «split(\" \")» cuts at every space.",
+     "c": "const sentence = \"I like green tea\";\nconst words = sentence.split(\" \");\nconsole.log(words.length);\nconsole.log(words[2]);\nconsole.log(words.join(\"_\"));",
+     "o": "4\ngreen\nI_like_green_tea",
+     "tip": "«split(\"\")» with empty quotes cuts a text into single letters."
+    }
+   ]
+  }
+ ],
+ "hand": [
+  {
+   "type": "out",
+   "code": "const a = [10, 20, 30];\nconsole.log(a[1]);",
+   "answer": "20",
+   "wrong": [
+    "10",
+    "30",
+    "undefined"
+   ],
+   "why": "Counting starts at 0, so index 1 is the second item, 20."
+  },
+  {
+   "type": "mc",
+   "q": "Which index holds the first item of an array?",
+   "code": null,
+   "ans": "0",
+   "wrong": [
+    "1",
+    "-1",
+    "length"
+   ],
+   "why": "Arrays start counting at 0. The last item is at «length - 1»."
+  },
+  {
+   "type": "out",
+   "code": "const c = [\"red\", \"green\", \"blue\"];\nconsole.log(c.length);\nconsole.log(c[c.length - 1]);",
+   "answer": "3\nblue",
+   "wrong": [
+    "3\nundefined",
+    "2\nblue",
+    "3\nred"
+   ],
+   "why": "The array has 3 items. The last index is 3 - 1 = 2, which holds \"blue\"."
+  },
+  {
+   "type": "fill",
+   "q": "Fill in the method that adds \"c\" to the end.",
+   "code": "const list = [\"a\", \"b\"];\nlist.___(\"c\");\nconsole.log(list.join(\"\"));",
+   "ans": [
+    "push"
+   ],
+   "why": "«push» adds an item at the end, so the array becomes a, b, c."
+  },
+  {
+   "type": "out",
+   "code": "const nums = [1, 2, 3];\nnums.pop();\nnums.push(9);\nconsole.log(nums.join(\"-\"));",
+   "answer": "1-2-9",
+   "wrong": [
+    "1-2-3-9",
+    "2-3-9",
+    "1-2-3"
+   ],
+   "why": "«pop» removes the 3. Then «push(9)» adds 9 at the end. The array is 1, 2, 9."
+  },
+  {
+   "type": "order",
+   "q": "Put the lines in order so it prints xy.",
+   "lines": [
+    "const stack = [];",
+    "stack.push(\"x\");",
+    "stack.push(\"y\");",
+    "console.log(stack.join(\"\"));"
+   ],
+   "why": "You must create the array first, then push in the order x, y, and print at the end."
+  },
+  {
+   "type": "mc",
+   "q": "Which method adds an item at the START of an array?",
+   "code": null,
+   "ans": "unshift",
+   "wrong": [
+    "push",
+    "shift",
+    "pop"
+   ],
+   "why": "«unshift» adds at the start. «shift» removes from the start, and «push» adds at the end."
+  },
+  {
+   "type": "out",
+   "code": "const a = [\"x\", \"y\", \"z\"];\nconst first = a.shift();\nconsole.log(first + a.length);",
+   "answer": "x2",
+   "wrong": [
+    "x3",
+    "y2",
+    "x1"
+   ],
+   "why": "«shift» removes and returns \"x\". Two items are left, so the text is \"x\" + 2 = \"x2\"."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the loop that prints every name.",
+   "code": "const names = [\"Ana\", \"Bo\"];\nfor (const n ___ names) {\n  console.log(n);\n}",
+   "ans": [
+    "of"
+   ],
+   "why": "«for (const n of names)» gives you each item of the array in turn."
+  },
+  {
+   "type": "out",
+   "code": "const arr = [5, 8, 12];\nlet t = 0;\nfor (let i = 0; i < arr.length; i++) {\n  t += arr[i];\n}\nconsole.log(t);",
+   "answer": "25",
+   "wrong": [
+    "20",
+    "13",
+    "3"
+   ],
+   "why": "The loop adds every item: 5 + 8 + 12 = 25."
+  },
+  {
+   "type": "mc",
+   "q": "What does [\"a\", \"b\"].includes(\"c\") give?",
+   "code": null,
+   "ans": "false",
+   "wrong": [
+    "-1",
+    "undefined",
+    "\"c\""
+   ],
+   "why": "«includes» answers with true or false. \"c\" is not in the array. The value -1 comes from «indexOf», not «includes»."
+  },
+  {
+   "type": "out",
+   "code": "const a = [\"a\", \"b\", \"c\"];\nconsole.log(a.indexOf(\"c\"));\nconsole.log(a.indexOf(\"z\"));",
+   "answer": "2\n-1",
+   "wrong": [
+    "3\n-1",
+    "2\nundefined",
+    "2\nfalse"
+   ],
+   "why": "«indexOf» gives the index, which is 2 for \"c\". For an item that is missing it gives -1."
+  },
+  {
+   "type": "out",
+   "code": "const w = \"one two three\".split(\" \");\nconsole.log(w.length);\nconsole.log(w[1]);",
+   "answer": "3\ntwo",
+   "wrong": [
+    "3\none",
+    "2\ntwo",
+    "13\ntwo"
+   ],
+   "why": "Cutting at every space gives 3 words. Index 1 is the second word, \"two\"."
+  },
+  {
+   "type": "out",
+   "code": "const n = [1, 2, 3, 4, 5];\nconsole.log(n.slice(1, 3).join(\",\"));",
+   "answer": "2,3",
+   "wrong": [
+    "1,2,3",
+    "2,3,4",
+    "1,2"
+   ],
+   "why": "«slice(1, 3)» starts at index 1 and stops before index 3. That gives the items 2 and 3."
+  }
+ ],
+ "hard": [
+  {
+   "type": "out",
+   "code": "const a = [1, 2, 3];\nconst b = a;\nb.push(4);\nconsole.log(a.length);",
+   "answer": "4",
+   "wrong": [
+    "3",
+    "1",
+    "5"
+   ],
+   "why": "«b» is not a copy. It is the same array with a second name, so the push shows up in «a» too."
+  },
+  {
+   "type": "out",
+   "code": "const a = [1, 2, 3, 4];\nconst b = a.slice(1);\nconsole.log(a.length + \",\" + b.length);",
+   "answer": "4,3",
+   "wrong": [
+    "3,3",
+    "4,4",
+    "3,4"
+   ],
+   "why": "«slice» makes a new array and leaves the old one alone. «a» keeps 4 items and «b» gets 3."
+  },
+  {
+   "type": "out",
+   "code": "const q = [\"a\", \"b\", \"c\"];\nq.shift();\nq.push(\"d\");\nq.unshift(\"e\");\nconsole.log(q.join(\"\"));",
+   "answer": "ebcd",
+   "wrong": [
+    "eabcd",
+    "ebcda",
+    "ebc"
+   ],
+   "why": "After «shift» it is b, c. After «push» it is b, c, d. «unshift» puts e in front: e, b, c, d."
+  },
+  {
+   "type": "out",
+   "code": "const s = [3, 8, 1, 9, 4];\nlet big = s[0];\nfor (const n of s) {\n  if (n > big) {\n    big = n;\n  }\n}\nconsole.log(big);",
+   "answer": "9",
+   "wrong": [
+    "3",
+    "4",
+    "8"
+   ],
+   "why": "«big» starts at 3 and is replaced each time a bigger number appears: 8, then 9. Nothing beats 9."
+  },
+  {
+   "type": "out",
+   "code": "const words = [\"hi\", \"hello\", \"hey\", \"hi\"];\nlet c = 0;\nfor (let i = 0; i < words.length; i++) {\n  if (words[i] === \"hi\") {\n    c++;\n  }\n}\nconsole.log(c);",
+   "answer": "2",
+   "wrong": [
+    "1",
+    "4",
+    "3"
+   ],
+   "why": "Only the items at index 0 and index 3 are exactly \"hi\". \"hello\" and \"hey\" do not match."
+  },
+  {
+   "type": "out",
+   "code": "const a = [1, 2, 3];\nconsole.log(a[3]);\nconsole.log(a[a.length]);",
+   "answer": "undefined\nundefined",
+   "wrong": [
+    "3\n3",
+    "undefined\n3",
+    "Error"
+   ],
+   "why": "The last index is 2. Index 3, which equals the length, does not exist. Reading it gives «undefined», not an error."
+  },
+  {
+   "type": "mc",
+   "q": "Which loop header visits every index of arr exactly once?",
+   "code": null,
+   "ans": "for (let i = 0; i < arr.length; i++)",
+   "wrong": [
+    "for (let i = 0; i <= arr.length; i++)",
+    "for (let i = 1; i < arr.length; i++)",
+    "for (let i = 0; i < arr.length - 1; i++)"
+   ],
+   "why": "Start at 0 and stop before the length. «<=» goes one too far, starting at 1 skips the first item, and «length - 1» skips the last one."
+  },
+  {
+   "type": "out",
+   "code": "const parts = \"2024-05-17\".split(\"-\");\nconsole.log(parts[1] + parts[2]);",
+   "answer": "0517",
+   "wrong": [
+    "517",
+    "2024",
+    "05-17"
+   ],
+   "why": "Cutting at \"-\" gives \"2024\", \"05\" and \"17\". Joining index 1 and 2 as text gives \"0517\". The zero stays because they are texts, not numbers."
+  },
+  {
+   "type": "out",
+   "code": "const a = [\"x\", \"y\"];\nif (a.indexOf(\"x\")) {\n  console.log(\"found\");\n} else {\n  console.log(\"missing\");\n}",
+   "answer": "missing",
+   "wrong": [
+    "found",
+    "0",
+    "undefined"
+   ],
+   "why": "\"x\" is at index 0, and 0 is falsy, so the else part runs even though the item is there. Compare with «!== -1» instead."
+  },
+  {
+   "type": "out",
+   "code": "const a = [1, 2, 3];\nconst x = a.pop() + a.pop();\nconsole.log(x);",
+   "answer": "5",
+   "wrong": [
+    "3",
+    "6",
+    "4"
+   ],
+   "why": "The first «pop» gives 3 and the second gives 2. Together 3 + 2 is 5."
+  }
+ ],
+ "bugs": [
+  {
+   "title": "Bug hunt 1",
+   "items": [
+    {
+     "code": "const a = [4, 5, 6];\nlet sum = 0;\nfor (let i = 0; i <= a.length; i++) {\n  sum += a[i];\n}\nconsole.log(sum);",
+     "fixed": "const a = [4, 5, 6];\nlet sum = 0;\nfor (let i = 0; i < a.length; i++) {\n  sum += a[i];\n}\nconsole.log(sum);",
+     "line": 2,
+     "symptom": "It prints NaN but the total should be 15.",
+     "why": "With «<=» the loop also runs for index 3, which does not exist. Adding «undefined» to a number gives NaN. Use «<»."
+    },
+    {
+     "code": "const items = [\"pen\", \"cup\"];\nitems.push(\"book\");\nconst last = items[items.length];\nconsole.log(last);",
+     "fixed": "const items = [\"pen\", \"cup\"];\nitems.push(\"book\");\nconst last = items[items.length - 1];\nconsole.log(last);",
+     "line": 2,
+     "symptom": "It prints undefined but it should print book.",
+     "why": "The last index is «length - 1». Index «length» is one past the end."
+    },
+    {
+     "code": "const text = \"a,b,c\";\nconst letters = text.split(\"\");\nconsole.log(letters.length);",
+     "fixed": "const text = \"a,b,c\";\nconst letters = text.split(\",\");\nconsole.log(letters.length);",
+     "line": 1,
+     "symptom": "It prints 5 but it should print 3.",
+     "why": "«split(\"\")» cuts between every character, commas included. To get the 3 letters, cut at the comma with «split(\",\")»."
+    }
+   ]
+  },
+  {
+   "title": "Bug hunt 2",
+   "items": [
+    {
+     "code": "const team = [\"Ana\", \"Bo\"];\nteam.unshift(\"Cy\");\nconsole.log(team.join(\" \"));",
+     "fixed": "const team = [\"Ana\", \"Bo\"];\nteam.push(\"Cy\");\nconsole.log(team.join(\" \"));",
+     "line": 1,
+     "symptom": "It prints Cy Ana Bo but the new member should come last.",
+     "why": "«unshift» adds at the start. «push» adds at the end."
+    },
+    {
+     "code": "const nums = [1, 2, 3, 4, 5];\nconst mid = nums.slice(1, 3);\nconsole.log(mid.join(\",\"));",
+     "fixed": "const nums = [1, 2, 3, 4, 5];\nconst mid = nums.slice(1, 4);\nconsole.log(mid.join(\",\"));",
+     "line": 1,
+     "symptom": "It prints 2,3 but it should print 2,3,4.",
+     "why": "«slice» stops before the end index. To include the item at index 3, the end must be 4."
+    },
+    {
+     "code": "const pets = [\"Cat\", \"Dog\"];\nconst has = pets.includes(\"cat\");\nconsole.log(has);",
+     "fixed": "const pets = [\"Cat\", \"Dog\"];\nconst has = pets.includes(\"Cat\");\nconsole.log(has);",
+     "line": 1,
+     "symptom": "It prints false but \"Cat\" is in the list.",
+     "why": "«includes» compares exactly, so \"cat\" and \"Cat\" are different. Use the same capital letter."
+    }
+   ]
+  }
+ ],
+ "project": {
+  "title": "Word Wizard",
+  "brief": "Write a function «longestWord(sentence)» that returns the longest word in a sentence. Words are separated by a single space.\n\nIf two words are equally long, return the one that comes first.\n\nExamples: «longestWord(\"I love coding\")» is \"coding\" and «longestWord(\"The quick brown fox\")» is \"quick\".\n\nHint: split the sentence, then loop and remember the best word so far.",
+  "fn": "longestWord",
+  "starter": "function longestWord(sentence) {\n  // your code here\n  return \"\";\n}\n",
+  "solution": "function longestWord(sentence) {\n  const words = sentence.split(\" \");\n  let best = words[0];\n  for (const word of words) {\n    if (word.length > best.length) {\n      best = word;\n    }\n  }\n  return best;\n}\n",
+  "tests": [
+   {
+    "label": "longestWord(\"I love coding\")",
+    "args": [
+     "I love coding"
+    ],
+    "want": "coding"
+   },
+   {
+    "label": "longestWord(\"hello\")",
+    "args": [
+     "hello"
+    ],
+    "want": "hello"
+   },
+   {
+    "label": "longestWord(\"The quick brown fox\")",
+    "args": [
+     "The quick brown fox"
+    ],
+    "want": "quick"
+   },
+   {
+    "label": "longestWord(\"a bb cc d\")",
+    "args": [
+     "a bb cc d"
+    ],
+    "want": "bb"
+   },
+   {
+    "label": "longestWord(\"big cat sat\")",
+    "args": [
+     "big cat sat"
+    ],
+    "want": "big"
+   },
+   {
+    "label": "longestWord(\"short extraordinary tiny\")",
+    "args": [
+     "short extraordinary tiny"
+    ],
+    "want": "extraordinary"
+   }
+  ]
+ }
+}

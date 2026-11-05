@@ -1,0 +1,529 @@
+{
+ "t": "Objects & JSON",
+ "e": "🗃️",
+ "lessons": [
+  {
+   "t": "Objects",
+   "pages": [
+    {
+     "h": "What is an object?",
+     "p": "An array is a list where items have numbers. An **object** is a group of **named** values. Each name is called a **key** and it has a **value**. Together they are a **property**.\n\nYou write an object with curly braces. Each property is «key: value», with commas between them.",
+     "c": "const person = {\n  name: \"Mia\",\n  age: 12,\n  likesPizza: true\n};\nconsole.log(person.name);\nconsole.log(person.age + 1);",
+     "o": "Mia\n13",
+     "tip": "Use an object when the values are different things about one thing: a person, a game, a product."
+    },
+    {
+     "h": "Dot and brackets",
+     "p": "Read a property with a **dot**: «person.name». You can also use **brackets with text**: «person[\"name\"]».\n\nBrackets are useful when the key is stored in a variable. A key that does not exist gives «undefined».",
+     "c": "const person = { name: \"Mia\", age: 12 };\nconst key = \"age\";\nconsole.log(person[\"name\"]);\nconsole.log(person[key]);\nconsole.log(person.key);\nconsole.log(person.city);",
+     "o": "Mia\n12\nundefined\nundefined",
+     "tip": "«person.key» looks for a property really called \"key\". «person[key]» uses the value inside the variable."
+    },
+    {
+     "h": "Add, change, delete",
+     "p": "Objects can change after you make them. Assign to a key to **change** it, or to a new key to **add** it. Use **delete** to remove a property.\n\n«JSON.stringify» turns an object into text, so you can print the whole thing.",
+     "c": "const pet = { name: \"Kiwi\" };\npet.legs = 2;\npet.name = \"Coco\";\nconsole.log(JSON.stringify(pet));\ndelete pet.legs;\nconsole.log(JSON.stringify(pet));",
+     "o": "{\"name\":\"Coco\",\"legs\":2}\n{\"name\":\"Coco\"}",
+     "tip": "Just like arrays, an object in a «const» can still be changed inside."
+    },
+    {
+     "h": "Is the key there?",
+     "p": "The word **in** checks if an object has a key. It gives «true» or «false».\n\nThis is better than reading the value when the value itself could be «0» or an empty text, because those look like \"nothing\" in an «if».",
+     "c": "const stock = { apples: 0, pears: 4 };\nconsole.log(\"apples\" in stock);\nconsole.log(\"kiwis\" in stock);\nif (\"apples\" in stock) {\n  console.log(\"we sell apples\");\n}",
+     "o": "true\nfalse\nwe sell apples",
+     "tip": "The key goes in quotes on the left: «\"apples\" in stock»."
+    }
+   ]
+  },
+  {
+   "t": "Methods and nested data",
+   "pages": [
+    {
+     "h": "Methods: functions inside objects",
+     "p": "A property can hold a function. We call it a **method**. Inside a method, **this** means the object the method belongs to, so «this.name» reads the name of that object.\n\nYou call it with brackets: «dog.speak()».",
+     "c": "const dog = {\n  name: \"Rex\",\n  speak() {\n    return this.name + \" says woof\";\n  }\n};\nconsole.log(dog.speak());",
+     "o": "Rex says woof",
+     "tip": "You already use methods: «console.log» and «\"hi\".toUpperCase()» are methods."
+    },
+    {
+     "h": "Objects inside objects",
+     "p": "A value can be another object or an array. This is called **nested** data. Use more dots and brackets to go deeper, one step at a time.",
+     "c": "const user = {\n  name: \"Leo\",\n  address: { city: \"Lima\", zip: 15001 },\n  hobbies: [\"chess\", \"swimming\"]\n};\nconsole.log(user.address.city);\nconsole.log(user.hobbies[1]);\nconsole.log(user.hobbies.length);",
+     "o": "Lima\nswimming\n2",
+     "tip": "Read left to right: user, then address, then city."
+    },
+    {
+     "h": "Arrays of objects",
+     "p": "The most common shape of real data is an **array of objects**: a list where every item is an object. Loop over it with «for...of» and read the properties of each item.",
+     "c": "const players = [\n  { name: \"Ana\", score: 40 },\n  { name: \"Bo\", score: 25 },\n  { name: \"Cy\", score: 35 }\n];\nfor (const p of players) {\n  console.log(p.name + \": \" + p.score);\n}\nconsole.log(players[1].name);",
+     "o": "Ana: 40\nBo: 25\nCy: 35\nBo",
+     "tip": "«players[1]» is one object. «players[1].name» is one property of it."
+    },
+    {
+     "h": "Totals from a list of objects",
+     "p": "The patterns from the loops unit work here too. Start a total at 0 and add a property from each object. You can also count how many objects match a condition.",
+     "c": "const players = [\n  { name: \"Ana\", score: 40 },\n  { name: \"Bo\", score: 25 },\n  { name: \"Cy\", score: 35 }\n];\nlet total = 0;\nlet high = 0;\nfor (const p of players) {\n  total += p.score;\n  if (p.score >= 35) {\n    high++;\n  }\n}\nconsole.log(total);\nconsole.log(high);",
+     "o": "100\n2",
+     "tip": "Keep the code under control: one variable for each thing you are counting."
+    }
+   ]
+  },
+  {
+   "t": "Keys, values and JSON",
+   "pages": [
+    {
+     "h": "Object.keys and Object.values",
+     "p": "«Object.keys(obj)» gives an **array** of all the keys. «Object.values(obj)» gives an array of all the values. Because they are arrays, you can use «length», «join» and loops on them.",
+     "c": "const prices = { tea: 2, cake: 5, juice: 3 };\nconsole.log(Object.keys(prices).join(\",\"));\nconsole.log(Object.values(prices).join(\",\"));\nconsole.log(Object.keys(prices).length);",
+     "o": "tea,cake,juice\n2,5,3\n3",
+     "tip": "Objects keep their keys in the order you wrote them, for normal names like these."
+    },
+    {
+     "h": "Loop over an object",
+     "p": "You cannot use «for...of» on an object directly. Loop over its **keys** instead, and read each value with brackets. «Object.entries(obj)» gives an array of [key, value] pairs.",
+     "c": "const prices = { tea: 2, cake: 5 };\nfor (const key of Object.keys(prices)) {\n  console.log(key + \" costs \" + prices[key]);\n}\nconst pairs = Object.entries(prices);\nconsole.log(pairs.length);\nconsole.log(pairs[1][0] + \"=\" + pairs[1][1]);",
+     "o": "tea costs 2\ncake costs 5\n2\ncake=5",
+     "tip": "«pairs[1]» is the pair [\"cake\", 5]. Its index 0 is the key and index 1 is the value."
+    },
+    {
+     "h": "What is JSON?",
+     "p": "**JSON** is a way to write data as plain text. It looks like an object, but the keys are always in double quotes. Programs use it to save data and to send data over the internet.\n\n«JSON.stringify(x)» turns data into JSON text.",
+     "c": "const book = { title: \"Dune\", pages: 412, tags: [\"sci-fi\", \"classic\"] };\nconst text = JSON.stringify(book);\nconsole.log(text);\nconsole.log(text.length > 10);",
+     "o": "{\"title\":\"Dune\",\"pages\":412,\"tags\":[\"sci-fi\",\"classic\"]}\ntrue",
+     "tip": "The result of «JSON.stringify» is only text. You cannot write «text.title»."
+    },
+    {
+     "h": "JSON.parse: text back to data",
+     "p": "«JSON.parse(text)» does the opposite: it turns JSON text back into a real object or array. The text must be valid JSON, with double quotes around keys and texts.\n\nAfter parsing, you can use dots and brackets again.",
+     "c": "const text = '{\"name\":\"Zoe\",\"scores\":[7,9]}';\nconst data = JSON.parse(text);\nconsole.log(data.name);\nconsole.log(data.scores[1]);\ndata.scores.push(10);\nconsole.log(JSON.stringify(data));",
+     "o": "Zoe\n9\n{\"name\":\"Zoe\",\"scores\":[7,9,10]}",
+     "tip": "We wrapped the JSON text in single quotes so the double quotes inside are fine."
+    },
+    {
+     "h": "Save and load",
+     "p": "Stringify and parse together let you pack data into text and unpack it later. Programs use this to save data in a file or send it to another computer.",
+     "c": "const saved = JSON.stringify([{ n: 1 }, { n: 2 }]);\nconsole.log(saved);\nconst loaded = JSON.parse(saved);\nconsole.log(loaded.length);\nconsole.log(loaded[1].n);",
+     "o": "[{\"n\":1},{\"n\":2}]\n2\n2",
+     "tip": "If the text is not valid JSON, «JSON.parse» stops with an error."
+    }
+   ]
+  }
+ ],
+ "hand": [
+  {
+   "type": "out",
+   "code": "const car = { brand: \"Fiat\", year: 2020 };\nconsole.log(car.brand + car.year);",
+   "answer": "Fiat2020",
+   "wrong": [
+    "Fiat 2020",
+    "brand2020",
+    "Fiat"
+   ],
+   "why": "Both are read with a dot. Text plus a number joins them into \"Fiat2020\"."
+  },
+  {
+   "type": "mc",
+   "q": "The variable key holds \"color\". Which line reads the property named by that variable?",
+   "code": null,
+   "ans": "obj[key]",
+   "wrong": [
+    "obj.key",
+    "obj[\"key\"]",
+    "obj(key)"
+   ],
+   "why": "Brackets without quotes use the value of the variable. «obj.key» and «obj[\"key\"]» look for a property really called \"key\"."
+  },
+  {
+   "type": "out",
+   "code": "const p = { name: \"Li\" };\nconsole.log(p.age);",
+   "answer": "undefined",
+   "wrong": [
+    "null",
+    "0",
+    "Error"
+   ],
+   "why": "The object has no «age» key. Reading a missing key gives «undefined» and does not stop the program."
+  },
+  {
+   "type": "fill",
+   "q": "Fill in the word that removes the property.",
+   "code": "const user = { name: \"Sam\", temp: 1 };\n___ user.temp;\nconsole.log(JSON.stringify(user));",
+   "ans": [
+    "delete"
+   ],
+   "why": "«delete» removes a property from an object. Then only name is left."
+  },
+  {
+   "type": "out",
+   "code": "const o = { a: 1 };\no.b = 2;\no.a = 5;\nconsole.log(JSON.stringify(o));",
+   "answer": "{\"a\":5,\"b\":2}",
+   "wrong": [
+    "{\"a\":1,\"b\":2}",
+    "{\"a\":5}",
+    "{\"a\":1,\"a\":5,\"b\":2}"
+   ],
+   "why": "«o.b = 2» adds a new key. «o.a = 5» changes the existing one. Keys cannot repeat."
+  },
+  {
+   "type": "order",
+   "q": "Put the lines in order so it prints Kiwi 2.",
+   "lines": [
+    "const pet = {};",
+    "pet.name = \"Kiwi\";",
+    "pet.legs = 2;",
+    "console.log(pet.name + \" \" + pet.legs);"
+   ],
+   "why": "Make the empty object, add the two properties, and only then print them."
+  },
+  {
+   "type": "mc",
+   "q": "Which line creates an object with one property?",
+   "code": null,
+   "ans": "const o = { size: 3 };",
+   "wrong": [
+    "const o = [ size: 3 ];",
+    "const o = { size = 3 };",
+    "const o = ( size: 3 );"
+   ],
+   "why": "Objects use curly braces and «key: value». Square brackets make arrays and cannot hold «key: value»."
+  },
+  {
+   "type": "out",
+   "code": "const cat = {\n  name: \"Tom\",\n  hi() {\n    return \"Meow \" + this.name;\n  }\n};\nconsole.log(cat.hi());",
+   "answer": "Meow Tom",
+   "wrong": [
+    "Meow name",
+    "Meow undefined",
+    "Meow"
+   ],
+   "why": "Inside the method, «this» is the cat object, so «this.name» is \"Tom\"."
+  },
+  {
+   "type": "out",
+   "code": "const s = { name: \"Zed\", scores: { math: 7, art: 9 } };\nconsole.log(s.scores.art + s.scores.math);",
+   "answer": "16",
+   "wrong": [
+    "79",
+    "9",
+    "97"
+   ],
+   "why": "Go inside «scores» first. These are numbers, so 9 + 7 is 16."
+  },
+  {
+   "type": "fill",
+   "q": "Fill in the method that gives all the keys.",
+   "code": "const keys = Object.___({ a: 1, b: 2 });\nconsole.log(keys.join(\",\"));",
+   "ans": [
+    "keys"
+   ],
+   "why": "«Object.keys» returns an array of the keys. Joined with commas it is a,b."
+  },
+  {
+   "type": "out",
+   "code": "const people = [\n  { name: \"Ann\", age: 10 },\n  { name: \"Ben\", age: 20 }\n];\nconsole.log(people[1].name);",
+   "answer": "Ben",
+   "wrong": [
+    "Ann",
+    "20",
+    "undefined"
+   ],
+   "why": "Index 1 is the second object. Its «name» is \"Ben\"."
+  },
+  {
+   "type": "out",
+   "code": "const people = [{ age: 10 }, { age: 20 }, { age: 5 }];\nlet total = 0;\nfor (const p of people) {\n  total += p.age;\n}\nconsole.log(total);",
+   "answer": "35",
+   "wrong": [
+    "20",
+    "30",
+    "3"
+   ],
+   "why": "The loop adds the age of every object: 10 + 20 + 5 = 35."
+  },
+  {
+   "type": "out",
+   "code": "console.log(JSON.stringify({ x: 1, y: \"hi\" }));",
+   "answer": "{\"x\":1,\"y\":\"hi\"}",
+   "wrong": [
+    "{x:1,y:hi}",
+    "{ x: 1, y: \"hi\" }",
+    "x=1,y=hi"
+   ],
+   "why": "JSON puts double quotes around keys and texts. Numbers have no quotes. There are no spaces."
+  },
+  {
+   "type": "out",
+   "code": "const o = JSON.parse('{\"n\": 5}');\nconsole.log(o.n + 1);",
+   "answer": "6",
+   "wrong": [
+    "51",
+    "5",
+    "undefined"
+   ],
+   "why": "«JSON.parse» makes a real object with n as the number 5. Then 5 + 1 is 6."
+  }
+ ],
+ "hard": [
+  {
+   "type": "out",
+   "code": "const a = { x: 1 };\nconst b = a;\nb.x = 2;\nconsole.log(a.x);",
+   "answer": "2",
+   "wrong": [
+    "1",
+    "undefined",
+    "3"
+   ],
+   "why": "«b» is not a copy of the object. It is a second name for the same object, so the change shows in «a» too."
+  },
+  {
+   "type": "out",
+   "code": "const o = { a: 1, b: 2, c: 3 };\ndelete o.b;\nconsole.log(Object.keys(o).join(\"\") + o.b);",
+   "answer": "acundefined",
+   "wrong": [
+    "ac2",
+    "abc",
+    "ac"
+   ],
+   "why": "After the delete, the keys are a and c. «o.b» is now «undefined», and joining it to text gives \"undefined\"."
+  },
+  {
+   "type": "out",
+   "code": "console.log(JSON.stringify([{ n: 1 }, { n: 2 }]));",
+   "answer": "[{\"n\":1},{\"n\":2}]",
+   "wrong": [
+    "[{n:1},{n:2}]",
+    "{\"n\":1},{\"n\":2}",
+    "[{\"n\":1,\"n\":2}]"
+   ],
+   "why": "An array of objects stays an array of objects. Keys get double quotes, and there are no spaces."
+  },
+  {
+   "type": "out",
+   "code": "const stock = { apples: 3, pears: 0 };\nfor (const k of Object.keys(stock)) {\n  if (stock[k] === 0) {\n    console.log(k + \" sold out\");\n  } else {\n    console.log(k + \" \" + stock[k]);\n  }\n}",
+   "answer": "apples 3\npears sold out",
+   "wrong": [
+    "apples 3\npears 0",
+    "apples sold out\npears sold out",
+    "pears sold out"
+   ],
+   "why": "For apples the value is 3, so the else branch prints the count. For pears the value is 0, so the first branch runs."
+  },
+  {
+   "type": "out",
+   "code": "const o = { name: \"Ana\" };\nconst key = \"name\";\nconsole.log(o[key] + o[\"key\"]);",
+   "answer": "Anaundefined",
+   "wrong": [
+    "AnaAna",
+    "Ana",
+    "nameundefined"
+   ],
+   "why": "«o[key]» uses the variable, so it reads \"Ana\". «o[\"key\"]» looks for a property called key, which does not exist."
+  },
+  {
+   "type": "out",
+   "code": "const prices = { tea: 2, cake: 5, juice: 3 };\nlet t = 0;\nfor (const v of Object.values(prices)) {\n  if (v > 2) {\n    t += v;\n  }\n}\nconsole.log(t);",
+   "answer": "8",
+   "wrong": [
+    "10",
+    "5",
+    "3"
+   ],
+   "why": "Only 5 and 3 are bigger than 2. The 2 for tea is skipped, so the total is 8."
+  },
+  {
+   "type": "out",
+   "code": "const o = { n: 1 };\nconst text = JSON.stringify(o);\no.n = 2;\nconsole.log(text);",
+   "answer": "{\"n\":1}",
+   "wrong": [
+    "{\"n\":2}",
+    "2",
+    "{n:1}"
+   ],
+   "why": "«JSON.stringify» made a text at that moment. Text does not change later when the object changes."
+  },
+  {
+   "type": "out",
+   "code": "const counter = {\n  count: 0,\n  inc() {\n    this.count++;\n    return this.count;\n  }\n};\ncounter.inc();\ncounter.inc();\nconsole.log(counter.inc() + counter.count);",
+   "answer": "6",
+   "wrong": [
+    "5",
+    "3",
+    "4"
+   ],
+   "why": "The third call makes count 3 and returns 3. Then «counter.count» is also 3. The sum is 6."
+  },
+  {
+   "type": "mc",
+   "q": "Which text can JSON.parse read without an error?",
+   "code": null,
+   "ans": "'{\"a\": 1}'",
+   "wrong": [
+    "'{a: 1}'",
+    "\"{'a': 1}\"",
+    "'{\"a\": 1,}'"
+   ],
+   "why": "Valid JSON needs double quotes around keys and no comma after the last property."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the loop that adds up all the quantities.",
+   "code": "const items = [{ n: \"a\", qty: 2 }, { n: \"b\", qty: 5 }];\nlet total = 0;\nfor (const it of items) {\n  total += it.___;\n}\nconsole.log(total);",
+   "ans": [
+    "qty"
+   ],
+   "why": "Each «it» is an object. Its quantity is stored in the «qty» property, so «it.qty» adds 2 and then 5."
+  }
+ ],
+ "bugs": [
+  {
+   "title": "Bug hunt 1",
+   "items": [
+    {
+     "code": "const info = { city: \"Rome\" };\nconst key = \"city\";\nconsole.log(info.key);",
+     "fixed": "const info = { city: \"Rome\" };\nconst key = \"city\";\nconsole.log(info[key]);",
+     "line": 2,
+     "symptom": "It prints undefined but it should print Rome.",
+     "why": "«info.key» looks for a property named \"key\". To use the value stored in the variable, write «info[key]»."
+    },
+    {
+     "code": "const pet = {\n  name: \"Kiwi\"\n  age: 2\n};\nconsole.log(pet.age);",
+     "fixed": "const pet = {\n  name: \"Kiwi\",\n  age: 2\n};\nconsole.log(pet.age);",
+     "line": 1,
+     "symptom": "SyntaxError: Unexpected identifier.",
+     "why": "Properties are separated by commas. The comma after \"Kiwi\" is missing."
+    },
+    {
+     "code": "const text = '{\"n\": 1}';\nconst obj = JSON.stringify(text);\nconsole.log(obj.n);",
+     "fixed": "const text = '{\"n\": 1}';\nconst obj = JSON.parse(text);\nconsole.log(obj.n);",
+     "line": 1,
+     "symptom": "It prints undefined but it should print 1.",
+     "why": "«stringify» goes from data to text, and here we already have text. To get an object from text, use «JSON.parse»."
+    }
+   ]
+  },
+  {
+   "title": "Bug hunt 2",
+   "items": [
+    {
+     "code": "const robot = {\n  name: \"Bo\",\n  age: 7,\n  hi() {\n    return \"Age \" + age;\n  }\n};\nconsole.log(robot.hi());",
+     "fixed": "const robot = {\n  name: \"Bo\",\n  age: 7,\n  hi() {\n    return \"Age \" + this.age;\n  }\n};\nconsole.log(robot.hi());",
+     "line": 4,
+     "symptom": "ReferenceError: age is not defined.",
+     "why": "Properties of the object are not plain variables. Inside a method you reach them with «this.age»."
+    },
+    {
+     "code": "const shop = [{ n: \"tea\", p: 2 }, { n: \"cake\", p: 5 }];\nlet total = 0;\nfor (const item of shop) {\n  total += shop.p;\n}\nconsole.log(total);",
+     "fixed": "const shop = [{ n: \"tea\", p: 2 }, { n: \"cake\", p: 5 }];\nlet total = 0;\nfor (const item of shop) {\n  total += item.p;\n}\nconsole.log(total);",
+     "line": 3,
+     "symptom": "It prints NaN but the total should be 7.",
+     "why": "«shop» is the array and has no «p» property. Each single object is «item», so use «item.p»."
+    },
+    {
+     "code": "const stock = { apples: 3, pears: 4 };\nlet sum = 0;\nfor (const k of stock) {\n  sum += stock[k];\n}\nconsole.log(sum);",
+     "fixed": "const stock = { apples: 3, pears: 4 };\nlet sum = 0;\nfor (const k of Object.keys(stock)) {\n  sum += stock[k];\n}\nconsole.log(sum);",
+     "line": 2,
+     "symptom": "TypeError: stock is not iterable.",
+     "why": "«for...of» works on arrays, not on plain objects. Loop over «Object.keys(stock)» instead."
+    }
+   ]
+  }
+ ],
+ "project": {
+  "title": "Shop Cart Total",
+  "brief": "Write a function «cartTotal(items)». It gets an array of objects. Each object has «name», «price» (a whole number), «qty» and «inStock» (true or false).\n\nReturn the total cost of the items that are in stock: price times quantity, added up. Items that are not in stock do not count. An empty cart costs 0.\n\nExample: «cartTotal([{name: \"pen\", price: 2, qty: 3, inStock: true}])» is 6.",
+  "fn": "cartTotal",
+  "starter": "function cartTotal(items) {\n  // your code here\n  return 0;\n}\n",
+  "solution": "function cartTotal(items) {\n  let total = 0;\n  for (const item of items) {\n    if (item.inStock) {\n      total += item.price * item.qty;\n    }\n  }\n  return total;\n}\n",
+  "tests": [
+   {
+    "label": "cartTotal([])",
+    "args": [
+     []
+    ],
+    "want": 0
+   },
+   {
+    "label": "one pen, price 2, qty 3",
+    "args": [
+     [
+      {
+       "name": "pen",
+       "price": 2,
+       "qty": 3,
+       "inStock": true
+      }
+     ]
+    ],
+    "want": 6
+   },
+   {
+    "label": "two items in stock",
+    "args": [
+     [
+      {
+       "name": "pen",
+       "price": 2,
+       "qty": 3,
+       "inStock": true
+      },
+      {
+       "name": "book",
+       "price": 10,
+       "qty": 2,
+       "inStock": true
+      }
+     ]
+    ],
+    "want": 26
+   },
+   {
+    "label": "an item that is out of stock",
+    "args": [
+     [
+      {
+       "name": "pen",
+       "price": 2,
+       "qty": 3,
+       "inStock": true
+      },
+      {
+       "name": "lamp",
+       "price": 30,
+       "qty": 1,
+       "inStock": false
+      }
+     ]
+    ],
+    "want": 6
+   },
+   {
+    "label": "quantity 0",
+    "args": [
+     [
+      {
+       "name": "cup",
+       "price": 5,
+       "qty": 0,
+       "inStock": true
+      }
+     ]
+    ],
+    "want": 0
+   },
+   {
+    "label": "everything out of stock",
+    "args": [
+     [
+      {
+       "name": "lamp",
+       "price": 30,
+       "qty": 1,
+       "inStock": false
+      }
+     ]
+    ],
+    "want": 0
+   }
+  ]
+ }
+}

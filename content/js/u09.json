@@ -1,0 +1,552 @@
+{
+ "t": "Modern JavaScript",
+ "e": "✨",
+ "lessons": [
+  {
+   "t": "map, filter and reduce",
+   "pages": [
+    {
+     "h": "map: change every item",
+     "p": "«map» runs a small function on **every** item and gives you a **new array** with the results. The new array has the same length. The old array does not change.\n\nThe small function usually is an arrow function, which you met in unit 6.",
+     "c": "const nums = [1, 2, 3];\nconst doubled = nums.map(n => n * 2);\nconsole.log(doubled.join(\",\"));\nconsole.log(nums.join(\",\"));",
+     "o": "2,4,6\n1,2,3",
+     "tip": "Read it as: for each n, give me n * 2. The function may also get the index as a second parameter: «(n, i) => ...»."
+    },
+    {
+     "h": "filter: keep some items",
+     "p": "«filter» keeps only the items for which your function gives «true». The result is a new array, and it can be shorter, or even empty.",
+     "c": "const ages = [8, 15, 22, 12];\nconst adults = ages.filter(a => a >= 18);\nconst teens = ages.filter(a => a >= 13 && a < 18);\nconsole.log(adults.join(\",\"));\nconsole.log(teens.length);",
+     "o": "22\n1",
+     "tip": "The function for «filter» answers a yes/no question about one item."
+    },
+    {
+     "h": "reduce: many values into one",
+     "p": "«reduce» walks through the array and keeps a running result. Your function gets the result so far («total») and the next item («n»), and returns the new result. The second argument, here «0», is where the result starts.",
+     "c": "const nums = [4, 6, 10];\nconst sum = nums.reduce((total, n) => total + n, 0);\nconsole.log(sum);\nconst biggest = nums.reduce((best, n) => n > best ? n : best, 0);\nconsole.log(biggest);",
+     "o": "20\n10",
+     "tip": "It is the loop pattern \"start with a total, update it for each item\" in one line."
+    },
+    {
+     "h": "Chain them together",
+     "p": "Each of these methods returns an array (or a value), so you can chain them with dots. Read the chain from left to right, one step at a time.",
+     "c": "const prices = [5, 12, 8, 20];\nconst total = prices\n  .filter(p => p > 6)\n  .map(p => p * 2)\n  .reduce((sum, p) => sum + p, 0);\nconsole.log(total);",
+     "o": "80",
+     "tip": "Steps: filter gives 12, 8, 20. map gives 24, 16, 40. reduce adds them to 80."
+    }
+   ]
+  },
+  {
+   "t": "Searching and sorting",
+   "pages": [
+    {
+     "h": "find: the first match",
+     "p": "«find» gives you the **first item** for which your function says «true». It gives the item itself, not an array. If nothing matches, it gives «undefined».",
+     "c": "const people = [\n  { name: \"Ana\", age: 9 },\n  { name: \"Bo\", age: 17 },\n  { name: \"Cy\", age: 31 }\n];\nconst teen = people.find(p => p.age > 10);\nconsole.log(teen.name);\nconsole.log(people.find(p => p.age > 50));",
+     "o": "Bo\nundefined",
+     "tip": "Use «find» when you want one item and «filter» when you want all of them."
+    },
+    {
+     "h": "some and every",
+     "p": "«some» asks: does **at least one** item pass the test? «every» asks: do **all** items pass? Both answer «true» or «false».",
+     "c": "const marks = [70, 85, 40];\nconsole.log(marks.some(m => m < 50));\nconsole.log(marks.every(m => m >= 50));\nconsole.log([].every(m => m >= 50));",
+     "o": "true\nfalse\ntrue",
+     "tip": "An empty array has no item that fails, so «every» is «true» on it. «some» is «false» on it."
+    },
+    {
+     "h": "sort: a surprise",
+     "p": "«sort» puts an array in order, and it **changes the array itself**. But by default it sorts items as **text**, so «10» comes before «9», because the text \"1\" comes before \"9\".",
+     "c": "const nums = [10, 9, 1];\nnums.sort();\nconsole.log(nums.join(\",\"));\nconst words = [\"pear\", \"apple\", \"fig\"];\nwords.sort();\nconsole.log(words.join(\",\"));",
+     "o": "1,10,9\napple,fig,pear",
+     "tip": "Default sort is fine for words. For numbers, you need a compare function."
+    },
+    {
+     "h": "The compare function",
+     "p": "Give «sort» a function with two parameters, «a» and «b». If it returns a **negative** number, «a» goes first. If it returns a **positive** number, «b» goes first. So «a - b» sorts numbers from small to big, and «b - a» from big to small.\n\nFor text properties use «a.name.localeCompare(b.name)».",
+     "c": "const nums = [10, 9, 1];\nnums.sort((a, b) => a - b);\nconsole.log(nums.join(\",\"));\nnums.sort((a, b) => b - a);\nconsole.log(nums.join(\",\"));\nconst kids = [{ n: \"Zoe\", age: 8 }, { n: \"Al\", age: 5 }];\nkids.sort((a, b) => a.age - b.age);\nconsole.log(kids[0].n);",
+     "o": "1,9,10\n10,9,1\nAl",
+     "tip": "Do not write «a > b». It gives true or false, and «sort» needs a number."
+    }
+   ]
+  },
+  {
+   "t": "Shortcuts for data",
+   "pages": [
+    {
+     "h": "Destructuring",
+     "p": "**Destructuring** takes values out of an array or object in one line. For arrays, you use square brackets and the names go by position. For objects, you use curly braces and the names must match the keys.",
+     "c": "const [first, second] = [\"red\", \"green\", \"blue\"];\nconsole.log(first + \" \" + second);\nconst book = { title: \"Dune\", pages: 412 };\nconst { title, pages } = book;\nconsole.log(title + \": \" + pages);",
+     "o": "red green\nDune: 412",
+     "tip": "Swap two variables in one line: «[a, b] = [b, a];». The line before it must end with a semicolon."
+    },
+    {
+     "h": "Spread: ... copies items out",
+     "p": "Three dots «...» in front of an array **spreads** its items out. It is a fast way to copy an array or join two arrays. It also works for objects. If a key appears twice, the later one wins.",
+     "c": "const a = [1, 2];\nconst b = [...a, 3, 4];\nconsole.log(b.join(\",\"));\nconst base = { color: \"red\", size: 1 };\nconst big = { ...base, size: 5 };\nconsole.log(JSON.stringify(big));\nconsole.log(base.size);",
+     "o": "1,2,3,4\n{\"color\":\"red\",\"size\":5}\n1",
+     "tip": "«{ ...base }» makes a new object, so changing the copy does not change «base»."
+    },
+    {
+     "h": "Rest: ... collects items in",
+     "p": "The same three dots in a function's **parameter list** do the opposite: they **collect** all the extra arguments into one array. We call this a **rest parameter**.",
+     "c": "function sum(...nums) {\n  return nums.reduce((t, n) => t + n, 0);\n}\nconsole.log(sum(1, 2));\nconsole.log(sum(5, 5, 5, 5));\nconsole.log(sum());",
+     "o": "3\n20\n0",
+     "tip": "Spread opens an array out. Rest packs arguments into an array."
+    },
+    {
+     "h": "Optional chaining: ?.",
+     "p": "Reading a property of «undefined» is an error. Put **?.** before the dot and JavaScript stops safely and gives «undefined» instead, when the left side is empty. Without it, «user.address.city» here would stop the program with a TypeError.",
+     "c": "const user = { name: \"Ana\" };\nconsole.log(user.address?.city);\nconst user2 = { address: { city: \"Oslo\" } };\nconsole.log(user2.address?.city);",
+     "o": "undefined\nOslo",
+     "tip": "«?.» only protects the part before it. Use it where the data may be missing."
+    },
+    {
+     "h": "Default values: ??",
+     "p": "**??** gives the right side only when the left side is «undefined» or «null». The older «||» does that for **every falsy** value, so it also replaces «0» and an empty text, which is often wrong.",
+     "c": "const score = 0;\nconsole.log(score || 10);\nconsole.log(score ?? 10);\nconst nick = undefined;\nconsole.log(nick ?? \"guest\");",
+     "o": "10\n0\nguest",
+     "tip": "Combine them: «user.address?.city ?? \"unknown\"» is a safe read with a default."
+    }
+   ]
+  }
+ ],
+ "hand": [
+  {
+   "type": "out",
+   "code": "console.log([1, 2, 3].map(n => n * 2).join(\",\"));",
+   "answer": "2,4,6",
+   "wrong": [
+    "1,2,3",
+    "6",
+    "2,4"
+   ],
+   "why": "«map» runs the function on every item and returns a new array of the results."
+  },
+  {
+   "type": "out",
+   "code": "const ages = [8, 15, 22, 12];\nconsole.log(ages.filter(a => a >= 13).join(\",\"));",
+   "answer": "15,22",
+   "wrong": [
+    "8,12",
+    "15",
+    "8,15,22,12"
+   ],
+   "why": "«filter» keeps only the items where the function gives true. Only 15 and 22 are 13 or more."
+  },
+  {
+   "type": "mc",
+   "q": "An array has 5 items. How many items does the result of map have?",
+   "code": null,
+   "ans": "5",
+   "wrong": [
+    "Between 0 and 5, depending on the function",
+    "Always 1",
+    "4"
+   ],
+   "why": "«map» gives one result for every item, so the new array always has the same length. Removing items is the job of «filter»."
+  },
+  {
+   "type": "fill",
+   "q": "Fill in the operator so the code adds the numbers.",
+   "code": "const total = [1, 2, 3, 4].reduce((sum, n) => sum ___ n, 0);\nconsole.log(total);",
+   "ans": [
+    "+"
+   ],
+   "why": "«reduce» keeps a running result. With «sum + n» it adds each item to it, giving 10."
+  },
+  {
+   "type": "out",
+   "code": "console.log([4, 9, 12].find(n => n > 5));",
+   "answer": "9",
+   "wrong": [
+    "9,12",
+    "4",
+    "true"
+   ],
+   "why": "«find» returns the first item that passes the test. 4 fails, 9 passes, so it stops there."
+  },
+  {
+   "type": "order",
+   "q": "Put the lines in order so it prints 4,8.",
+   "lines": [
+    "const nums = [1, 2, 3, 4];",
+    "const evens = nums.filter(n => n % 2 === 0);",
+    "const doubled = evens.map(n => n * 2);",
+    "console.log(doubled.join(\",\"));"
+   ],
+   "why": "First the data, then keep the even numbers (2, 4), then double them, then print."
+  },
+  {
+   "type": "mc",
+   "q": "Which method answers: does at least one item pass the test?",
+   "code": null,
+   "ans": "some",
+   "wrong": [
+    "every",
+    "filter",
+    "find"
+   ],
+   "why": "«some» gives true if one or more items pass. «every» needs all of them, «filter» gives an array and «find» gives the item."
+  },
+  {
+   "type": "out",
+   "code": "const [first, second] = [\"x\", \"y\", \"z\"];\nconsole.log(second + first);",
+   "answer": "yx",
+   "wrong": [
+    "xy",
+    "yz",
+    "zx"
+   ],
+   "why": "Array destructuring goes by position: first is \"x\", second is \"y\". We print second then first."
+  },
+  {
+   "type": "fill",
+   "q": "Fill in the name to take the title out of the object.",
+   "code": "const book = { title: \"Dune\", pages: 300 };\nconst { ___ } = book;\nconsole.log(title);",
+   "ans": [
+    "title"
+   ],
+   "why": "With curly braces, the name must match a key. «const { title } = book» makes a variable title."
+  },
+  {
+   "type": "out",
+   "code": "const a = [1, 2];\nconst b = [...a, 3];\nconsole.log(b.length + \" \" + a.length);",
+   "answer": "3 2",
+   "wrong": [
+    "3 3",
+    "2 2",
+    "2 3"
+   ],
+   "why": "The spread makes a new array with the items of «a» and one more. The array «a» stays the same."
+  },
+  {
+   "type": "out",
+   "code": "const u = {};\nconsole.log(u.address?.city);",
+   "answer": "undefined",
+   "wrong": [
+    "null",
+    "Error",
+    "city"
+   ],
+   "why": "«u.address» is undefined. With «?.» JavaScript stops safely and gives undefined, without an error."
+  },
+  {
+   "type": "out",
+   "code": "const n = 0;\nconsole.log(n ?? 5);\nconsole.log(n || 5);",
+   "answer": "0\n5",
+   "wrong": [
+    "5\n5",
+    "0\n0",
+    "5\n0"
+   ],
+   "why": "«??» only replaces undefined or null, so 0 stays. «||» replaces every falsy value, and 0 is falsy."
+  },
+  {
+   "type": "out",
+   "code": "console.log([3, 1, 2].sort((a, b) => b - a).join(\"\"));",
+   "answer": "321",
+   "wrong": [
+    "123",
+    "312",
+    "213"
+   ],
+   "why": "With «b - a» the bigger number goes first, so the order is 3, 2, 1."
+  },
+  {
+   "type": "out",
+   "code": "function sum(...nums) {\n  return nums.reduce((t, n) => t + n, 0);\n}\nconsole.log(sum(1, 2, 3));",
+   "answer": "6",
+   "wrong": [
+    "3",
+    "123",
+    "0"
+   ],
+   "why": "The rest parameter collects 1, 2, 3 into an array. Reduce adds them: 6."
+  }
+ ],
+ "hard": [
+  {
+   "type": "out",
+   "code": "console.log([\"a\", \"b\", \"c\"].map((x, i) => x + i).join(\"\"));",
+   "answer": "a0b1c2",
+   "wrong": [
+    "abc012",
+    "a1b2c3",
+    "abc"
+   ],
+   "why": "The second parameter of the map function is the index. Each letter is joined with its index: a0, b1, c2."
+  },
+  {
+   "type": "out",
+   "code": "const best = [3, 9, 2].reduce((m, n) => n > m ? n : m, 0);\nconsole.log(best);",
+   "answer": "9",
+   "wrong": [
+    "3",
+    "14",
+    "2"
+   ],
+   "why": "The running result «m» stays the bigger of itself and the new item. It goes 0, 3, 9, and then stays 9."
+  },
+  {
+   "type": "out",
+   "code": "console.log([10, 9, 1].sort().join(\",\"));",
+   "answer": "1,10,9",
+   "wrong": [
+    "1,9,10",
+    "10,9,1",
+    "9,10,1"
+   ],
+   "why": "Without a compare function, sort compares items as text. As text, \"1\" is smaller than \"10\", which is smaller than \"9\"."
+  },
+  {
+   "type": "out",
+   "code": "const a = [1, 2, 3, 4, 5, 6];\nconst r = a\n  .filter(n => n % 2 === 0)\n  .map(n => n * n)\n  .reduce((t, n) => t + n, 0);\nconsole.log(r);",
+   "answer": "56",
+   "wrong": [
+    "91",
+    "12",
+    "28"
+   ],
+   "why": "Filter keeps 2, 4, 6. Map squares them: 4, 16, 36. Reduce adds them: 56."
+  },
+  {
+   "type": "out",
+   "code": "console.log([].every(n => n > 0) + \" \" + [].some(n => n > 0));",
+   "answer": "true false",
+   "wrong": [
+    "false false",
+    "true true",
+    "false true"
+   ],
+   "why": "On an empty array no item fails the test, so «every» is true. No item passes either, so «some» is false."
+  },
+  {
+   "type": "out",
+   "code": "const r = [1, 2, 3].find(n => n > 5);\nconsole.log(r ?? \"none\");",
+   "answer": "none",
+   "wrong": [
+    "undefined",
+    "false",
+    "null"
+   ],
+   "why": "Nothing is bigger than 5, so «find» gives undefined. Then «??» replaces it with \"none\"."
+  },
+  {
+   "type": "out",
+   "code": "const a = { x: 1, y: 2 };\nconst b = { ...a, y: 5 };\nconsole.log(a.y + \",\" + b.y + \",\" + b.x);",
+   "answer": "2,5,1",
+   "wrong": [
+    "5,5,1",
+    "2,2,1",
+    "2,5,undefined"
+   ],
+   "why": "The copy «b» takes x and y from «a», and then y is replaced by 5. The object «a» is not changed."
+  },
+  {
+   "type": "out",
+   "code": "let a = 1;\nlet b = 2;\n[a, b] = [b, a];\nconsole.log(a + \"\" + b);",
+   "answer": "21",
+   "wrong": [
+    "12",
+    "22",
+    "3"
+   ],
+   "why": "The right side makes the array [2, 1] first. Destructuring then puts 2 into «a» and 1 into «b». They are swapped."
+  },
+  {
+   "type": "out",
+   "code": "const user = { profile: { nick: null } };\nconsole.log(user.profile?.nick ?? user.settings?.theme ?? \"default\");",
+   "answer": "default",
+   "wrong": [
+    "null",
+    "undefined",
+    "theme"
+   ],
+   "why": "«nick» is null, so «??» moves on. «user.settings» is missing, so «?.» gives undefined, and «??» moves on again to \"default\"."
+  },
+  {
+   "type": "mc",
+   "q": "Which compare function sorts people by age, from youngest to oldest?",
+   "code": null,
+   "ans": "(a, b) => a.age - b.age",
+   "wrong": [
+    "(a, b) => b.age - a.age",
+    "(a, b) => a.age > b.age",
+    "(a, b) => a.age"
+   ],
+   "why": "A negative result puts «a» first, so smaller ages come first. «b.age - a.age» reverses it, and the other two do not return a proper number for the comparison."
+  }
+ ],
+ "bugs": [
+  {
+   "title": "Bug hunt 1",
+   "items": [
+    {
+     "code": "const nums = [1, 2, 3];\nconst doubled = nums.map(n => { n * 2; });\nconsole.log(doubled.join(\",\"));",
+     "fixed": "const nums = [1, 2, 3];\nconst doubled = nums.map(n => { return n * 2; });\nconsole.log(doubled.join(\",\"));",
+     "line": 1,
+     "symptom": "It prints ,, but it should print 2,4,6.",
+     "why": "An arrow function with curly braces needs an explicit «return». Without it, each result is undefined."
+    },
+    {
+     "code": "const n = [10, 2, 33];\nn.sort();\nconsole.log(n.join(\",\"));",
+     "fixed": "const n = [10, 2, 33];\nn.sort((a, b) => a - b);\nconsole.log(n.join(\",\"));",
+     "line": 1,
+     "symptom": "It prints 10,2,33 but it should print 2,10,33.",
+     "why": "Default sort compares as text, and \"10\" comes before \"2\". A compare function «(a, b) => a - b» sorts by number."
+    },
+    {
+     "code": "const pair = [3, 4];\nconst { x, y } = pair;\nconsole.log(x + y);",
+     "fixed": "const pair = [3, 4];\nconst [x, y] = pair;\nconsole.log(x + y);",
+     "line": 1,
+     "symptom": "It prints NaN but it should print 7.",
+     "why": "Arrays are taken apart with square brackets, by position. Curly braces look for keys called x and y, which an array does not have."
+    }
+   ]
+  },
+  {
+   "title": "Bug hunt 2",
+   "items": [
+    {
+     "code": "const user = { name: \"Ana\" };\nconst city = user.address.city;\nconsole.log(city);",
+     "fixed": "const user = { name: \"Ana\" };\nconst city = user.address?.city;\nconsole.log(city);",
+     "line": 1,
+     "symptom": "TypeError: Cannot read properties of undefined (reading 'city').",
+     "why": "The user has no address, so reading «city» from it fails. Writing «?.» stops safely and gives undefined."
+    },
+    {
+     "code": "const score = 0;\nconst shown = score || \"none\";\nconsole.log(shown);",
+     "fixed": "const score = 0;\nconst shown = score ?? \"none\";\nconsole.log(shown);",
+     "line": 1,
+     "symptom": "It prints none but a score of 0 is a real score.",
+     "why": "«||» also replaces 0, because 0 is falsy. «??» only replaces undefined and null."
+    },
+    {
+     "code": "const people = [{ n: \"A\", age: 20 }, { n: \"B\", age: 9 }];\nconst kid = people.filter(p => p.age < 12);\nconsole.log(kid.n);",
+     "fixed": "const people = [{ n: \"A\", age: 20 }, { n: \"B\", age: 9 }];\nconst kid = people.find(p => p.age < 12);\nconsole.log(kid.n);",
+     "line": 1,
+     "symptom": "It prints undefined but it should print B.",
+     "why": "«filter» returns an array, and an array has no «n» property. «find» returns the first matching object itself."
+    }
+   ]
+  }
+ ],
+ "project": {
+  "title": "Class Leaderboard",
+  "brief": "Write a function «topStudents(students, minScore)». «students» is an array of objects like «{name: \"Ana\", score: 80}».\n\nReturn an array with only the **names** of students whose score is at least «minScore», with the best score first. Make «minScore» default to 50.\n\nExample: «topStudents([{name: \"Ana\", score: 80}, {name: \"Bo\", score: 95}, {name: \"Cy\", score: 30}])» is [\"Bo\", \"Ana\"].\n\nHint: filter, then sort, then map.",
+  "fn": "topStudents",
+  "starter": "function topStudents(students, minScore = 50) {\n  // your code here\n  return [];\n}\n",
+  "solution": "function topStudents(students, minScore = 50) {\n  return students\n    .filter(s => s.score >= minScore)\n    .sort((a, b) => b.score - a.score)\n    .map(s => s.name);\n}\n",
+  "tests": [
+   {
+    "label": "default minimum of 50",
+    "args": [
+     [
+      {
+       "name": "Ana",
+       "score": 80
+      },
+      {
+       "name": "Bo",
+       "score": 95
+      },
+      {
+       "name": "Cy",
+       "score": 30
+      }
+     ]
+    ],
+    "want": [
+     "Bo",
+     "Ana"
+    ]
+   },
+   {
+    "label": "minScore 90",
+    "args": [
+     [
+      {
+       "name": "Ana",
+       "score": 80
+      },
+      {
+       "name": "Bo",
+       "score": 95
+      },
+      {
+       "name": "Cy",
+       "score": 91
+      }
+     ],
+     90
+    ],
+    "want": [
+     "Bo",
+     "Cy"
+    ]
+   },
+   {
+    "label": "score equal to minScore counts",
+    "args": [
+     [
+      {
+       "name": "Dee",
+       "score": 50
+      },
+      {
+       "name": "Eli",
+       "score": 49
+      }
+     ]
+    ],
+    "want": [
+     "Dee"
+    ]
+   },
+   {
+    "label": "nobody passes",
+    "args": [
+     [
+      {
+       "name": "Cy",
+       "score": 30
+      }
+     ],
+     60
+    ],
+    "want": []
+   },
+   {
+    "label": "empty class",
+    "args": [
+     []
+    ],
+    "want": []
+   },
+   {
+    "label": "already sorted the wrong way",
+    "args": [
+     [
+      {
+       "name": "Ivy",
+       "score": 55
+      },
+      {
+       "name": "Jo",
+       "score": 65
+      },
+      {
+       "name": "Kai",
+       "score": 75
+      }
+     ],
+     50
+    ],
+    "want": [
+     "Kai",
+     "Jo",
+     "Ivy"
+    ]
+   }
+  ]
+ }
+}
