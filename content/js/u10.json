@@ -1,0 +1,522 @@
+{
+ "t": "Classes",
+ "e": "🏗️",
+ "lessons": [
+  {
+   "t": "Classes and objects",
+   "pages": [
+    {
+     "h": "A blueprint for objects",
+     "p": "In unit 8 you made objects by hand. But what if you need 100 similar objects, like 100 players in a game? Writing each one is slow.\n\nA **class** is a blueprint. You write it once. Then you use «new» to build objects from it. Each object built from a class is called an **instance**.",
+     "c": "class Dog {\n  bark() {\n    console.log(\"Woof!\");\n  }\n}\nconst rex = new Dog();\nrex.bark();",
+     "o": "Woof!",
+     "tip": "Class names start with a capital letter: «Dog», not «dog». The word «new» builds a fresh object."
+    },
+    {
+     "h": "The constructor",
+     "p": "The **constructor** is a special method. JavaScript runs it automatically each time you write «new». Use it to give the new object its starting data.\n\nInside it, «this» means the new object that is being built. So «this.name = name» stores the value in the object.",
+     "c": "class Dog {\n  constructor(name, age) {\n    this.name = name;\n    this.age = age;\n  }\n}\nconst rex = new Dog(\"Rex\", 3);\nconst mia = new Dog(\"Mia\", 5);\nconsole.log(rex.name, mia.age);",
+     "o": "Rex 5",
+     "tip": "The arguments you give to «new Dog(...)» go straight into the constructor's parameters."
+    },
+    {
+     "h": "Methods and this",
+     "p": "Functions inside a class are called **methods**. You write them without the word «function». Do not put commas between them.\n\nInside a method, «this» means the object that called the method. To read or change the object's data, you must write «this.count», not just «count».",
+     "c": "class Counter {\n  constructor() {\n    this.count = 0;\n  }\n  add(n) {\n    this.count += n;\n  }\n  show() {\n    console.log(\"Count: \" + this.count);\n  }\n}\nconst c = new Counter();\nc.add(2);\nc.add(5);\nconsole.log(c.count);",
+     "tip": "Methods are written one after another, with no commas between them.",
+     "o": "7"
+    },
+    {
+     "h": "Every instance is separate",
+     "p": "Each instance has its own data. Changing one object does not change the others. All of them share the same methods, so you write the code only once.",
+     "c": "class Counter {\n  constructor() { this.count = 0; }\n  add(n) { this.count += n; }\n}\nconst a = new Counter();\nconst b = new Counter();\na.add(10);\nb.add(1);\nconsole.log(a.count, b.count);",
+     "o": "10 1",
+     "tip": "A short method can fit on one line. Both styles are fine."
+    }
+   ]
+  },
+  {
+   "t": "Getters, static and more",
+   "pages": [
+    {
+     "h": "Methods that use other methods",
+     "p": "A method can call another method of the same object. Use «this» again: «this.canBuy(price)». Methods can also «return» a value, just like normal functions.",
+     "c": "class Wallet {\n  constructor(money) { this.money = money; }\n  canBuy(price) { return this.money >= price; }\n  buy(price) {\n    if (this.canBuy(price)) {\n      this.money -= price;\n      return true;\n    }\n    return false;\n  }\n}\nconst w = new Wallet(10);\nconsole.log(w.buy(6), w.buy(6), w.money);",
+     "o": "true false 4",
+     "tip": "The second «buy(6)» fails: only 4 coins are left."
+    },
+    {
+     "h": "Getters: a property that calculates",
+     "p": "A **getter** looks like a property, but it runs code. Write «get» before the method name. When you use it, you do **not** write brackets.\n\nGetters are great for values that come from other data, like an area. The value is always fresh.",
+     "c": "class Rectangle {\n  constructor(w, h) {\n    this.w = w;\n    this.h = h;\n  }\n  get area() {\n    return this.w * this.h;\n  }\n}\nconst r = new Rectangle(3, 4);\nconsole.log(r.area);\nr.w = 10;\nconsole.log(r.area);",
+     "o": "12\n40",
+     "tip": "Write «r.area», not «r.area()». With brackets you get an error, because «area» is not a function."
+    },
+    {
+     "h": "static: belongs to the class",
+     "p": "A **static** method belongs to the class itself, not to its instances. You call it on the class name. Use it for helpers that do not need one particular object.\n\nYou already know some: «Math.round» and «Object.keys» are static methods.",
+     "c": "class Circle {\n  constructor(r) {\n    this.r = r;\n  }\n  static unit() {\n    return new Circle(1);\n  }\n}\nconst u = Circle.unit();\nconsole.log(u.r);\nconsole.log(typeof u.unit);",
+     "o": "1\nundefined",
+     "tip": "An instance does not get static methods. «u.unit» does not exist, only «Circle.unit» does."
+    }
+   ]
+  },
+  {
+   "t": "Inheritance",
+   "pages": [
+    {
+     "h": "extends: reuse a class",
+     "p": "Sometimes one class is a special kind of another. A cat is an animal. Write «class Cat extends Animal» and Cat gets everything Animal has, plus its own new methods.\n\nThe class you extend is the **parent**. The new class is the **child**.",
+     "c": "class Animal {\n  constructor(name) { this.name = name; }\n  speak() {\n    console.log(this.name + \" makes a sound.\");\n  }\n}\nclass Cat extends Animal {\n  meow() { console.log(this.name + \" says meow.\"); }\n}\nconst tom = new Cat(\"Tom\");\ntom.speak();\ntom.meow();",
+     "o": "Tom makes a sound.\nTom says meow.",
+     "tip": "Cat has no constructor of its own, so it uses the parent's constructor."
+    },
+    {
+     "h": "super: call the parent",
+     "p": "If the child needs its own constructor, it must call «super(...)» first. «super» runs the parent's constructor. Only after that can you use «this».\n\nIf you use «this» before «super()», JavaScript gives an error.",
+     "c": "class Animal {\n  constructor(name) { this.name = name; }\n}\nclass Dog extends Animal {\n  constructor(name, tricks) {\n    super(name);\n    this.tricks = tricks;\n  }\n}\nconst d = new Dog(\"Rex\", 3);\nconsole.log(d.name, d.tricks);",
+     "o": "Rex 3",
+     "tip": "Rule: in a child constructor, write «super(...)» on the first line."
+    },
+    {
+     "h": "Overriding methods",
+     "p": "A child can write a method with the **same name** as the parent's. The child's version wins. This is called **overriding**.\n\nInside it, «super.speak()» still calls the parent's version, if you want both.",
+     "c": "class Animal {\n  speak() { return \"...\"; }\n}\nclass Cow extends Animal {\n  speak() { return \"Moo\"; }\n}\nclass Duck extends Animal {\n  speak() { return super.speak() + \" Quack\"; }\n}\nconsole.log(new Cow().speak());\nconsole.log(new Duck().speak());",
+     "o": "Moo\n... Quack",
+     "tip": "You can use «new Cow()» straight away and call a method on it in the same line."
+    },
+    {
+     "h": "instanceof: what kind is it?",
+     "p": "«x instanceof Y» is «true» when «x» was built from class «Y», or from any class that extends «Y». Otherwise it is «false».\n\nSo a Cat is a Cat, and it is also an Animal. But it is not a Dog.",
+     "c": "class Animal {}\nclass Cat extends Animal {}\nclass Dog extends Animal {}\nconst tom = new Cat();\nconsole.log(tom instanceof Cat);\nconsole.log(tom instanceof Animal);\nconsole.log(tom instanceof Dog);",
+     "o": "true\ntrue\nfalse",
+     "tip": "An empty class body «{}» is allowed. It is useful for short examples."
+    }
+   ]
+  }
+ ],
+ "hand": [
+  {
+   "type": "out",
+   "code": "class Box {\n  constructor(size) {\n    this.size = size;\n  }\n}\nconst b = new Box(7);\nconsole.log(b.size);",
+   "answer": "7",
+   "wrong": [
+    "size",
+    "undefined",
+    "Box"
+   ],
+   "why": "«new Box(7)» runs the constructor, which stores 7 in «this.size»."
+  },
+  {
+   "type": "mc",
+   "q": "What does the word «new» do in «new Dog()»?",
+   "code": null,
+   "ans": "It builds an object and runs its constructor",
+   "wrong": [
+    "It copies the whole Dog class into a new variable",
+    "It deletes the old Dog object from memory",
+    "It only checks that the class Dog exists"
+   ],
+   "why": "«new» creates a fresh instance, runs the constructor, and gives you the object back."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the special method that sets up a new object.",
+   "code": "class Player {\n  ___(name) {\n    this.name = name;\n  }\n}",
+   "ans": [
+    "constructor"
+   ],
+   "why": "The method that runs automatically with «new» must be called «constructor»."
+  },
+  {
+   "type": "out",
+   "code": "class Counter {\n  constructor() { this.count = 0; }\n  add() { this.count += 1; }\n}\nconst c = new Counter();\nc.add();\nc.add();\nc.add();\nconsole.log(c.count);",
+   "answer": "3",
+   "wrong": [
+    "1",
+    "0",
+    "undefined"
+   ],
+   "why": "The count starts at 0 and each call to «add» makes it 1 bigger. Three calls give 3."
+  },
+  {
+   "type": "mc",
+   "q": "Inside a method, why do we write «this.name» and not just «name»?",
+   "code": null,
+   "ans": "«name» alone would be a different variable",
+   "wrong": [
+    "«name» alone is much slower than «this.name» is",
+    "«this» is a required comment before every variable",
+    "«name» only works inside the constructor method"
+   ],
+   "why": "Data of the object lives in «this». A bare «name» would look for a normal variable, and there is none, so you get an error."
+  },
+  {
+   "type": "out",
+   "code": "class Pet {\n  constructor(name) { this.name = name; }\n}\nconst a = new Pet(\"Kiwi\");\nconst b = new Pet(\"Momo\");\nconsole.log(a.name + \" & \" + b.name);",
+   "answer": "Kiwi & Momo",
+   "wrong": [
+    "Momo & Momo",
+    "Kiwi & Kiwi",
+    "a & b"
+   ],
+   "why": "Every instance has its own data. Making «b» does not change «a»."
+  },
+  {
+   "type": "order",
+   "q": "Put the lines in order to build and print one car.",
+   "lines": [
+    "class Car {",
+    "  constructor(brand) { this.brand = brand; }",
+    "}",
+    "const c = new Car(\"Kia\");",
+    "console.log(c.brand);"
+   ],
+   "why": "First write the class (the blueprint), then build an instance with «new», then use it."
+  },
+  {
+   "type": "out",
+   "code": "class Square {\n  constructor(s) { this.s = s; }\n  get area() { return this.s * this.s; }\n}\nconst sq = new Square(5);\nconsole.log(sq.area);",
+   "answer": "25",
+   "wrong": [
+    "10",
+    "area",
+    "undefined"
+   ],
+   "why": "A getter is read like a property. «sq.area» runs the getter and returns 5 * 5."
+  },
+  {
+   "type": "fill",
+   "q": "Make «area» a getter.",
+   "code": "class Square {\n  constructor(s) { this.s = s; }\n  ___ area() { return this.s * this.s; }\n}\nconsole.log(new Square(3).area);",
+   "ans": [
+    "get"
+   ],
+   "why": "The word «get» before the method name turns it into a getter, which you read without brackets."
+  },
+  {
+   "type": "mc",
+   "q": "How do you call a static method «make» of the class «Robot»?",
+   "code": null,
+   "ans": "Robot.make()",
+   "wrong": [
+    "new Robot().make()",
+    "make.Robot()",
+    "Robot(make)"
+   ],
+   "why": "A static method belongs to the class, so you call it on the class name. Instances do not have it."
+  },
+  {
+   "type": "out",
+   "code": "class Circle {\n  constructor(r) { this.r = r; }\n  static unit() { return new Circle(1); }\n}\nconsole.log(Circle.unit().r + 4);",
+   "answer": "5",
+   "wrong": [
+    "4",
+    "1",
+    "14"
+   ],
+   "why": "«Circle.unit()» builds a circle with radius 1. Its «r» is 1, and 1 + 4 is 5."
+  },
+  {
+   "type": "out",
+   "code": "class Animal {\n  constructor(name) { this.name = name; }\n  hello() { return \"Hi, \" + this.name; }\n}\nclass Dog extends Animal {}\nconsole.log(new Dog(\"Rex\").hello());",
+   "answer": "Hi, Rex",
+   "wrong": [
+    "Hi, undefined",
+    "Hi, Dog",
+    "Hello, Rex"
+   ],
+   "why": "«Dog» extends «Animal», so it inherits the constructor and the «hello» method."
+  },
+  {
+   "type": "fill",
+   "q": "Call the parent's constructor.",
+   "code": "class Animal {\n  constructor(name) { this.name = name; }\n}\nclass Bird extends Animal {\n  constructor(name, wings) {\n    ___(name);\n    this.wings = wings;\n  }\n}\nconsole.log(new Bird(\"Kiwi\", 2).name);",
+   "ans": [
+    "super"
+   ],
+   "why": "«super(name)» runs the parent's constructor. It must come before «this» is used."
+  },
+  {
+   "type": "out",
+   "code": "class Animal {}\nclass Dog extends Animal {}\nconst d = new Dog();\nconsole.log(d instanceof Animal);",
+   "answer": "true",
+   "wrong": [
+    "false",
+    "Dog",
+    "undefined"
+   ],
+   "why": "A Dog is built from a class that extends Animal, so «instanceof Animal» is true too."
+  }
+ ],
+ "hard": [
+  {
+   "type": "out",
+   "code": "class Counter {\n  constructor() { this.n = 0; }\n  add(k) { this.n += k; }\n}\nconst a = new Counter();\nconst b = new Counter();\na.add(2);\nb.add(5);\na.add(b.n);\nconsole.log(a.n + \",\" + b.n);",
+   "answer": "7,5",
+   "wrong": [
+    "9,5",
+    "7,7",
+    "2,5"
+   ],
+   "why": "«a» gets 2, then «b» gets 5. Then «a.add(b.n)» adds 5 to «a», so a is 7. «b» stays 5."
+  },
+  {
+   "type": "out",
+   "code": "class A {\n  say() { return \"A\"; }\n}\nclass B extends A {\n  say() { return super.say() + \"B\"; }\n}\nclass C extends B {\n  say() { return super.say() + \"C\"; }\n}\nconsole.log(new C().say());",
+   "answer": "ABC",
+   "wrong": [
+    "CBA",
+    "C",
+    "ABCABC"
+   ],
+   "why": "«C.say» first calls «B.say», which first calls «A.say». The text grows from A to AB to ABC."
+  },
+  {
+   "type": "out",
+   "code": "class User {\n  constructor(name = \"Guest\") {\n    this.name = name;\n  }\n}\nconst list = [new User(), new User(\"Mo\"), new User(undefined)];\nconsole.log(list.map(u => u.name).join(\",\"));",
+   "answer": "Guest,Mo,Guest",
+   "wrong": [
+    "Guest,Mo,undefined",
+    "undefined,Mo,undefined",
+    "Guest,Mo"
+   ],
+   "why": "Default parameters work in constructors. A missing argument and an explicit «undefined» both use the default."
+  },
+  {
+   "type": "out",
+   "code": "class Box {\n  constructor(w, h) { this.w = w; this.h = h; }\n  get area() { return this.w * this.h; }\n}\nconst boxes = [new Box(2, 3), new Box(4, 5), new Box(1, 1)];\nconst total = boxes.reduce((sum, b) => sum + b.area, 0);\nconsole.log(total);",
+   "answer": "27",
+   "wrong": [
+    "6",
+    "20",
+    "9"
+   ],
+   "why": "The areas are 6, 20 and 1. The reduce adds them: 6 + 20 + 1 = 27."
+  },
+  {
+   "type": "mc",
+   "q": "A getter «area» exists in a class. What happens with «console.log(r.area())»?",
+   "code": "const r = new Rectangle(3, 4);\nconsole.log(r.area());",
+   "ans": "It throws a TypeError: a number is not a function",
+   "wrong": [
+    "It prints the area, because brackets are optional",
+    "It prints «undefined» because the getter is hidden",
+    "It prints the source text of the getter code"
+   ],
+   "why": "A getter is read like a property. Its value is already a number, so adding «()» tries to call a number."
+  },
+  {
+   "type": "out",
+   "code": "class Animal {}\nclass Dog extends Animal {}\nclass Puppy extends Dog {}\nconst p = new Puppy();\nconst checks = [p instanceof Puppy, p instanceof Dog, p instanceof Animal, new Animal() instanceof Dog];\nconsole.log(checks.join(\",\"));",
+   "answer": "true,true,true,false",
+   "wrong": [
+    "true,true,true,true",
+    "true,false,false,false",
+    "true,true,false,false"
+   ],
+   "why": "A Puppy counts as a Dog and as an Animal. But a plain Animal is not a Dog: the parent is not an instance of its child."
+  },
+  {
+   "type": "out",
+   "code": "class Person {\n  constructor(name, age) {\n    this.name = name;\n    this.age = age < 0 ? 0 : age;\n  }\n}\nconst p = new Person(\"Lee\", -4);\nconsole.log(p.name + p.age);",
+   "answer": "Lee0",
+   "wrong": [
+    "Lee-4",
+    "Lee",
+    "0"
+   ],
+   "why": "The constructor can use normal code. The ternary turns the negative age into 0, and the text joins as «Lee0»."
+  },
+  {
+   "type": "mc",
+   "q": "A child class has its own constructor, but never calls «super()» and uses «this.x = 1». What happens on «new Child()»?",
+   "code": "class Parent {\n  constructor() { this.y = 2; }\n}\nclass Child extends Parent {\n  constructor() { this.x = 1; }\n}",
+   "ans": "It throws an error: «super()» must come first",
+   "wrong": [
+    "It works, and the parent's data is copied automatically",
+    "It works, but only the child's own data exists",
+    "JavaScript silently adds «super()» for you"
+   ],
+   "why": "A child with its own constructor must call «super()» before it touches «this». Without it you get a ReferenceError."
+  },
+  {
+   "type": "out",
+   "code": "class Temp {\n  constructor(c) { this.c = c; }\n  static fromF(f) { return new Temp((f - 32) * 5 / 9); }\n  get f() { return this.c * 9 / 5 + 32; }\n}\nconst t = Temp.fromF(212);\nconsole.log(t.c + \" \" + t.f);",
+   "answer": "100 212",
+   "wrong": [
+    "212 100",
+    "100 100",
+    "180 212"
+   ],
+   "why": "The static method builds a Temp with 100 Celsius. The getter converts it back: 100 * 9 / 5 + 32 is 212."
+  },
+  {
+   "type": "out",
+   "code": "class A {\n  hi() { return \"A\" + this.num(); }\n  num() { return \"1\"; }\n}\nclass B extends A {\n  num() { return \"2\"; }\n}\nconsole.log(new B().hi());",
+   "answer": "A2",
+   "wrong": [
+    "A1",
+    "A",
+    "B2"
+   ],
+   "why": "«hi» comes from A, but «this» is a B object. So «this.num()» finds B's version, which gives \"2\"."
+  }
+ ],
+ "bugs": [
+  {
+   "title": "Bug hunt 1",
+   "items": [
+    {
+     "code": "class Counter {\n  constructor() { this.count = 0; }\n  add() { count += 1; }\n}\nconst c = new Counter();\nc.add();\nconsole.log(c.count);",
+     "fixed": "class Counter {\n  constructor() { this.count = 0; }\n  add() { this.count += 1; }\n}\nconst c = new Counter();\nc.add();\nconsole.log(c.count);",
+     "line": 2,
+     "symptom": "It crashes with: ReferenceError: count is not defined.",
+     "why": "The data lives on the object. Inside a method you must write «this.count»; plain «count» is a variable that does not exist."
+    },
+    {
+     "code": "class Dog {\n  constructor(name) { this.name = name; }\n}\nconst d = Dog(\"Rex\");\nconsole.log(d.name);",
+     "fixed": "class Dog {\n  constructor(name) { this.name = name; }\n}\nconst d = new Dog(\"Rex\");\nconsole.log(d.name);",
+     "line": 3,
+     "symptom": "It crashes with: Class constructor Dog cannot be invoked without 'new'.",
+     "why": "A class is not a normal function. You must write «new» to build an instance."
+    },
+    {
+     "code": "class Rectangle {\n  constructor(w, h) { this.w = w; this.h = h; }\n  get area() { return this.w * this.h; }\n}\nconst r = new Rectangle(3, 4);\nconsole.log(r.area());",
+     "fixed": "class Rectangle {\n  constructor(w, h) { this.w = w; this.h = h; }\n  get area() { return this.w * this.h; }\n}\nconst r = new Rectangle(3, 4);\nconsole.log(r.area);",
+     "line": 5,
+     "symptom": "It crashes with: TypeError: r.area is not a function. It should print 12.",
+     "why": "A getter is read like a property, without brackets. «r.area» is already the number 12."
+    }
+   ]
+  },
+  {
+   "title": "Bug hunt 2",
+   "items": [
+    {
+     "code": "class Animal {\n  constructor(name) { this.name = name; }\n}\nclass Dog extends Animal {\n  constructor(name) {\n    super();\n    this.kind = \"dog\";\n  }\n}\nconsole.log(new Dog(\"Rex\").name);",
+     "fixed": "class Animal {\n  constructor(name) { this.name = name; }\n}\nclass Dog extends Animal {\n  constructor(name) {\n    super(name);\n    this.kind = \"dog\";\n  }\n}\nconsole.log(new Dog(\"Rex\").name);",
+     "line": 5,
+     "symptom": "It prints undefined, but it should print Rex.",
+     "why": "«super()» calls the parent constructor. Without «name» inside the brackets, the parent stores undefined."
+    },
+    {
+     "code": "class Dog {\n  constructor(name) { this.name = name; }\n  static bark() { return this.name + \" says woof\"; }\n}\nconst d = new Dog(\"Rex\");\nconsole.log(d.bark());",
+     "fixed": "class Dog {\n  constructor(name) { this.name = name; }\n  bark() { return this.name + \" says woof\"; }\n}\nconst d = new Dog(\"Rex\");\nconsole.log(d.bark());",
+     "line": 2,
+     "symptom": "It crashes with: TypeError: d.bark is not a function.",
+     "why": "A static method belongs to the class, not to its instances. A method that uses the object's data must not be static."
+    },
+    {
+     "code": "class Animal {\n  speak() { return \"...\"; }\n}\nclass Cow extends Animal {\n  speak() { \"Moo\"; }\n}\nconsole.log(new Cow().speak());",
+     "fixed": "class Animal {\n  speak() { return \"...\"; }\n}\nclass Cow extends Animal {\n  speak() { return \"Moo\"; }\n}\nconsole.log(new Cow().speak());",
+     "line": 4,
+     "symptom": "It prints undefined, but it should print Moo.",
+     "why": "The method has curly braces but no «return», so it gives back undefined."
+    }
+   ]
+  }
+ ],
+ "project": {
+  "title": "Bank Account",
+  "brief": "Write a function «bankBalance(start, actions)». «start» is the money in the account at the beginning. «actions» is an array of steps. Each step is an array like «[\"deposit\", 50]» or «[\"withdraw\", 30]».\n\nThe starter already has an «Account» class. Finish its two methods:\n- «deposit(amount)» adds the amount, but only if the amount is more than 0.\n- «withdraw(amount)» takes the amount away, but only if the account has enough money. Otherwise it does nothing.\n\nThen make «bankBalance» build an account, run every action in order, and return the final balance.\n\nExample: «bankBalance(100, [[\"deposit\", 50], [\"withdraw\", 30]])» is 120.",
+  "fn": "bankBalance",
+  "starter": "class Account {\n  constructor(balance) {\n    this.balance = balance;\n  }\n  deposit(amount) {\n    // your code here\n  }\n  withdraw(amount) {\n    // your code here\n  }\n}\n\nfunction bankBalance(start, actions) {\n  const account = new Account(start);\n  // your code here: go through the actions\n  return account.balance;\n}\n",
+  "solution": "class Account {\n  constructor(balance) {\n    this.balance = balance;\n  }\n  deposit(amount) {\n    if (amount > 0) {\n      this.balance += amount;\n    }\n  }\n  withdraw(amount) {\n    if (amount <= this.balance) {\n      this.balance -= amount;\n    }\n  }\n}\n\nfunction bankBalance(start, actions) {\n  const account = new Account(start);\n  for (const [type, amount] of actions) {\n    if (type === \"deposit\") {\n      account.deposit(amount);\n    } else if (type === \"withdraw\") {\n      account.withdraw(amount);\n    }\n  }\n  return account.balance;\n}\n",
+  "tests": [
+   {
+    "label": "deposit 50, withdraw 30 from 100",
+    "args": [
+     100,
+     [
+      [
+       "deposit",
+       50
+      ],
+      [
+       "withdraw",
+       30
+      ]
+     ]
+    ],
+    "want": 120
+   },
+   {
+    "label": "no actions",
+    "args": [
+     0,
+     []
+    ],
+    "want": 0
+   },
+   {
+    "label": "withdraw more than we have",
+    "args": [
+     50,
+     [
+      [
+       "withdraw",
+       80
+      ]
+     ]
+    ],
+    "want": 50
+   },
+   {
+    "label": "withdraw everything, then deposit",
+    "args": [
+     20,
+     [
+      [
+       "withdraw",
+       20
+      ],
+      [
+       "deposit",
+       5
+      ]
+     ]
+    ],
+    "want": 5
+   },
+   {
+    "label": "negative deposit is ignored",
+    "args": [
+     10,
+     [
+      [
+       "deposit",
+       -5
+      ],
+      [
+       "withdraw",
+       3
+      ]
+     ]
+    ],
+    "want": 7
+   },
+   {
+    "label": "second withdraw is refused",
+    "args": [
+     100,
+     [
+      [
+       "withdraw",
+       60
+      ],
+      [
+       "withdraw",
+       60
+      ],
+      [
+       "deposit",
+       10
+      ]
+     ]
+    ],
+    "want": 50
+   }
+  ]
+ }
+}
