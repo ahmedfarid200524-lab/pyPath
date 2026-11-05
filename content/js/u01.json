@@ -1,0 +1,459 @@
+{
+ "t": "Hello, JavaScript",
+ "e": "👋",
+ "lessons": [
+  {
+   "t": "Meet JavaScript",
+   "pages": [
+    {
+     "h": "What is JavaScript?",
+     "p": "JavaScript is a programming language. A program is a list of instructions for the computer.\n\nJavaScript runs inside every web browser, so it makes web pages move, react and play. It also runs on servers and in many apps. It is one of the most used languages in the world.\n\nIn this course you will write small programs and see what they print."
+    },
+    {
+     "h": "Your first line",
+     "p": "To show something on the screen, use «console.log». The thing you want to show goes inside the round brackets «( )». Text goes between quotes.",
+     "c": "console.log(\"Hello, world!\");",
+     "o": "Hello, world!",
+     "tip": "The quotes are not printed. They only tell JavaScript where the text starts and ends."
+    },
+    {
+     "h": "Text and numbers",
+     "p": "Text needs quotes. Numbers do not. A number can also be a small sum: JavaScript works it out first, then prints the answer.",
+     "c": "console.log(\"Score\");\nconsole.log(100);\nconsole.log(2 + 3);\nconsole.log(\"2 + 3\");",
+     "o": "Score\n100\n5\n2 + 3",
+     "tip": "«\"2 + 3\"» in quotes is just text, so nothing is calculated."
+    },
+    {
+     "h": "Many things in one line",
+     "p": "Put several values inside the brackets, separated by commas. «console.log» prints them on one line with a space between each one.",
+     "c": "console.log(\"Age:\", 12);\nconsole.log(\"Total\", 4, \"apples\");",
+     "o": "Age: 12\nTotal 4 apples"
+    },
+    {
+     "h": "Comments",
+     "p": "A **comment** is a note for humans. JavaScript ignores it. Start a one-line comment with «//». Use «/* ... */» for a longer note.",
+     "c": "// This line is ignored\nconsole.log(\"Visible\");\n// console.log(\"Hidden\");\n/* a longer\n   note */\nconsole.log(\"End\");",
+     "o": "Visible\nEnd",
+     "tip": "Putting «//» in front of a line is a quick way to switch it off while you test."
+    }
+   ]
+  },
+  {
+   "t": "Statements and errors",
+   "pages": [
+    {
+     "h": "Statements and semicolons",
+     "p": "Each instruction is called a **statement**. Programs run from top to bottom, one statement after another. A statement usually ends with a semicolon «;».\n\nJavaScript can sometimes guess a missing semicolon, but good habit is to always write it.",
+     "c": "console.log(\"First\");\nconsole.log(\"Second\");\nconsole.log(\"Third\");",
+     "o": "First\nSecond\nThird"
+    },
+    {
+     "h": "Quotes and brackets come in pairs",
+     "p": "Every opening quote and bracket needs a closing one. You can use double quotes «\"like this\"» or single quotes «'like this'». Both work the same. Just close with the same kind you opened with.",
+     "c": "console.log('Hi');\nconsole.log(\"Hi\");",
+     "o": "Hi\nHi",
+     "tip": "Choose one style and keep it in your whole program."
+    },
+    {
+     "h": "Reading error messages",
+     "p": "When the code breaks, JavaScript shows an **error message**. Do not panic: it tells you what went wrong.\n\nFor example, forgetting the closing quote in «console.log(\"Hi);» gives a «SyntaxError». A **syntax error** means the code breaks the writing rules of the language. The message also tells you the line number, so start looking there.",
+     "tip": "Read the error from the first line. It is usually the most helpful."
+    },
+    {
+     "h": "Other errors you will meet",
+     "p": "• «ReferenceError: x is not defined» means you used a name that JavaScript does not know.\n• «TypeError: ... is not a function» means you tried to run something that is not a function. Often it is a spelling mistake.\n\nJavaScript is **case-sensitive**: «console.log» works, but «console.Log» and «Console.log» do not.",
+     "c": "console.log(\"Spelling matters\");",
+     "o": "Spelling matters",
+     "tip": "When you get an error, check spelling, capital letters, quotes and brackets first."
+    }
+   ]
+  },
+  {
+   "t": "The function shell",
+   "pages": [
+    {
+     "h": "A recipe box",
+     "p": "A **function** is a recipe box. You put inputs in, it follows its steps, and it gives you back a result.\n\nIn the projects of this course you will often get a function with an empty body, and you fill in the steps. Here is a finished one:",
+     "c": "function addOne(n) {\n  return n + 1;\n}\n\nconsole.log(addOne(4));",
+     "o": "5"
+    },
+    {
+     "h": "The parts of the shell",
+     "p": "• «function» says: here is a recipe box.\n• «addOne» is its name.\n• «(n)» lists its **inputs**. They are called **parameters**. Inside the function, «n» is the value you give.\n• Between «{ }» are the steps.\n• «return» sends the result back.",
+     "c": "function addOne(n) {\n  return n + 1;\n}",
+     "tip": "The name is up to you, but the project will tell you which one to use."
+    },
+    {
+     "h": "Using the function",
+     "p": "Writing the function only makes the recipe. To use it, **call** it: write its name and put the input in brackets. The value you give is called an **argument**. A function can have more than one input, separated by commas.",
+     "c": "function greet(name) {\n  return \"Hello, \" + name;\n}\n\nconsole.log(greet(\"Mia\"));\nconsole.log(greet(\"Omar\"));",
+     "o": "Hello, Mia\nHello, Omar",
+     "tip": "The «+» between two pieces of text joins them together."
+    },
+    {
+     "h": "return is not console.log",
+     "p": "«console.log» **shows** a value to you. «return» **gives** the value back to the code that called the function. Your projects need «return».\n\nTwo more facts:\n• A function that never returns gives back «undefined», which means \"nothing\".\n• «return» ends the function. Lines after it never run.",
+     "c": "function say(w) {\n  console.log(w);\n}\nfunction early() {\n  return 1;\n  console.log(\"never shown\");\n}\nconsole.log(say(\"hi\"));\nconsole.log(early());",
+     "o": "hi\nundefined\n1"
+    }
+   ]
+  }
+ ],
+ "hand": [
+  {
+   "type": "mc",
+   "q": "What is «console.log» used for?",
+   "code": null,
+   "ans": "Showing a value in the output",
+   "wrong": [
+    "Saving a value to a file",
+    "Asking the user to type something",
+    "Making text bigger on the screen"
+   ],
+   "why": "«console.log» prints whatever you put in its brackets so you can see it."
+  },
+  {
+   "type": "out",
+   "code": "console.log(\"Hello\");\nconsole.log(\"World\");",
+   "answer": "Hello\nWorld",
+   "wrong": [
+    "Hello World",
+    "HelloWorld",
+    "\"Hello\"\n\"World\""
+   ],
+   "why": "Each «console.log» prints on its own line, and the quotes are not printed."
+  },
+  {
+   "type": "out",
+   "code": "console.log(2 + 3);",
+   "answer": "5",
+   "wrong": [
+    "2 + 3",
+    "23",
+    "2 3"
+   ],
+   "why": "Without quotes, JavaScript works out the sum first and then prints 5."
+  },
+  {
+   "type": "out",
+   "code": "console.log(\"2 + 3\");",
+   "answer": "2 + 3",
+   "wrong": [
+    "5",
+    "23",
+    "\"2 + 3\""
+   ],
+   "why": "Inside quotes it is just text, so it is printed exactly as written."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the line so it prints Hello.",
+   "code": "___(\"Hello\");",
+   "ans": [
+    "console.log"
+   ],
+   "why": "«console.log» is the instruction that prints to the output. Spelling and capital letters matter."
+  },
+  {
+   "type": "mc",
+   "q": "Which symbol starts a one-line comment in JavaScript?",
+   "code": null,
+   "ans": "//",
+   "wrong": [
+    "#",
+    "<!--",
+    "**"
+   ],
+   "why": "«//» starts a comment. «#» belongs to other languages such as Python."
+  },
+  {
+   "type": "order",
+   "q": "Put the lines in the right order to print a countdown.",
+   "lines": [
+    "console.log(\"Ready\");",
+    "console.log(\"Set\");",
+    "console.log(\"Go!\");"
+   ],
+   "why": "Programs run from top to bottom, so the output follows the order of the lines."
+  },
+  {
+   "type": "out",
+   "code": "console.log(\"Age:\", 12);",
+   "answer": "Age: 12",
+   "wrong": [
+    "Age:12",
+    "Age:, 12",
+    "Age: ,12"
+   ],
+   "why": "Values separated by commas are printed with one space between them."
+  },
+  {
+   "type": "mc",
+   "q": "What does a «SyntaxError» usually mean?",
+   "code": null,
+   "ans": "The code breaks the writing rules, like a missing quote or bracket",
+   "wrong": [
+    "The computer is broken",
+    "The code ran but printed a wrong answer",
+    "The program is too long to run"
+   ],
+   "why": "A syntax error means JavaScript cannot read the code. Check quotes and brackets near the line it names."
+  },
+  {
+   "type": "fill",
+   "q": "A bracket is missing. What completes the line?",
+   "code": "console.log(\"Hi\"___;",
+   "ans": [
+    ")"
+   ],
+   "why": "Every «(» needs a matching «)». Without it JavaScript reports a SyntaxError."
+  },
+  {
+   "type": "mc",
+   "q": "What does «return» do inside a function?",
+   "code": null,
+   "ans": "Sends a result back to the code that called the function",
+   "wrong": [
+    "Prints the result on the screen",
+    "Runs the function a second time",
+    "Saves the result in a file"
+   ],
+   "why": "«return» hands the value back. Printing is a different job, done by «console.log»."
+  },
+  {
+   "type": "out",
+   "code": "function addOne(n) {\n  return n + 1;\n}\nconsole.log(addOne(4));",
+   "answer": "5",
+   "wrong": [
+    "4",
+    "n + 1",
+    "addOne(4)"
+   ],
+   "why": "The call gives «n» the value 4, the function returns 4 + 1, and that result is printed."
+  },
+  {
+   "type": "out",
+   "code": "console.log(\"A\");\n// console.log(\"B\");\nconsole.log(\"C\");",
+   "answer": "A\nC",
+   "wrong": [
+    "A\nB\nC",
+    "A",
+    "C"
+   ],
+   "why": "The line starting with «//» is a comment, so it is ignored."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the function so it gives back the greeting.",
+   "code": "function greet(name) {\n  ___ \"Hi \" + name;\n}",
+   "ans": [
+    "return"
+   ],
+   "why": "«return» sends the finished text back to whoever called «greet»."
+  }
+ ],
+ "hard": [
+  {
+   "type": "out",
+   "code": "function hello(name) {\n  return \"Hi, \" + name;\n}\nconsole.log(hello(\"Sam\"));\nconsole.log(hello(\"Lea\"));",
+   "answer": "Hi, Sam\nHi, Lea",
+   "wrong": [
+    "Hi, name\nHi, name",
+    "Hi, Sam",
+    "Hi, Lea\nHi, Sam"
+   ],
+   "why": "Each call gives «name» a new value, so the same recipe makes a different greeting."
+  },
+  {
+   "type": "out",
+   "code": "function say(w) {\n  console.log(w);\n}\nconsole.log(say(\"hi\"));",
+   "answer": "hi\nundefined",
+   "wrong": [
+    "hi",
+    "hi\nhi",
+    "undefined"
+   ],
+   "why": "«say» prints «hi» itself, but returns nothing. The outer «console.log» then prints «undefined»."
+  },
+  {
+   "type": "out",
+   "code": "function f(n) {\n  return n + 1;\n  console.log(\"after\");\n}\nconsole.log(f(1));",
+   "answer": "2",
+   "wrong": [
+    "after\n2",
+    "2\nafter",
+    "after"
+   ],
+   "why": "«return» ends the function at once, so the line after it never runs."
+  },
+  {
+   "type": "out",
+   "code": "console.log(1 + 1, \"1 + 1\");",
+   "answer": "2 1 + 1",
+   "wrong": [
+    "2 2",
+    "1 + 1 1 + 1",
+    "2, 1 + 1"
+   ],
+   "why": "The first value is a sum and is calculated. The second is text, printed as written. A space separates them."
+  },
+  {
+   "type": "mc",
+   "q": "Which line causes a SyntaxError?",
+   "code": "console.log(\"One\");\nconsole.log(\"Two);\nconsole.log(\"Three\");",
+   "ans": "Line 2",
+   "wrong": [
+    "Line 1",
+    "Line 3",
+    "None: JavaScript ignores small mistakes"
+   ],
+   "why": "Line 2 opens a quote and never closes it, so JavaScript cannot tell where the text ends."
+  },
+  {
+   "type": "mc",
+   "q": "Running this code prints nothing. Why?",
+   "code": "function hello() {\n  console.log(\"Hi\");\n}",
+   "ans": "The function is written but never called",
+   "wrong": [
+    "console.log needs a return in front of it",
+    "Functions cannot print text",
+    "The name hello is not allowed"
+   ],
+   "why": "Defining a function only makes the recipe. You must call it with «hello();» to run it."
+  },
+  {
+   "type": "out",
+   "code": "console.log(10, 20, 30);",
+   "answer": "10 20 30",
+   "wrong": [
+    "102030",
+    "10, 20, 30",
+    "30"
+   ],
+   "why": "Every value is printed, separated by single spaces."
+  },
+  {
+   "type": "order",
+   "q": "Build a working function and call it.",
+   "lines": [
+    "function welcome(name) {",
+    "  return \"Welcome, \" + name;",
+    "}",
+    "console.log(welcome(\"Ann\"));"
+   ],
+   "why": "The function is defined first, then called. The call must come after the recipe exists in the order of reading."
+  },
+  {
+   "type": "fill",
+   "q": "Finish the function so that add(2, 3) gives 5.",
+   "code": "function add(a, b) {\n  return ___;\n}\nconsole.log(add(2, 3));",
+   "ans": [
+    "a + b",
+    "b + a"
+   ],
+   "why": "The result is built from both parameters, «a» and «b»."
+  },
+  {
+   "type": "out",
+   "code": "function pair(a, b) {\n  return a + \" & \" + b;\n}\nconsole.log(pair(\"Tea\", \"Cake\"));",
+   "answer": "Tea & Cake",
+   "wrong": [
+    "a & b",
+    "Cake & Tea",
+    "Tea&Cake"
+   ],
+   "why": "The first argument goes to «a», the second to «b». They are joined with the text « & » between them."
+  }
+ ],
+ "bugs": [
+  {
+   "title": "Bug hunt 1",
+   "items": [
+    {
+     "code": "console.log(\"Start\");\nconsole.log(\"Hello);\nconsole.log(\"End\");",
+     "fixed": "console.log(\"Start\");\nconsole.log(\"Hello\");\nconsole.log(\"End\");",
+     "line": 1,
+     "symptom": "SyntaxError: Invalid or unexpected token.",
+     "why": "The text in line 2 never gets a closing quote."
+    },
+    {
+     "code": "function addTwo(n) {\n  n + 2;\n}\nconsole.log(addTwo(5));",
+     "fixed": "function addTwo(n) {\n  return n + 2;\n}\nconsole.log(addTwo(5));",
+     "line": 1,
+     "symptom": "It prints undefined, but 7 was expected.",
+     "why": "Without «return» the result is thrown away and the function gives back undefined."
+    },
+    {
+     "code": "console.log(\"Go!\");\nconsole.Log(\"Done\");\nconsole.log(\"Bye\");",
+     "fixed": "console.log(\"Go!\");\nconsole.log(\"Done\");\nconsole.log(\"Bye\");",
+     "line": 1,
+     "symptom": "TypeError: console.Log is not a function.",
+     "why": "JavaScript is case-sensitive. The name is «log» with a small l."
+    }
+   ]
+  },
+  {
+   "title": "Bug hunt 2",
+   "items": [
+    {
+     "code": "console.log(\"Start\");\n# say hello\nconsole.log(\"Hi\");",
+     "fixed": "console.log(\"Start\");\n// say hello\nconsole.log(\"Hi\");",
+     "line": 1,
+     "symptom": "SyntaxError: Invalid or unexpected token.",
+     "why": "JavaScript comments start with «//». «#» is a comment symbol in other languages."
+    },
+    {
+     "code": "function greet(name) {\n  return \"Hi \" + Name;\n}\nconsole.log(greet(\"Sam\"));",
+     "fixed": "function greet(name) {\n  return \"Hi \" + name;\n}\nconsole.log(greet(\"Sam\"));",
+     "line": 1,
+     "symptom": "ReferenceError: Name is not defined.",
+     "why": "The parameter is «name». «Name» with a capital N is a different word."
+    },
+    {
+     "code": "function add(a, b) {\n  return a + b;\n}\nconsole.log(add(2, 3);",
+     "fixed": "function add(a, b) {\n  return a + b;\n}\nconsole.log(add(2, 3));",
+     "line": 3,
+     "symptom": "SyntaxError: missing ) after argument list.",
+     "why": "The call to «add» is closed, but the bracket of «console.log» is not."
+    }
+   ]
+  }
+ ],
+ "project": {
+  "title": "Friendly Greeter",
+  "brief": "Write a function «greet» with one input, «name». It must **return** (not print) the text «Hello, », then the name, then «! Welcome to JavaScript.».\n\nExample: «greet(\"Mia\")» returns «\"Hello, Mia! Welcome to JavaScript.\"».",
+  "fn": "greet",
+  "starter": "function greet(name) {\n  // your code here\n}\n",
+  "solution": "function greet(name) {\n  return \"Hello, \" + name + \"! Welcome to JavaScript.\";\n}\n",
+  "tests": [
+   {
+    "label": "greet(\"Mia\")",
+    "args": [
+     "Mia"
+    ],
+    "want": "Hello, Mia! Welcome to JavaScript."
+   },
+   {
+    "label": "greet(\"Omar\")",
+    "args": [
+     "Omar"
+    ],
+    "want": "Hello, Omar! Welcome to JavaScript."
+   },
+   {
+    "label": "greet(\"Yuki\")",
+    "args": [
+     "Yuki"
+    ],
+    "want": "Hello, Yuki! Welcome to JavaScript."
+   },
+   {
+    "label": "greet(\"\") (empty name)",
+    "args": [
+     ""
+    ],
+    "want": "Hello, ! Welcome to JavaScript."
+   }
+  ]
+ }
+}

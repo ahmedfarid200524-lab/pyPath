@@ -1,0 +1,533 @@
+{
+ "t": "Errors & async",
+ "e": "⏳",
+ "lessons": [
+  {
+   "t": "Catching errors",
+   "pages": [
+    {
+     "h": "When code crashes",
+     "p": "When JavaScript meets an error, the program normally stops. With **try / catch** you can handle the problem and keep going.\n\nPut risky code in the «try» block. If something goes wrong there, JavaScript jumps straight to the «catch» block. Code after the problem, inside «try», is skipped.",
+     "c": "console.log(\"Before\");\ntry {\n  JSON.parse(\"{oops\");\n  console.log(\"Not reached\");\n} catch (error) {\n  console.log(\"Something went wrong\");\n}\nconsole.log(\"After\");",
+     "o": "Before\nSomething went wrong\nAfter",
+     "tip": "«JSON.parse» from unit 8 throws an error when the text is not valid JSON."
+    },
+    {
+     "h": "throw your own error",
+     "p": "You can also make an error yourself with «throw new Error(\"text\")». It stops the current function at once and jumps to the nearest «catch», even if that «catch» is outside of several functions.\n\nThe «catch» gets the error object. Its «message» property holds your text.",
+     "c": "function divide(a, b) {\n  if (b === 0) {\n    throw new Error(\"Cannot divide by zero\");\n  }\n  return a / b;\n}\ntry {\n  console.log(divide(10, 2));\n  console.log(divide(1, 0));\n} catch (error) {\n  console.log(\"Error: \" + error.message);\n}",
+     "o": "5\nError: Cannot divide by zero",
+     "tip": "Use «throw» when a function gets a value it cannot work with."
+    },
+    {
+     "h": "finally: always runs",
+     "p": "A «finally» block runs at the end **whether or not** there was an error. It is good for things that must always happen, like a final message.\n\nIt even runs when the «try» block has a «return» inside.",
+     "c": "function test(n) {\n  try {\n    if (n < 0) throw new Error(\"negative\");\n    console.log(\"ok \" + n);\n  } catch (e) {\n    console.log(\"caught \" + e.message);\n  } finally {\n    console.log(\"done \" + n);\n  }\n}\ntest(1);\ntest(-1);",
+     "o": "ok 1\ndone 1\ncaught negative\ndone -1",
+     "tip": "If «try» has «return», the «finally» code still runs first, and then the function returns."
+    },
+    {
+     "h": "Functions that stay safe",
+     "p": "A function can use try / catch inside, and «return» a safe value when something fails. The people who call it never see a crash.",
+     "c": "function safeParse(text) {\n  try {\n    return JSON.parse(text);\n  } catch (error) {\n    return null;\n  }\n}\nconsole.log(safeParse('{\"a\":1}').a);\nconsole.log(safeParse(\"nope\"));",
+     "o": "1\nnull",
+     "tip": "Do not hide every error. Catch only where you know a good way to recover."
+    },
+    {
+     "h": "Error names and your own errors",
+     "p": "Every error has a «name» and a «message». JavaScript's own problems have names like «SyntaxError». Errors from «new Error» have the name «Error».\n\nUsing unit 10, you can even make your own kind of error with a class that extends «Error». Then «instanceof» tells you which kind it is.",
+     "c": "try { JSON.parse(\"{oops\"); } catch (e) { console.log(e.name); }\nclass ValidationError extends Error {}\ntry {\n  throw new ValidationError(\"age must be 0 or more\");\n} catch (e) {\n  console.log(e instanceof ValidationError);\n  console.log(e.message);\n}",
+     "o": "SyntaxError\ntrue\nage must be 0 or more",
+     "tip": "Messages of JavaScript's own errors can differ between browsers, so do not rely on their exact text."
+    }
+   ]
+  },
+  {
+   "t": "Waiting: timers and promises",
+   "pages": [
+    {
+     "h": "setTimeout: do it later",
+     "p": "Some things take time, like loading data. JavaScript does not stop and wait. It keeps running the rest of the code, and comes back later.\n\n«setTimeout(function, ms)» runs a function after some milliseconds (1000 ms is 1 second). This kind of code is called **asynchronous**.",
+     "c": "console.log(\"1: start\");\nsetTimeout(() => {\n  console.log(\"3: later\");\n}, 50);\nconsole.log(\"2: end of the code\");",
+     "o": "1: start\n2: end of the code\n3: later",
+     "tip": "The code after «setTimeout» does not wait. It runs first."
+    },
+    {
+     "h": "Promise: a value in the future",
+     "p": "A **promise** is an object that stands for a result that is not ready yet. It starts **pending**. Later it is **fulfilled** with a value (you call «resolve»), or **rejected** with an error (you call «reject»).\n\nUse «.then(...)» to say what to do when the value arrives.",
+     "c": "const p = new Promise((resolve, reject) => {\n  setTimeout(() => resolve(\"pizza ready\"), 50);\n});\np.then(value => console.log(value));\nconsole.log(\"waiting...\");",
+     "o": "waiting...\npizza ready",
+     "tip": "Think of a promise as a ticket you get while your pizza is baking."
+    },
+    {
+     "h": "then and catch",
+     "p": "When a promise is rejected, the function in «.then» is skipped. Use «.catch(...)» to handle the error. It gets the error object, just like in try / catch.",
+     "c": "function order(ok) {\n  return new Promise((resolve, reject) => {\n    if (ok) resolve(\"pizza\");\n    else reject(new Error(\"no pizza\"));\n  });\n}\norder(true).then(v => console.log(\"got \" + v));\norder(false).catch(e => console.log(\"failed: \" + e.message));",
+     "o": "got pizza\nfailed: no pizza",
+     "tip": "A promise can only finish once: either resolved or rejected."
+    },
+    {
+     "h": "Chain promises together",
+     "p": "«.then» gives back a new promise. So you can chain steps. What one step returns goes to the next step.\n\nIf a step throws an error, JavaScript skips the next «.then» steps and goes to the next «.catch». And if the «.catch» returns a value, the chain continues normally.",
+     "c": "Promise.resolve(2)\n  .then(n => n * 10)\n  .then(n => {\n    if (n > 15) throw new Error(\"too big: \" + n);\n    return n;\n  })\n  .then(n => console.log(\"never\"))\n  .catch(e => console.log(e.message));",
+     "o": "too big: 20",
+     "tip": "«Promise.resolve(x)» makes a promise that is already fulfilled with x."
+    }
+   ]
+  },
+  {
+   "t": "async and await",
+   "pages": [
+    {
+     "h": "await: wait without blocking",
+     "p": "Chains of «.then» get long. **async / await** is a cleaner way. Put «async» before a function. Inside it, «await» pauses **that function** until a promise is ready, and gives you the value.\n\nThe rest of the program keeps running while it waits.",
+     "c": "function wait(ms, v) { return new Promise(r => setTimeout(() => r(v), ms)); }\nasync function main() {\n  console.log(\"start\");\n  const v = await wait(50, \"hello\");\n  console.log(v);\n}\nmain();\nconsole.log(\"after main()\");",
+     "o": "start\nafter main()\nhello",
+     "tip": "You can only use «await» inside an «async» function."
+    },
+    {
+     "h": "try / catch with await",
+     "p": "A rejected promise becomes a normal error at the «await». So you can use plain try / catch, the same as for any other error.",
+     "c": "function failLater() {\n  return new Promise((resolve, reject) => {\n    setTimeout(() => reject(new Error(\"server down\")), 30);\n  });\n}\nasync function run() {\n  try {\n    const data = await failLater();\n    console.log(data);\n  } catch (error) {\n    console.log(\"Caught: \" + error.message);\n  }\n}\nrun();",
+     "o": "Caught: server down",
+     "tip": "This reads like normal code from top to bottom. That is why people like it."
+    },
+    {
+     "h": "Promise.all: wait for many",
+     "p": "«Promise.all» takes an array of promises. They all run at the same time. You get a new promise that gives an array of all results, **in the same order**, once every one is done.\n\nIf one of them is rejected, «Promise.all» is rejected too.",
+     "c": "function wait(ms, v) { return new Promise(r => setTimeout(() => r(v), ms)); }\nasync function main() {\n  const results = await Promise.all([\n    wait(60, \"A\"), wait(20, \"B\"), wait(40, \"C\")\n  ]);\n  console.log(results.join(\",\"));\n}\nmain();",
+     "o": "A,B,C",
+     "tip": "It takes about 60 ms in total, not 120 ms, because the waits overlap."
+    },
+    {
+     "h": "async functions return promises",
+     "p": "An «async» function always returns a promise. A normal «return 5» becomes a promise fulfilled with 5. The proof: the result has a «.then» method, so its type check says «function». The caller uses «await» or «.then» to get the value.",
+     "c": "async function five() {\n  return 5;\n}\nconsole.log(typeof five().then);\nfive().then(n => console.log(n + 1));",
+     "o": "function\n6",
+     "tip": "This is why a plain «console.log(five())» does not show 5."
+    }
+   ]
+  }
+ ],
+ "hand": [
+  {
+   "type": "out",
+   "code": "try {\n  console.log(\"1\");\n  throw new Error(\"x\");\n  console.log(\"2\");\n} catch (e) {\n  console.log(\"3\");\n}",
+   "answer": "1\n3",
+   "wrong": [
+    "1\n2\n3",
+    "1\n2",
+    "3"
+   ],
+   "why": "«throw» jumps out of «try» at once. The line that prints 2 is skipped, and «catch» prints 3."
+  },
+  {
+   "type": "mc",
+   "q": "When does the «catch» block run?",
+   "code": null,
+   "ans": "Only when something in the «try» block throws an error",
+   "wrong": [
+    "Always, after the «try» block ends",
+    "Only when the «try» block has a «return»",
+    "Before the «try» block starts"
+   ],
+   "why": "«catch» is the plan B. It is skipped when «try» finishes without an error. For code that must always run, use «finally»."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the line that makes an error.",
+   "code": "function age(n) {\n  if (n < 0) {\n    throw new ___(\"negative age\");\n  }\n  return n;\n}\ntry { age(-1); } catch (e) { console.log(e.message); }",
+   "ans": [
+    "Error"
+   ],
+   "why": "«new Error(\"text\")» builds an error object. «throw» then sends it to the nearest «catch»."
+  },
+  {
+   "type": "out",
+   "code": "function check(n) {\n  if (n > 10) throw new Error(\"too big\");\n  return n;\n}\ntry {\n  console.log(check(5));\n  console.log(check(50));\n} catch (e) {\n  console.log(e.message);\n}",
+   "answer": "5\ntoo big",
+   "wrong": [
+    "5\n50",
+    "too big",
+    "5\nError: too big"
+   ],
+   "why": "«check(5)» is fine. «check(50)» throws, so «catch» prints the message of the error."
+  },
+  {
+   "type": "order",
+   "q": "Put the lines in order.",
+   "lines": [
+    "function check(n) {",
+    "  if (n < 0) throw new Error(\"negative\");",
+    "  return n;",
+    "}",
+    "try { check(-1); }",
+    "catch (e) { console.log(e.message); }"
+   ],
+   "why": "First define the function, then call it inside «try», then handle the error in «catch»."
+  },
+  {
+   "type": "out",
+   "code": "console.log(\"A\");\nsetTimeout(() => console.log(\"B\"), 10);\nconsole.log(\"C\");",
+   "answer": "A\nC\nB",
+   "wrong": [
+    "A\nB\nC",
+    "B\nA\nC",
+    "A\nC"
+   ],
+   "why": "«setTimeout» does not stop the program. A and C print now, and the timer function runs a little later."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the error handler.",
+   "code": "try {\n  JSON.parse(\"{\");\n} ___ (error) {\n  console.log(\"bad json\");\n}",
+   "ans": [
+    "catch"
+   ],
+   "why": "The block that handles the problem is written «catch (error) { ... }»."
+  },
+  {
+   "type": "mc",
+   "q": "A promise was rejected. Which method handles that?",
+   "code": null,
+   "ans": ".catch(...)",
+   "wrong": [
+    ".then(...) always runs on errors",
+    ".resolve(...)",
+    ".finish(...)"
+   ],
+   "why": "«.catch» receives the error of a rejected promise. A «.then» function is for success only, and «.finish» does not exist."
+  },
+  {
+   "type": "out",
+   "code": "Promise.resolve(3).then(n => console.log(n * 2));\nconsole.log(\"sync\");",
+   "answer": "sync\n6",
+   "wrong": [
+    "6\nsync",
+    "sync",
+    "3\nsync"
+   ],
+   "why": "The «.then» function never runs at once. The rest of the normal code finishes first, so «sync» comes before 6."
+  },
+  {
+   "type": "fill",
+   "q": "Pause until the promise is ready.",
+   "code": "function wait(ms, v) { return new Promise(r => setTimeout(() => r(v), ms)); }\nasync function f() {\n  const v = ___ wait(20, \"ok\");\n  console.log(v);\n}\nf();",
+   "ans": [
+    "await"
+   ],
+   "why": "«await» waits for the promise and gives you its value. Without it, «v» would be the promise itself."
+  },
+  {
+   "type": "out",
+   "code": "function wait(ms, v) { return new Promise(r => setTimeout(() => r(v), ms)); }\nasync function f() {\n  console.log(\"in\");\n  await wait(10);\n  console.log(\"later\");\n}\nf();\nconsole.log(\"out\");",
+   "answer": "in\nout\nlater",
+   "wrong": [
+    "in\nlater\nout",
+    "out\nin\nlater",
+    "in\nout"
+   ],
+   "why": "«f» runs until its «await», then pauses. The main code continues and prints out. Later «f» continues."
+  },
+  {
+   "type": "mc",
+   "q": "What does an «async» function always return?",
+   "code": null,
+   "ans": "A promise",
+   "wrong": [
+    "The value after «return», unchanged",
+    "Nothing, async functions return undefined",
+    "An array of all the awaited values"
+   ],
+   "why": "Even if you write «return 5», the caller gets a promise that is fulfilled with 5. Use «await» or «.then» to read it."
+  },
+  {
+   "type": "out",
+   "code": "function fail() {\n  return new Promise((resolve, reject) => reject(new Error(\"nope\")));\n}\nasync function run() {\n  try {\n    await fail();\n    console.log(\"fine\");\n  } catch (e) {\n    console.log(\"Caught: \" + e.message);\n  }\n}\nrun();",
+   "answer": "Caught: nope",
+   "wrong": [
+    "fine",
+    "Caught: undefined",
+    "Caught: Error"
+   ],
+   "why": "A rejected promise throws at the «await». The line that prints fine is skipped and «catch» runs."
+  },
+  {
+   "type": "out",
+   "code": "function wait(ms, v) { return new Promise(r => setTimeout(() => r(v), ms)); }\nPromise.all([wait(30, \"x\"), wait(10, \"y\")]).then(r => console.log(r.join(\"\")));",
+   "answer": "xy",
+   "wrong": [
+    "yx",
+    "x",
+    "xy30"
+   ],
+   "why": "«Promise.all» keeps the order of the array, not the order in which the promises finish."
+  }
+ ],
+ "hard": [
+  {
+   "type": "out",
+   "code": "function f() {\n  try {\n    return \"try\";\n  } finally {\n    console.log(\"finally\");\n  }\n}\nconsole.log(f());",
+   "answer": "finally\ntry",
+   "wrong": [
+    "try\nfinally",
+    "try",
+    "finally"
+   ],
+   "why": "The «finally» block runs before the function really returns. So «finally» is printed first, then the returned value."
+  },
+  {
+   "type": "out",
+   "code": "function a() { throw new Error(\"deep\"); }\nfunction b() {\n  a();\n  console.log(\"b after\");\n}\ntry { b(); } catch (e) { console.log(\"caught \" + e.message); }",
+   "answer": "caught deep",
+   "wrong": [
+    "b after",
+    "b after\ncaught deep",
+    "caught undefined"
+   ],
+   "why": "The throw inside «a» stops «a» and «b» at once. The error travels up to the nearest «catch»."
+  },
+  {
+   "type": "out",
+   "code": "const texts = [\"5\", \"oops\", \"7\", \"[1,2]\", \"{bad\"];\nlet good = 0;\nlet bad = 0;\nfor (const t of texts) {\n  try {\n    JSON.parse(t);\n    good++;\n  } catch (e) {\n    bad++;\n  }\n}\nconsole.log(good + \" \" + bad);",
+   "answer": "3 2",
+   "wrong": [
+    "2 3",
+    "5 0",
+    "3 3"
+   ],
+   "why": "\"5\", \"7\" and \"[1,2]\" are valid JSON. \"oops\" and \"{bad\" are not. The loop keeps going after each error."
+  },
+  {
+   "type": "out",
+   "code": "function wait(ms, v) { return new Promise(r => setTimeout(() => r(v), ms)); }\nsetTimeout(() => console.log(\"slow\"), 30);\nsetTimeout(() => console.log(\"fast\"), 10);\nconsole.log(\"now\");",
+   "answer": "now\nfast\nslow",
+   "wrong": [
+    "slow\nfast\nnow",
+    "now\nslow\nfast",
+    "fast\nslow\nnow"
+   ],
+   "why": "Normal code runs first. Then the timers fire in order of their delay: 10 ms before 30 ms, not in the order they were written."
+  },
+  {
+   "type": "out",
+   "code": "Promise.reject(new Error(\"x\"))\n  .catch(e => \"recovered\")\n  .then(v => console.log(v));",
+   "answer": "recovered",
+   "wrong": [
+    "x",
+    "undefined",
+    "Error: x"
+   ],
+   "why": "A «.catch» that returns a value fixes the chain. The next «.then» gets that value as normal."
+  },
+  {
+   "type": "out",
+   "code": "function wait(ms, v) { return new Promise(r => setTimeout(() => r(v), ms)); }\nasync function task(name, ms) {\n  await wait(ms);\n  console.log(name);\n}\nasync function main() {\n  await task(\"A\", 30);\n  await task(\"B\", 10);\n  console.log(\"end\");\n}\nmain();",
+   "answer": "A\nB\nend",
+   "wrong": [
+    "B\nA\nend",
+    "end\nA\nB",
+    "A\nend\nB"
+   ],
+   "why": "Each «await» waits for its task to finish before the next line runs. So the tasks run one after the other."
+  },
+  {
+   "type": "out",
+   "code": "function wait(ms, v) { return new Promise(r => setTimeout(() => r(v), ms)); }\nasync function task(name, ms) {\n  await wait(ms);\n  console.log(name);\n}\nPromise.all([task(\"A\", 30), task(\"B\", 10)])\n  .then(() => console.log(\"end\"));",
+   "answer": "B\nA\nend",
+   "wrong": [
+    "A\nB\nend",
+    "end\nB\nA",
+    "B\nend\nA"
+   ],
+   "why": "Both tasks start together. B needs only 10 ms, so it prints first. «Promise.all» finishes after the slowest one, so end comes last."
+  },
+  {
+   "type": "mc",
+   "q": "Why does this code not work?",
+   "code": "function load() {\n  const v = await wait(10, \"hi\");\n  console.log(v);\n}",
+   "ans": "«await» is used in a function that is not «async»",
+   "wrong": [
+    "«wait» must be called with «new»",
+    "A «catch» is always needed after «await»",
+    "«await» only works with «setTimeout»"
+   ],
+   "why": "«await» is only allowed inside an «async» function. Put «async» before «function load»."
+  },
+  {
+   "type": "out",
+   "code": "function wait(ms, v) { return new Promise(r => setTimeout(() => r(v), ms)); }\nPromise.all([wait(10, \"a\"), Promise.reject(new Error(\"boom\"))])\n  .then(r => console.log(\"ok\"))\n  .catch(e => console.log(\"fail: \" + e.message));",
+   "answer": "fail: boom",
+   "wrong": [
+    "ok",
+    "fail: undefined",
+    "ok\nfail: boom"
+   ],
+   "why": "If any promise in «Promise.all» is rejected, the whole result is rejected. So the «.then» is skipped and «.catch» runs."
+  },
+  {
+   "type": "out",
+   "code": "class ValidationError extends Error {}\nfunction check(age) {\n  if (age < 0) throw new ValidationError(\"negative\");\n  return age;\n}\ntry {\n  check(-1);\n} catch (e) {\n  console.log(e instanceof ValidationError, e.message);\n}",
+   "answer": "true negative",
+   "wrong": [
+    "false negative",
+    "true undefined",
+    "negative"
+   ],
+   "why": "A class that extends Error makes errors of its own kind. «instanceof» recognises it, and «message» passes through."
+  }
+ ],
+ "bugs": [
+  {
+   "title": "Bug hunt 1",
+   "items": [
+    {
+     "code": "function divide(a, b) {\n  if (b === 0) throw \"Cannot divide by zero\";\n  return a / b;\n}\ntry { divide(1, 0); }\ncatch (e) { console.log(\"Error: \" + e.message); }",
+     "fixed": "function divide(a, b) {\n  if (b === 0) throw new Error(\"Cannot divide by zero\");\n  return a / b;\n}\ntry { divide(1, 0); }\ncatch (e) { console.log(\"Error: \" + e.message); }",
+     "line": 1,
+     "symptom": "It prints \"Error: undefined\" instead of the real message.",
+     "why": "Throwing a plain text gives «catch» a string, which has no «message». Throw an error object: «new Error(\"...\")»."
+    },
+    {
+     "code": "try {\n  JSON.parse(\"{bad\");\n} catch (error) {\n  console.log(\"Problem: \" + err.name);\n}",
+     "fixed": "try {\n  JSON.parse(\"{bad\");\n} catch (error) {\n  console.log(\"Problem: \" + error.name);\n}",
+     "line": 3,
+     "symptom": "It crashes with: ReferenceError: err is not defined.",
+     "why": "The error variable is named «error» in the «catch» line. «err» is a different name that does not exist."
+    },
+    {
+     "code": "console.log(\"start\");\nsetTimeout(console.log(\"later\"), 50);\nconsole.log(\"end\");",
+     "fixed": "console.log(\"start\");\nsetTimeout(() => console.log(\"later\"), 50);\nconsole.log(\"end\");",
+     "line": 1,
+     "symptom": "\"later\" appears at once, between start and end, instead of after 50 ms.",
+     "why": "«console.log(\"later\")» is called straight away. You must give «setTimeout» a function that it can call later, like an arrow function."
+    }
+   ]
+  },
+  {
+   "title": "Bug hunt 2",
+   "items": [
+    {
+     "code": "function wait(ms, v) { return new Promise(r => setTimeout(() => r(v), ms)); }\nasync function main() {\n  const v = wait(20, \"hi\");\n  console.log(\"Got \" + v);\n}\nmain();",
+     "fixed": "function wait(ms, v) { return new Promise(r => setTimeout(() => r(v), ms)); }\nasync function main() {\n  const v = await wait(20, \"hi\");\n  console.log(\"Got \" + v);\n}\nmain();",
+     "line": 2,
+     "symptom": "It prints \"Got [object Promise]\" instead of \"Got hi\".",
+     "why": "Without «await», «v» is the promise itself, not the value inside it."
+    },
+    {
+     "code": "Promise.resolve(4)\n  .then(n => { n * 2; })\n  .then(n => console.log(n));",
+     "fixed": "Promise.resolve(4)\n  .then(n => { return n * 2; })\n  .then(n => console.log(n));",
+     "line": 1,
+     "symptom": "It prints undefined, but it should print 8.",
+     "why": "An arrow function with curly braces needs «return». Otherwise the next step receives undefined."
+    },
+    {
+     "code": "function wait(ms, v) { return new Promise(r => setTimeout(() => r(v), ms)); }\nfunction main() {\n  const v = await wait(10, \"done\");\n  console.log(v);\n}\nmain();",
+     "fixed": "function wait(ms, v) { return new Promise(r => setTimeout(() => r(v), ms)); }\nasync function main() {\n  const v = await wait(10, \"done\");\n  console.log(v);\n}\nmain();",
+     "line": 1,
+     "symptom": "It will not even start: SyntaxError about «await».",
+     "why": "«await» only works inside an «async» function. The function needs the word «async» in front."
+    }
+   ]
+  }
+ ],
+ "project": {
+  "title": "Age Checker",
+  "brief": "Write a function «checkAges(texts)». «texts» is an array of strings. Each string should contain a JSON number, like «\"25\"».\n\nAn item is **good** when it parses to a number from 0 to 120. It is **bad** when the text is not valid JSON, when the value is not a number (like «\"null\"», «\"[1]\"» or «\"\\\"7\\\"\"», a text), or when the number is below 0 or above 120.\n\nReturn an array with two things: an array of the good ages (in the same order), and the count of bad items.\n\nExample: «checkAges([\"12\", \"oops\", \"30\"])» is [[12, 30], 1].\n\nThe starter shows the plan: parse inside «try», «throw new Error» for a wrong number, and count the bad ones in «catch».",
+  "fn": "checkAges",
+  "starter": "function checkAges(texts) {\n  const good = [];\n  let bad = 0;\n  for (const text of texts) {\n    try {\n      // parse the text with JSON.parse\n      // throw new Error(...) if it is not a number from 0 to 120\n      // otherwise add it to good\n    } catch (error) {\n      // count it as bad\n    }\n  }\n  return [good, bad];\n}\n",
+  "solution": "function checkAges(texts) {\n  const good = [];\n  let bad = 0;\n  for (const text of texts) {\n    try {\n      const n = JSON.parse(text);\n      if (typeof n !== \"number\" || n < 0 || n > 120) {\n        throw new Error(\"bad age\");\n      }\n      good.push(n);\n    } catch (error) {\n      bad++;\n    }\n  }\n  return [good, bad];\n}\n",
+  "tests": [
+   {
+    "label": "empty list",
+    "args": [
+     []
+    ],
+    "want": [
+     [],
+     0
+    ]
+   },
+   {
+    "label": "two good ages",
+    "args": [
+     [
+      "25",
+      "40"
+     ]
+    ],
+    "want": [
+     [
+      25,
+      40
+     ],
+     0
+    ]
+   },
+   {
+    "label": "one broken text",
+    "args": [
+     [
+      "12",
+      "oops",
+      "30"
+     ]
+    ],
+    "want": [
+     [
+      12,
+      30
+     ],
+     1
+    ]
+   },
+   {
+    "label": "below 0 and above 120",
+    "args": [
+     [
+      "-5",
+      "130",
+      "0",
+      "120"
+     ]
+    ],
+    "want": [
+     [
+      0,
+      120
+     ],
+     2
+    ]
+   },
+   {
+    "label": "text value and null are bad",
+    "args": [
+     [
+      "\"7\"",
+      "null",
+      "18"
+     ]
+    ],
+    "want": [
+     [
+      18
+     ],
+     2
+    ]
+   },
+   {
+    "label": "all bad",
+    "args": [
+     [
+      "{bad",
+      "[1]"
+     ]
+    ],
+    "want": [
+     [],
+     2
+    ]
+   }
+  ]
+ }
+}

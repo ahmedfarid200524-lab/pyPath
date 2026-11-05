@@ -1,0 +1,484 @@
+{
+ "t": "Loops",
+ "e": "🔁",
+ "lessons": [
+  {
+   "t": "while and for",
+   "pages": [
+    {
+     "h": "Repeating with while",
+     "p": "A **loop** repeats code again and again. The simplest loop is **while**. After «while» you write a condition in round brackets, just like with «if».\n\nThe code in the braces runs, then JavaScript checks the condition again. It keeps going until the condition is false. One run of the braces is called a **round**.",
+     "c": "let count = 1;\nwhile (count <= 3) {\n  console.log(\"Round \" + count);\n  count++;\n}\nconsole.log(\"Finished\");",
+     "o": "Round 1\nRound 2\nRound 3\nFinished",
+     "tip": "«count++» adds 1 to «count». It is the same as «count = count + 1»."
+    },
+    {
+     "h": "Change something inside the loop",
+     "p": "The loop stops only when its condition becomes false. So something inside the braces must change the variable that the condition looks at.\n\nIf nothing changes, the condition stays true forever. That is an **infinite loop**, and your program gets stuck. Here the countdown goes down each round with «n--», so it ends.",
+     "c": "let n = 3;\nwhile (n > 0) {\n  console.log(n);\n  n--;\n}\nconsole.log(\"Go!\");",
+     "o": "3\n2\n1\nGo!",
+     "tip": "Before you run a while loop, ask: what makes this condition false in the end?"
+    },
+    {
+     "h": "for: a loop with a counter",
+     "p": "Counting loops are so common that JavaScript has a shorter form: **for**. Its brackets have three parts, separated by semicolons:\n\n• **start**: «let i = 1» creates the counter\n• **condition**: «i <= 5» keep going while this is true\n• **step**: «i++» runs after every round",
+     "c": "for (let i = 1; i <= 5; i++) {\n  console.log(i * 2);\n}",
+     "o": "2\n4\n6\n8\n10",
+     "tip": "The name «i» is just a habit (it means index). You can use another name."
+    },
+    {
+     "h": "Count your own way",
+     "p": "You can start anywhere and step by any amount. To go down, use «--» or «-=». The condition decides when to stop.\n\nThe counter made with «let» exists only inside the loop. After the loop it is gone, and using it gives a «ReferenceError».",
+     "c": "for (let i = 10; i > 0; i -= 3) {\n  console.log(i);\n}",
+     "o": "10\n7\n4\n1",
+     "tip": "After 1 the counter would be -2. That is not above 0, so the loop stops."
+    }
+   ]
+  },
+  {
+   "t": "break, continue and nesting",
+   "pages": [
+    {
+     "h": "break: stop the loop now",
+     "p": "Sometimes you want to leave a loop early. The word **break** ends the loop at once. JavaScript jumps to the first line after the loop.\n\nHere we print numbers until their square is bigger than 30.",
+     "c": "for (let i = 1; i <= 10; i++) {\n  if (i * i > 30) {\n    break;\n  }\n  console.log(i);\n}\nconsole.log(\"Stopped\");",
+     "o": "1\n2\n3\n4\n5\nStopped",
+     "tip": "6 times 6 is 36, which is more than 30. So «break» runs when «i» is 6."
+    },
+    {
+     "h": "continue: skip this round",
+     "p": "The word **continue** skips the rest of the current round and goes straight to the next one. The loop does not end.\n\nThis loop prints all numbers from 1 to 5, except 3.",
+     "c": "for (let i = 1; i <= 5; i++) {\n  if (i === 3) {\n    continue;\n  }\n  console.log(i);\n}",
+     "o": "1\n2\n4\n5",
+     "tip": "«break» leaves the whole loop. «continue» only leaves this round."
+    },
+    {
+     "h": "A loop inside a loop",
+     "p": "You can put a loop inside another loop. This is called **nesting**. For each round of the outer loop, the inner loop runs all its rounds from the beginning.\n\nThink of a clock: for each hour, the minutes go around fully.",
+     "c": "for (let row = 1; row <= 3; row++) {\n  for (let col = 1; col <= 2; col++) {\n    console.log(row + \",\" + col);\n  }\n}",
+     "o": "1,1\n1,2\n2,1\n2,2\n3,1\n3,2",
+     "tip": "Use different names for the counters: «row» and «col», or «i» and «j»."
+    },
+    {
+     "h": "How many times does it run?",
+     "p": "With nested loops, the inner body runs **outer rounds × inner rounds** times. Above, 3 rows and 2 columns give 3 × 2 = 6 lines.\n\nThe inner counter starts again each time the outer loop moves on. You can even use the outer counter in the inner condition.",
+     "c": "for (let i = 1; i <= 3; i++) {\n  for (let j = 1; j <= i; j++) {\n    console.log(i + \"-\" + j);\n  }\n}",
+     "o": "1-1\n2-1\n2-2\n3-1\n3-2\n3-3",
+     "tip": "When «i» is 2, the inner loop counts only up to 2."
+    }
+   ]
+  },
+  {
+   "t": "Loop patterns",
+   "pages": [
+    {
+     "h": "Adding up a total",
+     "p": "A very common job: add many numbers into one **total**. Make a variable before the loop, start it at 0, and add to it in every round. A variable that collects a result like this is often called an **accumulator**.",
+     "c": "let total = 0;\nfor (let i = 1; i <= 5; i++) {\n  total += i;\n}\nconsole.log(total);",
+     "o": "15",
+     "tip": "Make the accumulator **before** the loop. If you make it inside, it starts again every round."
+    },
+    {
+     "h": "Counting things",
+     "p": "To count how many numbers pass a test, use a counter that starts at 0. Put an «if» inside the loop, and add 1 only when the test is true.",
+     "c": "let count = 0;\nfor (let n = 1; n <= 10; n++) {\n  if (n % 3 === 0) {\n    count++;\n  }\n}\nconsole.log(count);",
+     "o": "3",
+     "tip": "The numbers 3, 6 and 9 can be divided by 3 with no remainder. So the answer is 3."
+    },
+    {
+     "h": "Building a string",
+     "p": "You can also collect text. Start with an empty string «\"\"» and join something to it in each round with «+=». Nested loops make shapes: the inner loop builds one line, then you print it.",
+     "c": "for (let row = 1; row <= 3; row++) {\n  let stars = \"\";\n  for (let i = 1; i <= row; i++) {\n    stars += \"*\";\n  }\n  console.log(stars);\n}",
+     "o": "*\n**\n***",
+     "tip": "«stars» is made inside the outer loop, so every row starts with empty text."
+    },
+    {
+     "h": "Trace it with a table",
+     "p": "When a loop confuses you, draw a table. Write one row per round and follow every variable. Here we multiply: the start value must be **1**, because 0 times anything is 0.\n\n**i=1**: result 1 · **i=2**: result 2 · **i=3**: result 6 · **i=4**: result 24",
+     "c": "let result = 1;\nfor (let i = 1; i <= 4; i++) {\n  result *= i;\n}\nconsole.log(result);",
+     "o": "24",
+     "tip": "Total starts at 0 (for adding). Product starts at 1 (for multiplying)."
+    }
+   ]
+  }
+ ],
+ "hand": [
+  {
+   "type": "out",
+   "code": "for (let i = 0; i < 3; i++) {\n  console.log(i);\n}",
+   "answer": "0\n1\n2",
+   "wrong": [
+    "1\n2\n3",
+    "0\n1\n2\n3",
+    "3"
+   ],
+   "why": "The counter starts at 0 and the loop stops before it reaches 3, so it prints 0, 1 and 2."
+  },
+  {
+   "type": "mc",
+   "q": "How many times does the body of this loop run?\nfor (let i = 1; i <= 4; i++)",
+   "code": null,
+   "ans": "4",
+   "wrong": [
+    "3",
+    "5",
+    "It never stops"
+   ],
+   "why": "The counter is 1, 2, 3 and 4. All of them satisfy «i <= 4», so the body runs 4 times."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the countdown so it ends.",
+   "code": "let n = 3;\nwhile (n > 0) {\n  console.log(n);\n  ___\n}",
+   "ans": [
+    "n--;",
+    "n--",
+    "n -= 1;",
+    "n -= 1",
+    "n = n - 1;",
+    "n = n - 1"
+   ],
+   "why": "Something must make «n > 0» false in the end. Taking 1 off each round does that."
+  },
+  {
+   "type": "out",
+   "code": "let total = 0;\nfor (let i = 1; i <= 4; i++) {\n  total += i;\n}\nconsole.log(total);",
+   "answer": "10",
+   "wrong": [
+    "4",
+    "24",
+    "6"
+   ],
+   "why": "The loop adds 1 + 2 + 3 + 4, which is 10. Multiplying would give 24."
+  },
+  {
+   "type": "mc",
+   "q": "What does the word «break» do inside a loop?",
+   "code": null,
+   "ans": "It ends the whole loop at once",
+   "wrong": [
+    "It skips only the current round",
+    "It ends the whole program",
+    "It starts the loop again from the beginning"
+   ],
+   "why": "«break» jumps out of the loop. The program carries on with the line after the loop."
+  },
+  {
+   "type": "out",
+   "code": "for (let i = 1; i <= 5; i++) {\n  if (i % 2 === 0) {\n    continue;\n  }\n  console.log(i);\n}",
+   "answer": "1\n3\n5",
+   "wrong": [
+    "2\n4",
+    "1\n2\n3\n4\n5",
+    "1\n3"
+   ],
+   "why": "For even numbers, «continue» skips the print. Only the odd numbers 1, 3 and 5 are shown."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the condition so the loop prints 0, 1, 2, 3 and 4.",
+   "code": "for (let i = 0; ___; i++) {\n  console.log(i);\n}",
+   "ans": [
+    "i < 5",
+    "i <= 4",
+    "5 > i",
+    "4 >= i"
+   ],
+   "why": "The loop must keep going while «i» is still 4 or less, which means the same as less than 5."
+  },
+  {
+   "type": "order",
+   "q": "Put the lines in order to make a countdown that ends with Liftoff.",
+   "lines": [
+    "let n = 3;",
+    "while (n > 0) {",
+    "  console.log(n);",
+    "  n--;",
+    "}",
+    "console.log(\"Liftoff\");"
+   ],
+   "why": "Make the variable first, then the loop that prints and changes it. «Liftoff» goes after the closing brace, so it prints once at the end."
+  },
+  {
+   "type": "out",
+   "code": "let s = \"\";\nfor (let i = 1; i <= 4; i++) {\n  s += i;\n}\nconsole.log(s);",
+   "answer": "1234",
+   "wrong": [
+    "10",
+    "4",
+    "1,2,3,4"
+   ],
+   "why": "Because «s» is text, «+=» joins instead of adding. The text grows: \"1\", \"12\", \"123\", \"1234\"."
+  },
+  {
+   "type": "out",
+   "code": "let count = 0;\nfor (let i = 0; i < 3; i++) {\n  for (let j = 0; j < 2; j++) {\n    count++;\n  }\n}\nconsole.log(count);",
+   "answer": "6",
+   "wrong": [
+    "5",
+    "3",
+    "32"
+   ],
+   "why": "The outer loop runs 3 times and the inner loop runs 2 times each time, so «count++» runs 3 × 2 = 6 times."
+  },
+  {
+   "type": "mc",
+   "q": "You want to keep halving a number until it is smaller than 1. You do not know how many rounds it will take. Which loop fits best?",
+   "code": null,
+   "ans": "while (number >= 1) { ... }",
+   "wrong": [
+    "for (let i = 0; i < 10; i++) { ... }",
+    "if (number >= 1) { ... }",
+    "for (let i = 1; i <= number; i++) { ... }"
+   ],
+   "why": "When you do not know the number of rounds, a «while» loop with a condition is the natural choice. «if» runs only once."
+  },
+  {
+   "type": "mc",
+   "q": "A student writes: let i = 0; while (i < 3) { console.log(i); } — what happens?",
+   "code": null,
+   "ans": "It prints 0 again and again without stopping",
+   "wrong": [
+    "It prints 0, 1 and 2",
+    "It prints 0 once and stops",
+    "JavaScript shows a SyntaxError"
+   ],
+   "why": "Nothing changes «i», so «i < 3» is always true. This is an infinite loop. Adding «i++» in the braces fixes it."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the line so the program prints hahaha.",
+   "code": "let word = \"\";\nfor (let i = 0; i < 3; i++) {\n  word += ___;\n}\nconsole.log(word);",
+   "ans": [
+    "\"ha\"",
+    "'ha'"
+   ],
+   "why": "Each round joins the text «ha» to «word». After 3 rounds the text is hahaha."
+  },
+  {
+   "type": "out",
+   "code": "let i = 1;\nwhile (i <= 20) {\n  i *= 2;\n}\nconsole.log(i);",
+   "answer": "32",
+   "wrong": [
+    "20",
+    "16",
+    "40"
+   ],
+   "why": "«i» goes 1, 2, 4, 8, 16. Since 16 is still 20 or less, it doubles once more to 32. Then the loop stops."
+  }
+ ],
+ "hard": [
+  {
+   "type": "out",
+   "code": "for (let row = 1; row <= 3; row++) {\n  let line = \"\";\n  for (let c = 1; c <= row; c++) {\n    line += c;\n  }\n  console.log(line);\n}",
+   "answer": "1\n12\n123",
+   "wrong": [
+    "1\n2\n3",
+    "1\n11\n111",
+    "123\n123\n123"
+   ],
+   "why": "The inner loop adds the numbers 1 up to «row» as text. Row 1 gives 1, row 2 gives 12, row 3 gives 123."
+  },
+  {
+   "type": "out",
+   "code": "let sum = 0;\nfor (let i = 1; i <= 10; i++) {\n  if (i % 2 === 0) {\n    continue;\n  }\n  if (i > 7) {\n    break;\n  }\n  sum += i;\n}\nconsole.log(sum);",
+   "answer": "16",
+   "wrong": [
+    "25",
+    "12",
+    "28"
+   ],
+   "why": "Even numbers are skipped. The odd numbers 1, 3, 5 and 7 are added (16). At 9, «break» ends the loop before adding. Without «break» the sum would be 25."
+  },
+  {
+   "type": "out",
+   "code": "for (let i = 5; i >= 1; i -= 2) {\n  console.log(i);\n}",
+   "answer": "5\n3\n1",
+   "wrong": [
+    "5\n4\n3\n2\n1",
+    "5\n3",
+    "3\n1"
+   ],
+   "why": "The counter goes 5, 3, 1. Next would be -1, which fails «i >= 1», so the loop ends."
+  },
+  {
+   "type": "out",
+   "code": "let n = 6;\nlet steps = 0;\nwhile (n !== 1) {\n  if (n % 2 === 0) {\n    n = n / 2;\n  } else {\n    n = n * 3 + 1;\n  }\n  steps++;\n}\nconsole.log(steps);",
+   "answer": "8",
+   "wrong": [
+    "6",
+    "5",
+    "9"
+   ],
+   "why": "«n» goes 6, 3, 10, 5, 16, 8, 4, 2, 1. That is 8 changes, so «steps» is 8."
+  },
+  {
+   "type": "out",
+   "code": "let s = \"\";\nfor (let i = 1; i <= 5; i++) {\n  if (i % 2 === 0) {\n    s += \"-\";\n  } else {\n    s += i;\n  }\n}\nconsole.log(s);",
+   "answer": "1-3-5",
+   "wrong": [
+    "12345",
+    "1-3-5-",
+    "-1-3-"
+   ],
+   "why": "Odd numbers are joined as digits, even numbers as a dash. The text builds up as 1, 1-, 1-3, 1-3-, 1-3-5."
+  },
+  {
+   "type": "mc",
+   "q": "Which loop prints 1, 2 and 3 and then stops?",
+   "code": null,
+   "ans": "for (let i = 1; i <= 3; i++)",
+   "wrong": [
+    "for (let i = 1; i < 3; i++)",
+    "for (let i = 0; i < 3; i++)",
+    "for (let i = 3; i >= 1; i++)"
+   ],
+   "why": "This one starts at 1 and includes 3. The first prints only 1 and 2, the second prints 0 to 2, and the last one counts upward from 3 and never stops."
+  },
+  {
+   "type": "out",
+   "code": "let count = 0;\nfor (let i = 1; i <= 4; i++) {\n  for (let j = 1; j <= i; j++) {\n    count++;\n  }\n}\nconsole.log(count);",
+   "answer": "10",
+   "wrong": [
+    "16",
+    "4",
+    "6"
+   ],
+   "why": "The inner loop runs 1, 2, 3 and 4 times. 1 + 2 + 3 + 4 = 10. A full 4 × 4 square would be 16, but the inner limit grows with «i»."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the condition so the program counts the multiples of 5 from 1 to 20 and prints 4.",
+   "code": "let count = 0;\nfor (let i = 1; i <= 20; i++) {\n  if (___) {\n    count++;\n  }\n}\nconsole.log(count);",
+   "ans": [
+    "i % 5 === 0",
+    "i%5===0",
+    "0 === i % 5",
+    "i % 5 == 0"
+   ],
+   "why": "A multiple of 5 leaves remainder 0 when divided by 5. The numbers are 5, 10, 15 and 20."
+  },
+  {
+   "type": "order",
+   "q": "Put the lines in order. The program should print 24.",
+   "lines": [
+    "let result = 1;",
+    "for (let i = 2; i <= 4; i++) {",
+    "  result *= i;",
+    "}",
+    "console.log(result);"
+   ],
+   "why": "The product starts at 1 before the loop. The loop multiplies by 2, 3 and 4, and the print comes after the closing brace."
+  },
+  {
+   "type": "mc",
+   "q": "After this code runs, what does the last line do?",
+   "code": "for (let i = 0; i < 3; i++) {\n  // work\n}\nconsole.log(i);",
+   "ans": "It stops with ReferenceError: i is not defined",
+   "wrong": [
+    "It prints 3",
+    "It prints 2",
+    "It prints undefined"
+   ],
+   "why": "A counter made with «let» in the for header exists only inside the loop. Outside it, the name is unknown."
+  }
+ ],
+ "bugs": [
+  {
+   "title": "Bug hunt 1",
+   "items": [
+    {
+     "code": "let total = 0;\nfor (let i = 1; i <= 5; i++) {\n  total = i;\n}\nconsole.log(total);",
+     "fixed": "let total = 0;\nfor (let i = 1; i <= 5; i++) {\n  total += i;\n}\nconsole.log(total);",
+     "line": 2,
+     "symptom": "It prints 5 but the total of 1 to 5 should be 15.",
+     "why": "«total = i» replaces the total in every round. «total += i» adds to it."
+    },
+    {
+     "code": "for (let i = 1; i < 5; i++) {\n  console.log(i);\n}\nconsole.log(\"Done\");",
+     "fixed": "for (let i = 1; i <= 5; i++) {\n  console.log(i);\n}\nconsole.log(\"Done\");",
+     "line": 0,
+     "symptom": "It should print 1 to 5 and then Done, but 5 is missing.",
+     "why": "«i < 5» stops before 5. Use «i <= 5» to include the last number."
+    },
+    {
+     "code": "for (let i = 1; i <= 5; i++) {\n  if (i === 3) {\n    break;\n  }\n  console.log(i);\n}",
+     "fixed": "for (let i = 1; i <= 5; i++) {\n  if (i === 3) {\n    continue;\n  }\n  console.log(i);\n}",
+     "line": 2,
+     "symptom": "It should skip only the number 3 (1, 2, 4, 5) but it prints just 1 and 2.",
+     "why": "«break» ends the whole loop. «continue» skips only this round."
+    }
+   ]
+  },
+  {
+   "title": "Bug hunt 2",
+   "items": [
+    {
+     "code": "let result = 0;\nfor (let i = 1; i <= 4; i++) {\n  result *= i;\n}\nconsole.log(result);",
+     "fixed": "let result = 1;\nfor (let i = 1; i <= 4; i++) {\n  result *= i;\n}\nconsole.log(result);",
+     "line": 0,
+     "symptom": "It prints 0 but 1 × 2 × 3 × 4 should be 24.",
+     "why": "Anything times 0 is 0. A product must start at 1."
+    },
+    {
+     "code": "let line = \"\";\nfor (let i = 0; i < 4; i++) {\n  line = \"*\";\n}\nconsole.log(line);",
+     "fixed": "let line = \"\";\nfor (let i = 0; i < 4; i++) {\n  line += \"*\";\n}\nconsole.log(line);",
+     "line": 2,
+     "symptom": "It prints one star, but it should print four: ****.",
+     "why": "«=» replaces the text every round. «+=» adds a new star to the text."
+    },
+    {
+     "code": "let count = 0;\nfor (let i = 1; i <= 10; i++) {\n  if (i % 3 === 1) {\n    count++;\n  }\n}\nconsole.log(count);",
+     "fixed": "let count = 0;\nfor (let i = 1; i <= 10; i++) {\n  if (i % 3 === 0) {\n    count++;\n  }\n}\nconsole.log(count);",
+     "line": 2,
+     "symptom": "It should count the multiples of 3 up to 10 (3), but it prints 4.",
+     "why": "A multiple of 3 has remainder 0, not 1. The remainder 1 matches 1, 4, 7 and 10."
+    }
+   ]
+  }
+ ],
+ "project": {
+  "title": "FizzBuzz Line",
+  "brief": "Write a function «fizzBuzz(n)» that returns one string with the numbers from 1 to «n», separated by single spaces. But:\n\n• a multiple of 3 becomes «Fizz»\n• a multiple of 5 becomes «Buzz»\n• a multiple of both 3 and 5 becomes «FizzBuzz»\n\nExample: «fizzBuzz(5)» returns «\"1 2 Fizz 4 Buzz\"». There is no space at the start or end. If «n» is 0, return an empty string.",
+  "fn": "fizzBuzz",
+  "starter": "function fizzBuzz(n) {\n  // build the text in a loop and return it\n  return \"x\";\n}\n",
+  "solution": "function fizzBuzz(n) {\n  let result = \"\";\n  for (let i = 1; i <= n; i++) {\n    let word = String(i);\n    if (i % 15 === 0) {\n      word = \"FizzBuzz\";\n    } else if (i % 3 === 0) {\n      word = \"Fizz\";\n    } else if (i % 5 === 0) {\n      word = \"Buzz\";\n    }\n    if (i > 1) {\n      result += \" \";\n    }\n    result += word;\n  }\n  return result;\n}\n",
+  "tests": [
+   {
+    "label": "fizzBuzz(1)",
+    "args": [
+     1
+    ],
+    "want": "1"
+   },
+   {
+    "label": "fizzBuzz(3)",
+    "args": [
+     3
+    ],
+    "want": "1 2 Fizz"
+   },
+   {
+    "label": "fizzBuzz(5)",
+    "args": [
+     5
+    ],
+    "want": "1 2 Fizz 4 Buzz"
+   },
+   {
+    "label": "fizzBuzz(15)",
+    "args": [
+     15
+    ],
+    "want": "1 2 Fizz 4 Buzz Fizz 7 8 Fizz Buzz 11 Fizz 13 14 FizzBuzz"
+   },
+   {
+    "label": "fizzBuzz(0)",
+    "args": [
+     0
+    ],
+    "want": ""
+   }
+  ]
+ }
+}

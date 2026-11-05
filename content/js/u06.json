@@ -1,0 +1,487 @@
+{
+ "t": "Functions",
+ "e": "🧩",
+ "lessons": [
+  {
+   "t": "Writing functions",
+   "pages": [
+    {
+     "h": "Write once, use many times",
+     "p": "You met the function shell in unit 1. Now let us use it properly. A **function** is a named block of code that you can run whenever you want. You write it once and **call** it as many times as you like.\n\nThe word in the brackets is a **parameter**: a name for an input. The value you pass when you call is the **argument**.",
+     "c": "function sayHi(name) {\n  console.log(\"Hi \" + name);\n}\nsayHi(\"Ana\");\nsayHi(\"Tom\");",
+     "o": "Hi Ana\nHi Tom",
+     "tip": "Writing the function does not run it. Only a call like «sayHi(\"Ana\")» runs it."
+    },
+    {
+     "h": "More than one parameter",
+     "p": "Separate parameters with commas. When you call the function, the arguments are matched **by position**: the first argument goes to the first parameter, the second to the second, and so on. So the order matters.",
+     "c": "function introduce(name, age) {\n  return name + \" is \" + age;\n}\nconsole.log(introduce(\"Mia\", 12));\nconsole.log(introduce(12, \"Mia\"));",
+     "o": "Mia is 12\n12 is Mia",
+     "tip": "JavaScript does not check the order for you. Look at your function when you call it."
+    },
+    {
+     "h": "return ends the function",
+     "p": "«return» sends a value back to the place where the function was called. It also **stops the function right away**. Any code after a «return» that runs is never reached.\n\nA function with no «return» gives back «undefined».",
+     "c": "function check(n) {\n  if (n < 0) {\n    return \"negative\";\n  }\n  return \"ok\";\n}\nconsole.log(check(-5));\nconsole.log(check(5));",
+     "o": "negative\nok",
+     "tip": "When «n» is -5 the first «return» runs, so the second one is skipped."
+    },
+    {
+     "h": "Use the result",
+     "p": "A call that returns a value can be used like any value: store it in a variable, do maths with it, or use it in an «if». Functions that answer yes or no, like «isEven», read very nicely in conditions.",
+     "c": "function isEven(n) {\n  return n % 2 === 0;\n}\nconst doubled = 5 * 2 + 1;\nif (isEven(doubled)) {\n  console.log(\"even\");\n} else {\n  console.log(\"odd\");\n}",
+     "o": "odd",
+     "tip": "Names like «isEven» or «isAdult» tell the reader that the function returns true or false."
+    }
+   ]
+  },
+  {
+   "t": "More ways to write functions",
+   "pages": [
+    {
+     "h": "Default parameters",
+     "p": "You can give a parameter a **default value** with «=». If the caller leaves that argument out, JavaScript uses the default. If the caller gives a value, that value wins.",
+     "c": "function greet(name = \"friend\") {\n  return \"Hello, \" + name + \"!\";\n}\nconsole.log(greet());\nconsole.log(greet(\"Omar\"));",
+     "o": "Hello, friend!\nHello, Omar!",
+     "tip": "Without a default, a missing argument becomes «undefined»."
+    },
+    {
+     "h": "Arrow functions",
+     "p": "There is a shorter way to write a function: an **arrow function**. You store it in a «const». Write the parameters, then an arrow «=>», then the value to return.\n\nWhen the part after the arrow is a single expression, it is returned automatically. You do not write «return».",
+     "c": "const double = (n) => n * 2;\nconst add = (a, b) => a + b;\nconsole.log(double(4));\nconsole.log(add(2, 3));",
+     "o": "8\n5",
+     "tip": "You call an arrow function exactly like a normal one: «double(4)»."
+    },
+    {
+     "h": "Arrow functions with a block",
+     "p": "If an arrow function needs several lines, use curly braces after the arrow. Now it works like a normal function body, so you must write «return» yourself. Forget it and you get «undefined».",
+     "c": "const grade = (score) => {\n  if (score >= 50) {\n    return \"pass\";\n  }\n  return \"fail\";\n};\nconsole.log(grade(70));\nconsole.log(grade(30));",
+     "o": "pass\nfail",
+     "tip": "Normal or arrow? Both are fine. In this course use whichever feels clearer."
+    },
+    {
+     "h": "Functions calling functions",
+     "p": "A function can call another function. This lets you build big jobs from small, simple pieces. Each small function has one job and a clear name.",
+     "c": "function square(n) {\n  return n * n;\n}\nfunction sumOfSquares(a, b) {\n  return square(a) + square(b);\n}\nconsole.log(sumOfSquares(3, 4));",
+     "o": "25",
+     "tip": "3 squared is 9 and 4 squared is 16. Together that is 25."
+    }
+   ]
+  },
+  {
+   "t": "Scope",
+   "pages": [
+    {
+     "h": "Local variables",
+     "p": "A variable made inside a function is **local**: it exists only while the function runs, and only inside that function. The area where a name can be used is called its **scope**.\n\nParameters are local too. Outside the function, «secret» below does not exist, and using it would give a «ReferenceError».",
+     "c": "function makeNumber() {\n  const secret = 42;\n  return secret;\n}\nconsole.log(makeNumber());",
+     "o": "42",
+     "tip": "The function gave the value out with «return». The name «secret» stayed inside."
+    },
+    {
+     "h": "Reading outer variables",
+     "p": "A variable made outside all functions is an **outer** (global) variable. A function can read it, and even change it if it was made with «let».\n\nBut changing outer variables inside a function makes code hard to follow. A good habit: send data in with parameters, and get data out with «return».",
+     "c": "const rate = 3;\nlet counter = 0;\nfunction times(n) {\n  return n * rate;\n}\nfunction bump() {\n  counter++;\n}\nbump();\nbump();\nconsole.log(times(4), counter);",
+     "o": "12 2",
+     "tip": "«console.log» can print several values. It puts a space between them."
+    },
+    {
+     "h": "Same name, different boxes",
+     "p": "If a parameter or a local variable has the same name as an outer variable, they are **two separate boxes**. The function uses its own box and the outer one stays untouched.\n\nNumbers and text are **copied** into a parameter, so changing the parameter does not change the original.",
+     "c": "let x = 10;\nfunction change(x) {\n  x = x + 1;\n  return x;\n}\nconsole.log(change(5));\nconsole.log(x);",
+     "o": "6\n10",
+     "tip": "Inside «change», «x» is 5 at first. The outer «x» is a different variable."
+    },
+    {
+     "h": "Small functions, big programs",
+     "p": "Good functions do **one job** and have a clear name. They return a result instead of printing it, so other code can use that result.\n\nHere three small functions work together. Notice how «ticket» reads almost like English.",
+     "c": "function isAdult(age) {\n  return age >= 18;\n}\nfunction price(age) {\n  return isAdult(age) ? 10 : 5;\n}\nfunction ticket(name, age) {\n  return name + \" pays \" + price(age);\n}\nconsole.log(ticket(\"Lena\", 20));\nconsole.log(ticket(\"Sam\", 9));",
+     "o": "Lena pays 10\nSam pays 5",
+     "tip": "If a function is hard to name, it probably does too many jobs."
+    }
+   ]
+  }
+ ],
+ "hand": [
+  {
+   "type": "out",
+   "code": "function double(n) {\n  return n * 2;\n}\nconsole.log(double(double(3)));",
+   "answer": "12",
+   "wrong": [
+    "6",
+    "9",
+    "36"
+   ],
+   "why": "The inner call «double(3)» gives 6. The outer call doubles that to 12."
+  },
+  {
+   "type": "mc",
+   "q": "In this code, which one is the argument?\nfunction hi(name) { ... }\nhi(\"Zoe\");",
+   "code": null,
+   "ans": "\"Zoe\"",
+   "wrong": [
+    "name",
+    "hi",
+    "function"
+   ],
+   "why": "The argument is the value you pass when calling. «name» is the parameter, the name that receives the value."
+  },
+  {
+   "type": "out",
+   "code": "function show() {\n  console.log(\"A\");\n}\nconst r = show();\nconsole.log(r);",
+   "answer": "A\nundefined",
+   "wrong": [
+    "A",
+    "A\nA",
+    "undefined"
+   ],
+   "why": "«show» prints A but has no «return», so it gives back «undefined». That is what «r» holds."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the function so it gives back three times the number.",
+   "code": "function triple(n) {\n  ___ n * 3;\n}",
+   "ans": [
+    "return"
+   ],
+   "why": "«return» sends the value back to the caller. Without it the function gives back «undefined»."
+  },
+  {
+   "type": "out",
+   "code": "function greet(name = \"friend\") {\n  return \"Hi \" + name;\n}\nconsole.log(greet());",
+   "answer": "Hi friend",
+   "wrong": [
+    "Hi undefined",
+    "Hi name",
+    "Hi null"
+   ],
+   "why": "No argument was passed, so the default value \"friend\" is used."
+  },
+  {
+   "type": "out",
+   "code": "const square = (n) => n * n;\nconsole.log(square(4) + 1);",
+   "answer": "17",
+   "wrong": [
+    "25",
+    "16",
+    "41"
+   ],
+   "why": "«square(4)» returns 16 and then 1 is added, so the result is 17."
+  },
+  {
+   "type": "order",
+   "q": "Put the lines in order so the program prints true.",
+   "lines": [
+    "function isEven(n) {",
+    "  return n % 2 === 0;",
+    "}",
+    "console.log(isEven(6));"
+   ],
+   "why": "Define the function first, then call it. 6 divided by 2 leaves remainder 0, so the answer is true."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the arrow function.",
+   "code": "const add = (a, b) ___ a + b;",
+   "ans": [
+    "=>"
+   ],
+   "why": "An arrow function puts «=>» between the parameters and the result."
+  },
+  {
+   "type": "out",
+   "code": "let x = 1;\nfunction f() {\n  let x = 5;\n  return x;\n}\nconsole.log(f(), x);",
+   "answer": "5 1",
+   "wrong": [
+    "5 5",
+    "1 1",
+    "1 5"
+   ],
+   "why": "The «x» inside «f» is a separate local variable. The outer «x» is still 1."
+  },
+  {
+   "type": "mc",
+   "q": "Why does a function usually use «return» instead of «console.log» for its answer?",
+   "code": null,
+   "ans": "return gives the value back, so other code can use it",
+   "wrong": [
+    "return makes the answer appear faster",
+    "console.log is not allowed inside functions",
+    "return prints the value in a nicer way"
+   ],
+   "why": "«console.log» only shows a value to the person. «return» hands the value to the code that called the function, which can store it or use it in maths."
+  },
+  {
+   "type": "out",
+   "code": "function f() {\n  return 1;\n  console.log(\"never\");\n}\nconsole.log(f());",
+   "answer": "1",
+   "wrong": [
+    "never\n1",
+    "1\nnever",
+    "never"
+   ],
+   "why": "«return» ends the function immediately. The line after it is never reached."
+  },
+  {
+   "type": "out",
+   "code": "function inc(n) {\n  return n + 1;\n}\nfunction twice(n) {\n  return inc(inc(n));\n}\nconsole.log(twice(5));",
+   "answer": "7",
+   "wrong": [
+    "6",
+    "8",
+    "10"
+   ],
+   "why": "«inc(5)» is 6 and «inc(6)» is 7. Calling one function from another is normal."
+  },
+  {
+   "type": "mc",
+   "q": "What happens when this code runs?",
+   "code": "function f() {\n  const secret = 7;\n}\nf();\nconsole.log(secret);",
+   "ans": "It stops with ReferenceError: secret is not defined",
+   "wrong": [
+    "It prints 7",
+    "It prints undefined",
+    "It prints secret"
+   ],
+   "why": "«secret» is local to the function. The last line is outside, where that name does not exist."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the default so «power(5)» returns 25.",
+   "code": "function power(base, exp = ___) {\n  return base ** exp;\n}",
+   "ans": [
+    "2"
+   ],
+   "why": "Without a second argument the default is used. 5 to the power 2 is 25."
+  }
+ ],
+ "hard": [
+  {
+   "type": "out",
+   "code": "function minus(a, b) {\n  return a - b;\n}\nconsole.log(minus(10, 2) * minus(2, 10));",
+   "answer": "-64",
+   "wrong": [
+    "64",
+    "16",
+    "-16"
+   ],
+   "why": "«minus(10, 2)» is 8 and «minus(2, 10)» is -8. Arguments go by position, so the order matters. 8 times -8 is -64."
+  },
+  {
+   "type": "out",
+   "code": "let count = 0;\nfunction bump() {\n  count += 2;\n  return count;\n}\nbump();\nconsole.log(bump() + count);",
+   "answer": "8",
+   "wrong": [
+    "6",
+    "4",
+    "12"
+   ],
+   "why": "After the first call «count» is 2. The second call makes it 4 and returns 4. Then «count» is read as 4 too, so 4 + 4 is 8."
+  },
+  {
+   "type": "out",
+   "code": "function change(n) {\n  n = n * 2;\n  return n;\n}\nlet n = 5;\nconsole.log(change(n), n);",
+   "answer": "10 5",
+   "wrong": [
+    "10 10",
+    "5 5",
+    "5 10"
+   ],
+   "why": "The parameter «n» is a copy. Doubling it does not change the outer «n», which stays 5."
+  },
+  {
+   "type": "out",
+   "code": "function add(a, b = 10) {\n  return a + b;\n}\nconsole.log(add(1), add(1, 2));",
+   "answer": "11 3",
+   "wrong": [
+    "11 11",
+    "3 3",
+    "NaN 3"
+   ],
+   "why": "With one argument, «b» is 10, so the result is 11. With two arguments, «b» is 2, so the result is 3."
+  },
+  {
+   "type": "out",
+   "code": "function sumTo(n) {\n  let total = 0;\n  for (let i = 1; i <= n; i++) {\n    total += i;\n  }\n  return total;\n}\nconst double = (x) => x * 2;\nconsole.log(double(sumTo(4)));",
+   "answer": "20",
+   "wrong": [
+    "10",
+    "8",
+    "24"
+   ],
+   "why": "«sumTo(4)» is 1 + 2 + 3 + 4 = 10. The arrow function doubles it to 20."
+  },
+  {
+   "type": "out",
+   "code": "function firstBig(limit) {\n  for (let i = 1; i <= 10; i++) {\n    if (i * i > limit) {\n      return i;\n    }\n  }\n  return -1;\n}\nconsole.log(firstBig(20), firstBig(500));",
+   "answer": "5 -1",
+   "wrong": [
+    "5 5",
+    "4 -1",
+    "25 -1"
+   ],
+   "why": "For 20, the first square above 20 is 5 × 5 = 25, so the loop returns 5. For 500, no square up to 10 × 10 is above 500, so the loop ends and the function returns -1."
+  },
+  {
+   "type": "mc",
+   "q": "What does this program print?",
+   "code": "function add(a, b) {\n  a + b;\n}\nconsole.log(add(1, 2));",
+   "ans": "undefined",
+   "wrong": [
+    "3",
+    "NaN",
+    "It shows a ReferenceError"
+   ],
+   "why": "The line «a + b;» works out the sum but throws it away. With no «return», the function gives back «undefined»."
+  },
+  {
+   "type": "out",
+   "code": "const f = (a, b = 2) => a ** b;\nconsole.log(f(3), f(2, 5));",
+   "answer": "9 32",
+   "wrong": [
+    "9 8",
+    "6 10",
+    "9 25"
+   ],
+   "why": "«f(3)» uses the default 2, so 3 ** 2 is 9. «f(2, 5)» is 2 to the power 5, which is 32."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the condition so the program prints teen.",
+   "code": "function isTeen(age) {\n  return age >= 13 && age <= 19;\n}\nlet age = 15;\nif (___) {\n  console.log(\"teen\");\n}",
+   "ans": [
+    "isTeen(age)",
+    "isTeen(15)",
+    "isTeen(age) === true"
+   ],
+   "why": "The «if» needs a true or false value. The call «isTeen(age)» returns exactly that."
+  },
+  {
+   "type": "order",
+   "q": "Put the lines in order so the program prints HEY!",
+   "lines": [
+    "function shout(text) {",
+    "  return text.toUpperCase() + \"!\";",
+    "}",
+    "const msg = shout(\"hey\");",
+    "console.log(msg);"
+   ],
+   "why": "The function is defined first, then called with an argument and stored in «msg», and finally printed."
+  }
+ ],
+ "bugs": [
+  {
+   "title": "Bug hunt 1",
+   "items": [
+    {
+     "code": "function double(n) {\n  n * 2;\n}\nconsole.log(double(4));",
+     "fixed": "function double(n) {\n  return n * 2;\n}\nconsole.log(double(4));",
+     "line": 1,
+     "symptom": "It prints undefined but it should print 8.",
+     "why": "The function works out «n * 2» but never gives it back. It needs «return»."
+    },
+    {
+     "code": "function divide(a, b) {\n  return a / b;\n}\nconsole.log(divide(2, 10));",
+     "fixed": "function divide(a, b) {\n  return a / b;\n}\nconsole.log(divide(10, 2));",
+     "line": 3,
+     "symptom": "It should divide 10 by 2 and print 5, but it prints 0.2.",
+     "why": "Arguments go to parameters by position. The first argument is «a», the number to divide."
+    },
+    {
+     "code": "function area(w, h) {\n  console.log(w * h);\n}\nconsole.log(area(3, 4) + 1);",
+     "fixed": "function area(w, h) {\n  return w * h;\n}\nconsole.log(area(3, 4) + 1);",
+     "line": 1,
+     "symptom": "It prints 12 and then NaN. It should print only 13.",
+     "why": "«console.log» shows the area but returns nothing, so «undefined + 1» is NaN. «return» gives the value back."
+    }
+   ]
+  },
+  {
+   "title": "Bug hunt 2",
+   "items": [
+    {
+     "code": "function total(price) {\n  const tax = price * 0.1;\n  return price + tax;\n}\nconsole.log(total(100) + tax);",
+     "fixed": "function total(price) {\n  const tax = price * 0.1;\n  return price + tax;\n}\nconsole.log(total(100));",
+     "line": 4,
+     "symptom": "ReferenceError: tax is not defined. It should print 110.",
+     "why": "«tax» is local to the function. Outside, the name does not exist. The result is already returned."
+    },
+    {
+     "code": "const square = (n) => { n * n };\nconsole.log(square(3));",
+     "fixed": "const square = (n) => n * n;\nconsole.log(square(3));",
+     "line": 0,
+     "symptom": "It prints undefined but it should print 9.",
+     "why": "With curly braces you must write «return». Without braces the value is returned automatically."
+    },
+    {
+     "code": "function square(n) {\n  return n * n;\n}\nfunction cube(n) {\n  return n * squar(n);\n}\nconsole.log(cube(2));",
+     "fixed": "function square(n) {\n  return n * n;\n}\nfunction cube(n) {\n  return n * square(n);\n}\nconsole.log(cube(2));",
+     "line": 4,
+     "symptom": "ReferenceError: squar is not defined. It should print 8.",
+     "why": "The name is spelled wrong. JavaScript only knows «square»."
+    }
+   ]
+  }
+ ],
+ "project": {
+  "title": "Cinema Ticket",
+  "brief": "Write a function «ticketPrice(age, isWeekend)» that returns the price of a cinema ticket.\n\n• younger than 5: free (0)\n• age 5 to 12: 8\n• age 65 or older: 10\n• everyone else: 15\n\nOn the weekend, add 2 to the price, but free tickets stay free. Make «isWeekend» default to «false», so «ticketPrice(30)» works with one argument.\n\nExamples: «ticketPrice(30)» is 15 and «ticketPrice(10, true)» is 10.",
+  "fn": "ticketPrice",
+  "starter": "function ticketPrice(age, isWeekend = false) {\n  // your code here\n  return 0;\n}\n",
+  "solution": "function ticketPrice(age, isWeekend = false) {\n  if (age < 5) {\n    return 0;\n  }\n  let price = 15;\n  if (age <= 12) {\n    price = 8;\n  } else if (age >= 65) {\n    price = 10;\n  }\n  if (isWeekend) {\n    price += 2;\n  }\n  return price;\n}\n",
+  "tests": [
+   {
+    "label": "ticketPrice(3)",
+    "args": [
+     3
+    ],
+    "want": 0
+   },
+   {
+    "label": "ticketPrice(10)",
+    "args": [
+     10
+    ],
+    "want": 8
+   },
+   {
+    "label": "ticketPrice(30)",
+    "args": [
+     30
+    ],
+    "want": 15
+   },
+   {
+    "label": "ticketPrice(70)",
+    "args": [
+     70
+    ],
+    "want": 10
+   },
+   {
+    "label": "ticketPrice(30, true)",
+    "args": [
+     30,
+     true
+    ],
+    "want": 17
+   },
+   {
+    "label": "ticketPrice(4, true)",
+    "args": [
+     4,
+     true
+    ],
+    "want": 0
+   },
+   {
+    "label": "ticketPrice(12, true)",
+    "args": [
+     12,
+     true
+    ],
+    "want": 10
+   }
+  ]
+ }
+}

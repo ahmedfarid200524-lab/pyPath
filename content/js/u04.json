@@ -1,0 +1,477 @@
+{
+ "t": "Making decisions",
+ "e": "🔀",
+ "lessons": [
+  {
+   "t": "if and else",
+   "pages": [
+    {
+     "h": "Asking a question with if",
+     "p": "So far your code ran every line, top to bottom. With **if** the program can decide. After «if» you write a **condition** in round brackets. A condition is a question with the answer true or false, like «temperature > 25».\n\nThe code inside the curly braces «{ }» runs only when the condition is true.",
+     "c": "let temperature = 30;\nif (temperature > 25) {\n  console.log(\"It is hot!\");\n}\nconsole.log(\"Done\");",
+     "o": "It is hot!\nDone",
+     "tip": "If the condition were false, only «Done» would print. The last line is outside the braces, so it always runs."
+    },
+    {
+     "h": "else: the other way",
+     "p": "Add **else** to say what to do when the condition is false. Exactly one of the two blocks runs, never both and never neither.",
+     "c": "let age = 15;\nif (age >= 18) {\n  console.log(\"You can vote.\");\n} else {\n  console.log(\"Not old enough yet.\");\n}",
+     "o": "Not old enough yet.",
+     "tip": "«else» has no condition of its own. It simply means \"in every other case\"."
+    },
+    {
+     "h": "else if: more than two choices",
+     "p": "Sometimes there are three or more choices. Put **else if** (with its own condition) between «if» and «else». JavaScript checks from the top. The **first** true condition wins, and all the rest are skipped.",
+     "c": "let score = 72;\nif (score >= 90) {\n  console.log(\"Grade A\");\n} else if (score >= 70) {\n  console.log(\"Grade B\");\n} else {\n  console.log(\"Keep practising\");\n}",
+     "o": "Grade B"
+    },
+    {
+     "h": "The order matters",
+     "p": "Because the first true condition wins, the order of your checks is important. Here the score is 95, and we wanted «Top». But «95 >= 50» is true, so the first block runs and the second is never reached.",
+     "c": "let score = 95;\nif (score >= 50) {\n  console.log(\"Pass\");\n} else if (score >= 90) {\n  console.log(\"Top\");\n}",
+     "o": "Pass",
+     "tip": "Put the strictest condition first (90 before 50)."
+    }
+   ]
+  },
+  {
+   "t": "Smart conditions",
+   "pages": [
+    {
+     "h": "And, or, not in conditions",
+     "p": "You met «&&» (and), «||» (or) and «!» (not) in the last unit. Conditions are where they shine. «&&» needs both sides true. «||» needs at least one side true.",
+     "c": "let day = \"Sat\";\nlet hour = 10;\nif (day === \"Sat\" || day === \"Sun\") {\n  console.log(\"Weekend\");\n}\nif (hour >= 9 && hour < 17) {\n  console.log(\"Shop is open\");\n}",
+     "o": "Weekend\nShop is open",
+     "tip": "Write each comparison in full. «day === \"Sat\" || \"Sun\"» does not work the way it looks."
+    },
+    {
+     "h": "return inside an if",
+     "p": "In a function, «return» ends the function straight away. So you can return early from inside an «if». Code after a returned line never runs. The last «return» catches every case the «if» blocks did not.",
+     "c": "function sign(n) {\n  if (n > 0) {\n    return \"positive\";\n  }\n  if (n < 0) {\n    return \"negative\";\n  }\n  return \"zero\";\n}\nconsole.log(sign(5));\nconsole.log(sign(-2));\nconsole.log(sign(0));",
+     "o": "positive\nnegative\nzero"
+    },
+    {
+     "h": "Truthy and falsy",
+     "p": "A condition does not have to be a comparison. JavaScript can treat **any** value as true or false. The values that count as **falsy** are: «false», «0», «\"\"» (empty text), «null», «undefined» and «NaN». Everything else is **truthy**, even the text «\"0\"».",
+     "c": "let name = \"\";\nif (name) {\n  console.log(\"Hello \" + name);\n} else {\n  console.log(\"Please type a name\");\n}\nif (\"0\") {\n  console.log(\"Text with a zero is truthy\");\n}",
+     "o": "Please type a name\nText with a zero is truthy",
+     "tip": "Handy: «if (name)» means \"if name is not empty\"."
+    },
+    {
+     "h": "Useful conditions with %",
+     "p": "Remember «%» gives the remainder. It makes great conditions. A number is even when «n % 2 === 0». It is a multiple of 5 when «n % 5 === 0».\n\nBeware of a classic slip: «=» stores a value, «===» compares. Inside an «if», you almost always want «===».",
+     "c": "let n = 15;\nif (n % 2 === 0) {\n  console.log(\"even\");\n} else {\n  console.log(\"odd\");\n}\nif (n % 5 === 0) {\n  console.log(\"multiple of 5\");\n}",
+     "o": "odd\nmultiple of 5"
+    }
+   ]
+  },
+  {
+   "t": "Shorter choices",
+   "pages": [
+    {
+     "h": "The ternary operator",
+     "p": "For a simple two-way choice there is a short form: «condition ? valueIfTrue : valueIfFalse». It is called the **ternary operator** because it has three parts. It is an expression, so it gives you a value you can store.",
+     "c": "let age = 20;\nlet label = age >= 18 ? \"adult\" : \"child\";\nconsole.log(label);\nconsole.log(age >= 21 ? \"can rent a car\" : \"too young to rent\");",
+     "o": "adult\ntoo young to rent"
+    },
+    {
+     "h": "Ternary in a function",
+     "p": "The ternary operator is perfect after «return», when each branch is a single value. Use a normal «if» when the branches need several lines. Short and clear beats clever.",
+     "c": "function parity(n) {\n  return n % 2 === 0 ? \"even\" : \"odd\";\n}\nconsole.log(parity(4));\nconsole.log(parity(7));",
+     "o": "even\nodd"
+    },
+    {
+     "h": "switch: many exact values",
+     "p": "When you compare one value against many exact options, **switch** is tidy. Each «case» is an option. «break» leaves the switch. «default» runs when no case matches. «switch» compares with «===».",
+     "c": "let color = \"green\";\nswitch (color) {\n  case \"red\":\n    console.log(\"Stop\");\n    break;\n  case \"yellow\":\n    console.log(\"Wait\");\n    break;\n  case \"green\":\n    console.log(\"Go\");\n    break;\n  default:\n    console.log(\"Unknown light\");\n}",
+     "o": "Go"
+    },
+    {
+     "h": "break and grouped cases",
+     "p": "Without «break», JavaScript **falls through**: it also runs the code of the next case. Sometimes that is useful. Stacking cases with no code between them lets several values share one result.",
+     "c": "let day = \"Sun\";\nswitch (day) {\n  case \"Sat\":\n  case \"Sun\":\n    console.log(\"Weekend\");\n    break;\n  default:\n    console.log(\"Weekday\");\n}",
+     "o": "Weekend",
+     "tip": "Forgetting «break» is the most common switch bug."
+    }
+   ]
+  }
+ ],
+ "hand": [
+  {
+   "type": "out",
+   "code": "let n = 5;\nif (n > 3) {\n  console.log(\"big\");\n} else {\n  console.log(\"small\");\n}\nconsole.log(\"end\");",
+   "answer": "big\nend",
+   "wrong": [
+    "big",
+    "small\nend",
+    "big\nsmall\nend"
+   ],
+   "why": "5 > 3 is true, so only the if block runs. The last line is outside, so it always runs."
+  },
+  {
+   "type": "mc",
+   "q": "When does the else block run?",
+   "code": null,
+   "ans": "When the if condition is false",
+   "wrong": [
+    "Every time, right after the if block",
+    "When the if condition is true",
+    "Only when the program has an error"
+   ],
+   "why": "else is the \"otherwise\" path: it runs only if the condition was false."
+  },
+  {
+   "type": "out",
+   "code": "let score = 85;\nif (score >= 90) {\n  console.log(\"A\");\n} else if (score >= 80) {\n  console.log(\"B\");\n} else if (score >= 70) {\n  console.log(\"C\");\n} else {\n  console.log(\"D\");\n}",
+   "answer": "B",
+   "wrong": [
+    "A",
+    "C",
+    "D"
+   ],
+   "why": "85 is not at least 90, but it is at least 80. That is the first true condition, so the rest are skipped, even though 85 >= 70 is true too."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the condition so that exactly 18 counts as an adult.",
+   "code": "let age = 18;\nif (age ___ 18) {\n  console.log(\"Adult\");\n}",
+   "ans": [
+    ">="
+   ],
+   "why": "«>=» means greater than or equal, so 18 passes. Plain «>» would leave 18 out."
+  },
+  {
+   "type": "order",
+   "q": "Put the lines in order to print even or odd.",
+   "lines": [
+    "let n = 4;",
+    "if (n % 2 === 0) {",
+    "  console.log(\"even\");",
+    "} else {",
+    "  console.log(\"odd\");",
+    "}"
+   ],
+   "why": "The variable comes first, then the if with its condition, then the else block, and the closing brace last."
+  },
+  {
+   "type": "mc",
+   "q": "Which condition is true when x is from 1 to 10, including 1 and 10?",
+   "code": null,
+   "ans": "x >= 1 && x <= 10",
+   "wrong": [
+    "x >= 1 || x <= 10",
+    "x > 1 && x < 10",
+    "x >= 1, x <= 10"
+   ],
+   "why": "Both limits must hold, so use «&&». «||» would be true for every number, and «>» / «<» would leave out 1 and 10."
+  },
+  {
+   "type": "out",
+   "code": "let a = true;\nlet b = false;\nif (a && b) {\n  console.log(\"both\");\n} else if (a || b) {\n  console.log(\"one\");\n} else {\n  console.log(\"none\");\n}",
+   "answer": "one",
+   "wrong": [
+    "both",
+    "none",
+    "one\nnone"
+   ],
+   "why": "«a && b» is false, because b is false. «a || b» is true, because a is true. So the second block runs."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the ternary operator.",
+   "code": "let n = 7;\nconsole.log(n % 2 === 0 ___ \"even\" : \"odd\");",
+   "ans": [
+    "?"
+   ],
+   "why": "The shape is «condition ? valueIfTrue : valueIfFalse». The «?» comes right after the condition."
+  },
+  {
+   "type": "out",
+   "code": "console.log(5 > 3 ? \"yes\" : \"no\", 2 > 3 ? \"yes\" : \"no\");",
+   "answer": "yes no",
+   "wrong": [
+    "yes yes",
+    "no no",
+    "no yes"
+   ],
+   "why": "5 > 3 is true, so the first ternary gives «yes». 2 > 3 is false, so the second gives «no»."
+  },
+  {
+   "type": "mc",
+   "q": "What happens if you forget break at the end of a case?",
+   "code": null,
+   "ans": "The next case's code runs as well",
+   "wrong": [
+    "JavaScript shows a syntax error",
+    "Nothing, break is only decoration",
+    "The switch starts again from the top"
+   ],
+   "why": "Without «break», execution falls through into the following case, running its lines too."
+  },
+  {
+   "type": "out",
+   "code": "let n = 2;\nswitch (n) {\n  case 1:\n    console.log(\"one\");\n    break;\n  case 2:\n    console.log(\"two\");\n    break;\n  default:\n    console.log(\"many\");\n}",
+   "answer": "two",
+   "wrong": [
+    "one",
+    "many",
+    "two\nmany"
+   ],
+   "why": "n is 2, so «case 2» matches, prints «two», and «break» leaves the switch before «default»."
+  },
+  {
+   "type": "out",
+   "code": "let name = \"\";\nif (name) {\n  console.log(\"Hi \" + name);\n} else {\n  console.log(\"No name\");\n}",
+   "answer": "No name",
+   "wrong": [
+    "Hi",
+    "Hi undefined",
+    "Nothing is printed"
+   ],
+   "why": "Empty text is falsy, so the condition counts as false and the else block runs."
+  },
+  {
+   "type": "fill",
+   "q": "Which word starts the block that runs when no case matches?",
+   "code": "let x = 5;\nswitch (x) {\n  case 1:\n    console.log(\"one\");\n    break;\n  ___:\n    console.log(\"other\");\n}",
+   "ans": [
+    "default"
+   ],
+   "why": "«default:» is the catch-all of a switch, like «else» in an if."
+  },
+  {
+   "type": "order",
+   "q": "Put the lines in order so the program prints \"Adult\".",
+   "lines": [
+    "let age = 20;",
+    "const kind = age >= 18 ? \"Adult\" : \"Child\";",
+    "console.log(kind);"
+   ],
+   "why": "The variable must exist first, then the ternary uses it to choose a word, and only then can you print the result."
+  }
+ ],
+ "hard": [
+  {
+   "type": "out",
+   "code": "let n = 15;\nif (n % 3 === 0) {\n  console.log(\"Fizz\");\n}\nif (n % 5 === 0) {\n  console.log(\"Buzz\");\n}",
+   "answer": "Fizz\nBuzz",
+   "wrong": [
+    "Fizz",
+    "Buzz",
+    "FizzBuzz"
+   ],
+   "why": "These are two separate «if» statements, not an else-if chain. Both conditions are true, so both blocks run, each on its own line."
+  },
+  {
+   "type": "out",
+   "code": "let x = 5;\nif (x > 3) {\n  console.log(\"A\");\n}\nif (x > 4) {\n  console.log(\"B\");\n} else {\n  console.log(\"C\");\n}",
+   "answer": "A\nB",
+   "wrong": [
+    "A",
+    "A\nC",
+    "B"
+   ],
+   "why": "The «else» belongs only to the second «if». The first if prints A, and then the second if (5 > 4) prints B."
+  },
+  {
+   "type": "mc",
+   "q": "Which of these values is truthy?",
+   "code": null,
+   "ans": "\"0\" (text containing a zero)",
+   "wrong": [
+    "0 (the number zero)",
+    "\"\" (empty text)",
+    "undefined"
+   ],
+   "why": "Only the number 0, empty text, null, undefined, NaN and false are falsy. Any non-empty text, even «\"0\"», is truthy."
+  },
+  {
+   "type": "out",
+   "code": "let n = 2;\nswitch (n) {\n  case 1:\n    console.log(\"a\");\n  case 2:\n    console.log(\"b\");\n  case 3:\n    console.log(\"c\");\n    break;\n  case 4:\n    console.log(\"d\");\n}",
+   "answer": "b\nc",
+   "wrong": [
+    "b",
+    "b\nc\nd",
+    "a\nb\nc"
+   ],
+   "why": "«case 2» matches and prints b. It has no «break», so it falls into «case 3», prints c, and that «break» stops everything."
+  },
+  {
+   "type": "out",
+   "code": "let a = 4;\nlet b = 9;\nconsole.log(a > b ? a : b, a % 2 === 0 ? \"even\" : \"odd\");",
+   "answer": "9 even",
+   "wrong": [
+    "4 even",
+    "9 odd",
+    "4 odd"
+   ],
+   "why": "«a > b» is false, so the first ternary gives b, which is 9. 4 is even, so the second gives «even»."
+  },
+  {
+   "type": "out",
+   "code": "function check(n) {\n  if (n > 10) {\n    return \"big\";\n  }\n  console.log(\"checking\");\n  return \"small\";\n}\nconsole.log(check(20));",
+   "answer": "big",
+   "wrong": [
+    "checking\nbig",
+    "checking\nsmall",
+    "small"
+   ],
+   "why": "20 > 10, so «return \"big\"» ends the function at once. The «checking» line is never reached."
+  },
+  {
+   "type": "mc",
+   "q": "Why is this condition always true?",
+   "code": "if (x === 1 || 2) {\n  console.log(\"one or two\");\n}",
+   "ans": "2 is truthy on its own, so the || is always true",
+   "wrong": [
+    "|| cannot be used with numbers",
+    "=== cannot be combined with ||",
+    "It is true only when x is 2"
+   ],
+   "why": "«x === 1 || 2» means «(x === 1) || 2». The «2» alone is truthy. You must write «x === 1 || x === 2»."
+  },
+  {
+   "type": "out",
+   "code": "function group(a) {\n  if (a < 13) {\n    return \"child\";\n  } else if (a < 65) {\n    return \"adult\";\n  }\n  return \"senior\";\n}\nconsole.log(group(12), group(13), group(64), group(65));",
+   "answer": "child adult adult senior",
+   "wrong": [
+    "child child adult senior",
+    "child adult senior senior",
+    "child adult adult adult"
+   ],
+   "why": "The limits use «<», so 13 is already an adult and 65 is already a senior. Check the edges carefully."
+  },
+  {
+   "type": "out",
+   "code": "function leap(y) {\n  return (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;\n}\nconsole.log(leap(1900), leap(2000), leap(2024));",
+   "answer": "false true true",
+   "wrong": [
+    "true true true",
+    "false false true",
+    "true false true"
+   ],
+   "why": "1900 divides by 4 and 100 but not 400, so false. 2000 divides by 400, so true. 2024 divides by 4 but not 100, so true."
+  },
+  {
+   "type": "fill",
+   "q": "Add the line so that only «Good» is printed.",
+   "code": "let grade = \"B\";\nswitch (grade) {\n  case \"A\":\n  case \"B\":\n    console.log(\"Good\");\n    ___\n  default:\n    console.log(\"Try again\");\n}",
+   "ans": [
+    "break;",
+    "break"
+   ],
+   "why": "Without a «break», «Good» would be followed by «Try again». «break» stops the switch after the shared block."
+  }
+ ],
+ "bugs": [
+  {
+   "title": "Bug hunt 1",
+   "items": [
+    {
+     "code": "let age = 20;\nif (age = 18) {\n  console.log(\"Exactly 18\");\n} else {\n  console.log(\"Not 18\");\n}",
+     "fixed": "let age = 20;\nif (age === 18) {\n  console.log(\"Exactly 18\");\n} else {\n  console.log(\"Not 18\");\n}",
+     "line": 1,
+     "symptom": "It prints Exactly 18 even though age is 20.",
+     "why": "A single «=» stores 18 into age, and 18 is truthy. To compare, use «===»."
+    },
+    {
+     "code": "let score = 90;\nif (score > 90) {\n  console.log(\"Excellent\");\n} else if (score >= 50) {\n  console.log(\"Pass\");\n}",
+     "fixed": "let score = 90;\nif (score >= 90) {\n  console.log(\"Excellent\");\n} else if (score >= 50) {\n  console.log(\"Pass\");\n}",
+     "line": 1,
+     "symptom": "A score of exactly 90 prints Pass, but it should print Excellent.",
+     "why": "«>» leaves out 90 itself. The edge value needs «>=»."
+    },
+    {
+     "code": "let score = 8;\nif score > 5 {\n  console.log(\"High\");\n}",
+     "fixed": "let score = 8;\nif (score > 5) {\n  console.log(\"High\");\n}",
+     "line": 1,
+     "symptom": "The program crashes with a SyntaxError before printing anything.",
+     "why": "The condition of an «if» must be inside round brackets."
+    }
+   ]
+  },
+  {
+   "title": "Bug hunt 2",
+   "items": [
+    {
+     "code": "let age = 25;\nlet hasId = false;\nif (age >= 18 || hasId) {\n  console.log(\"Enter\");\n} else {\n  console.log(\"Stop\");\n}",
+     "fixed": "let age = 25;\nlet hasId = false;\nif (age >= 18 && hasId) {\n  console.log(\"Enter\");\n} else {\n  console.log(\"Stop\");\n}",
+     "line": 2,
+     "symptom": "Someone with no ID is let in, but the rule says both are needed.",
+     "why": "«||» needs only one true side. When both things are required, use «&&»."
+    },
+    {
+     "code": "let light = \"red\";\nswitch (light) {\n  case \"red\":\n    console.log(\"Stop\");\n    break;\n  default\n    console.log(\"Go\");\n}",
+     "fixed": "let light = \"red\";\nswitch (light) {\n  case \"red\":\n    console.log(\"Stop\");\n    break;\n  default:\n    console.log(\"Go\");\n}",
+     "line": 5,
+     "symptom": "A SyntaxError appears and nothing is printed.",
+     "why": "«default» needs a colon, just like each «case»."
+    },
+    {
+     "code": "let name = \"Sam\";\nif (name === true) {\n  console.log(\"Hello \" + name);\n} else {\n  console.log(\"No name\");\n}",
+     "fixed": "let name = \"Sam\";\nif (name) {\n  console.log(\"Hello \" + name);\n} else {\n  console.log(\"No name\");\n}",
+     "line": 1,
+     "symptom": "It prints No name even though name is \"Sam\".",
+     "why": "The text «\"Sam\"» is not strictly equal to «true», even though it is truthy. Use «if (name)» to test for non-empty text."
+    }
+   ]
+  }
+ ],
+ "project": {
+  "title": "Rock Paper Scissors Referee",
+  "brief": "Write a function «rps» that decides a round of rock paper scissors. It gets two inputs, «a» and «b», each one of the texts «\"rock\"», «\"paper\"» or «\"scissors\"».\n\nReturn «\"tie\"» if they are the same. Return «\"first\"» if «a» wins and «\"second\"» if «b» wins. Rock beats scissors, scissors beats paper, paper beats rock.\n\nExample: «rps(\"rock\", \"scissors\")» returns «\"first\"».",
+  "fn": "rps",
+  "starter": "function rps(a, b) {\n  // your code here\n}\n",
+  "solution": "function rps(a, b) {\n  if (a === b) {\n    return \"tie\";\n  }\n  if ((a === \"rock\" && b === \"scissors\") || (a === \"scissors\" && b === \"paper\") || (a === \"paper\" && b === \"rock\")) {\n    return \"first\";\n  }\n  return \"second\";\n}\n",
+  "tests": [
+   {
+    "label": "rps(\"rock\", \"scissors\")",
+    "args": [
+     "rock",
+     "scissors"
+    ],
+    "want": "first"
+   },
+   {
+    "label": "rps(\"rock\", \"paper\")",
+    "args": [
+     "rock",
+     "paper"
+    ],
+    "want": "second"
+   },
+   {
+    "label": "rps(\"paper\", \"paper\") (tie)",
+    "args": [
+     "paper",
+     "paper"
+    ],
+    "want": "tie"
+   },
+   {
+    "label": "rps(\"scissors\", \"paper\")",
+    "args": [
+     "scissors",
+     "paper"
+    ],
+    "want": "first"
+   },
+   {
+    "label": "rps(\"paper\", \"scissors\")",
+    "args": [
+     "paper",
+     "scissors"
+    ],
+    "want": "second"
+   },
+   {
+    "label": "rps(\"paper\", \"rock\")",
+    "args": [
+     "paper",
+     "rock"
+    ],
+    "want": "first"
+   }
+  ]
+ }
+}

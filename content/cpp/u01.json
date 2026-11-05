@@ -1,0 +1,480 @@
+{
+ "t": "Hello, C++",
+ "e": "👋",
+ "lessons": [
+  {
+   "t": "Meet C++",
+   "pages": [
+    {
+     "h": "What is C++?",
+     "p": "C++ is a programming language. A program is a list of instructions for the computer.\n\nC++ is fast. It is used to build games, web browsers, music software, and parts of phones and cars. Many other languages borrow ideas from it, so learning C++ teaches you how computers really work.\n\nIn this course you will write small programs and see what they print."
+    },
+    {
+     "h": "From source code to program",
+     "p": "You write C++ in a text file. That text is called **source code**. A computer cannot run source code directly.\n\nA tool called a **compiler** reads your source code and translates it into a **program** the computer can run. This step is called **compiling**.\n\nSo the steps are:\n• write the source code\n• compile it\n• run the program",
+     "tip": "If the compiler finds a mistake, it stops and tells you. No program is made until the mistakes are fixed."
+    },
+    {
+     "h": "Your first program",
+     "p": "This is the smallest useful C++ program. It prints one line of text. Do not worry about every word yet. The next page explains each part.",
+     "c": "#include <iostream>\nusing namespace std;\n\nint main() {\n  cout << \"Hello, world!\" << endl;\n  return 0;\n}",
+     "o": "Hello, world!"
+    },
+    {
+     "h": "The parts of the program",
+     "p": "• «#include <iostream>» brings in the tools for input and output.\n• «using namespace std;» lets you write «cout» instead of the longer «std::cout».\n• «int main()» is where the program starts. Everything between «{ }» runs, from top to bottom.\n• «cout << ...» prints.\n• «return 0;» says: the program finished fine.",
+     "tip": "In «main», «return 0;» is optional. If you leave it out, C++ adds it for you."
+    }
+   ]
+  },
+  {
+   "t": "Printing with cout",
+   "pages": [
+    {
+     "h": "cout and the << arrows",
+     "p": "«cout» is the screen (the name means \"console output\"). The arrows «<<» push things into it. Text goes between double quotes. The quotes are not printed.\n\n«endl» ends the line, like pressing Enter.",
+     "c": "#include <iostream>\nusing namespace std;\n\nint main() {\n  cout << \"Hello\" << endl;\n  cout << \"C++\" << endl;\n}",
+     "o": "Hello\nC++"
+    },
+    {
+     "h": "Chaining pieces together",
+     "p": "You can chain many pieces with «<<» in one statement. C++ adds **no spaces** for you, so put them inside the text yourself.",
+     "c": "#include <iostream>\nusing namespace std;\n\nint main() {\n  cout << \"I am \" << 12 << \" years old\" << endl;\n  cout << \"Hi\" << \"there\" << endl;\n}",
+     "o": "I am 12 years old\nHithere",
+     "tip": "Spaces inside quotes are printed. Spaces between « << » pieces are not."
+    },
+    {
+     "h": "New lines: endl and \\n",
+     "p": "There are two ways to start a new line. «endl» is a word you chain. «\"\\n\"» is a special symbol inside the text. The «\\n» is one character that means \"new line\".\n\nWithout either of them, the next «cout» continues on the same line.",
+     "c": "#include <iostream>\nusing namespace std;\n\nint main() {\n  cout << \"A\";\n  cout << \"B\\n\";\n  cout << \"C\" << endl;\n  cout << \"D\\nE\\n\";\n}",
+     "o": "AB\nC\nD\nE",
+     "tip": "Both «endl» and «\\n» work for beginners. «\\n» is slightly faster, «endl» is easier to read."
+    },
+    {
+     "h": "Numbers and sums",
+     "p": "Numbers do not need quotes. A sum is worked out before it is printed. Text in quotes is never calculated.",
+     "c": "#include <iostream>\nusing namespace std;\n\nint main() {\n  cout << 100 << endl;\n  cout << 2 + 3 << endl;\n  cout << \"2 + 3\" << endl;\n}",
+     "o": "100\n5\n2 + 3"
+    },
+    {
+     "h": "Comments",
+     "p": "A **comment** is a note for humans. The compiler ignores it. Use «//» for a one-line comment and «/* ... */» for a longer one.",
+     "c": "#include <iostream>\nusing namespace std;\n\nint main() {\n  // This line is ignored\n  cout << \"Visible\" << endl;\n  /* cout << \"Hidden\" << endl;\n     a longer note */\n  cout << \"End\" << endl;\n}",
+     "o": "Visible\nEnd",
+     "tip": "Putting «//» in front of a line is a quick way to switch it off while you test."
+    }
+   ]
+  },
+  {
+   "t": "Rules and compiler errors",
+   "pages": [
+    {
+     "h": "Statements and semicolons",
+     "p": "Each instruction is a **statement**. In C++ every statement must end with a semicolon «;». It works like the full stop in a sentence.\n\nA program runs top to bottom, one statement after another. The line «#include ...» is special. It has no semicolon.",
+     "c": "#include <iostream>\nusing namespace std;\n\nint main() {\n  cout << \"First\" << endl;\n  cout << \"Second\" << endl;\n  cout << \"Third\" << endl;\n}",
+     "o": "First\nSecond\nThird",
+     "tip": "Forgetting a «;» is the most common beginner mistake. Everybody does it."
+    },
+    {
+     "h": "Spelling and capital letters",
+     "p": "C++ is **case-sensitive**. «cout» works. «Cout» and «COUT» do not. The same is true for «main» and «endl».\n\nText needs a closing quote, and every «{» needs a «}». Round brackets, quotes and curly brackets always come in pairs.\n\nSpaces and new lines between statements do not matter to the compiler. Use them to make your code easy to read.",
+     "tip": "When you get an error, first check spelling, capital letters, quotes, brackets and semicolons."
+    },
+    {
+     "h": "Reading compiler errors",
+     "p": "If the code breaks the rules, the compiler prints an **error message** and no program is made. A message looks like this:\n\n«main.cpp:5:30: error: expected ';' before 'cout'»\n\nRead it in parts: the file, the **line number** (5), then what is wrong. The compiler often notices a missing «;» only when it reaches the next line, so also look at the line just above the one it names.",
+     "tip": "Always fix the first error first. Later errors are often just echoes of it."
+    },
+    {
+     "h": "Two ways to write cout",
+     "p": "The real name of «cout» is «std::cout». «std» is the standard library, and «::» means \"inside\". The line «using namespace std;» lets you skip the «std::» part.\n\nBoth programs below do the same thing. In this course we use «using namespace std;» because it is shorter.",
+     "c": "#include <iostream>\n\nint main() {\n  std::cout << \"Same output\" << std::endl;\n}",
+     "o": "Same output"
+    }
+   ]
+  }
+ ],
+ "hand": [
+  {
+   "type": "mc",
+   "q": "What does the compiler do?",
+   "code": null,
+   "ans": "It translates your source code into a program the computer can run",
+   "wrong": [
+    "It runs your code one word at a time and never makes a file",
+    "It checks that your comments are written in correct English",
+    "It makes your code shorter so it runs faster"
+   ],
+   "why": "The compiler turns source code into a program. If it finds a mistake, it reports an error instead."
+  },
+  {
+   "type": "out",
+   "code": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"Hi\" << \" there\" << endl;\n}",
+   "answer": "Hi there",
+   "wrong": [
+    "Hi\nthere",
+    "Hi, there",
+    "Hithere"
+   ],
+   "why": "The pieces are printed one after another. The space is inside the second piece of text, so it appears."
+  },
+  {
+   "type": "mc",
+   "q": "Which line do you need to use «cout»?",
+   "code": null,
+   "ans": "#include <iostream>",
+   "wrong": [
+    "#include <cout>",
+    "import iostream;",
+    "using cout;"
+   ],
+   "why": "The header «iostream» holds «cout» and «endl». You include it with «#include <iostream>», and no semicolon."
+  },
+  {
+   "type": "out",
+   "code": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"A\" << endl;\n  cout << \"B\" << endl;\n}",
+   "answer": "A\nB",
+   "wrong": [
+    "AB",
+    "A B",
+    "A"
+   ],
+   "why": "«endl» ends the line after each statement, so B starts on a new line."
+  },
+  {
+   "type": "fill",
+   "q": "Which symbol pushes text into «cout»?",
+   "code": "cout ___ \"Hello\" << endl;",
+   "ans": [
+    "<<"
+   ],
+   "why": "«<<» sends the text towards «cout». The arrows point at the screen."
+  },
+  {
+   "type": "out",
+   "code": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"A\";\n  cout << \"B\";\n}",
+   "answer": "AB",
+   "wrong": [
+    "A\nB",
+    "A B",
+    "A"
+   ],
+   "why": "Without «endl» or «\\n», the second «cout» continues on the same line."
+  },
+  {
+   "type": "order",
+   "q": "Put the lines in order to make a working program.",
+   "lines": [
+    "#include <iostream>",
+    "using namespace std;",
+    "int main() {",
+    "  cout << \"Go!\" << endl;",
+    "}"
+   ],
+   "why": "The include and the using line come first. Then «main» holds the code that runs."
+  },
+  {
+   "type": "mc",
+   "q": "Which one is a valid comment?",
+   "code": null,
+   "ans": "// remember to say hello",
+   "wrong": [
+    "# remember to say hello",
+    "** remember to say hello",
+    "<< remember to say hello"
+   ],
+   "why": "In C++ a one-line comment starts with «//». The «#» symbol is used for lines like «#include»."
+  },
+  {
+   "type": "out",
+   "code": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"Line1\\nLine2\" << endl;\n}",
+   "answer": "Line1\nLine2",
+   "wrong": [
+    "Line1\\nLine2",
+    "Line1 Line2",
+    "Line1Line2"
+   ],
+   "why": "«\\n» inside text is the new-line character. It is not printed as two symbols."
+  },
+  {
+   "type": "fill",
+   "q": "Which character ends this statement?",
+   "code": "cout << \"Hi\" << endl___",
+   "ans": [
+    ";"
+   ],
+   "why": "Every statement in C++ ends with a semicolon."
+  },
+  {
+   "type": "mc",
+   "q": "Where does a C++ program start running?",
+   "code": null,
+   "ans": "At the first line inside main()",
+   "wrong": [
+    "At the first line of the file",
+    "At the last line of the file",
+    "At the line with #include"
+   ],
+   "why": "Programs always start in «main». The «#include» lines only prepare the tools."
+  },
+  {
+   "type": "out",
+   "code": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"Red\" << endl;\n  // cout << \"Green\" << endl;\n  cout << \"Blue\" << endl;\n}",
+   "answer": "Red\nBlue",
+   "wrong": [
+    "Red\nGreen\nBlue",
+    "Red",
+    "Blue"
+   ],
+   "why": "The line starting with «//» is a comment. The compiler ignores it."
+  },
+  {
+   "type": "mc",
+   "q": "The compiler says «expected ';' before 'cout'». What most likely happened?",
+   "code": null,
+   "ans": "A semicolon is missing at the end of the line above",
+   "wrong": [
+    "The word cout is spelled with a capital C",
+    "The program has no main function",
+    "The text has no closing quote"
+   ],
+   "why": "The compiler only notices a missing semicolon when the next statement begins, so look at the previous line."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the name of the function where every C++ program starts.",
+   "code": "#include <iostream>\nusing namespace std;\nint ___() {\n  cout << \"Hi\" << endl;\n}",
+   "ans": [
+    "main"
+   ],
+   "why": "The function «main» is the starting point of every C++ program."
+  }
+ ],
+ "hard": [
+  {
+   "type": "out",
+   "code": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"5 + 3\" << endl;\n  cout << 5 + 3 << endl;\n}",
+   "answer": "5 + 3\n8",
+   "wrong": [
+    "8\n8",
+    "5 + 3\n5 + 3",
+    "5 + 3\n53"
+   ],
+   "why": "Text in quotes is printed as written. Without quotes, the sum is calculated first."
+  },
+  {
+   "type": "out",
+   "code": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"Hello\\n\" << \"World\\n\";\n}",
+   "answer": "Hello\nWorld",
+   "wrong": [
+    "Hello World",
+    "Hello\\nWorld",
+    "HelloWorld"
+   ],
+   "why": "Each «\\n» starts a new line, so no «endl» is needed."
+  },
+  {
+   "type": "mc",
+   "q": "The compiler reports an error for this program. How do you fix it?",
+   "code": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"One\" << endl\n  cout << \"Two\" << endl;\n}",
+   "ans": "Add a semicolon at the end of the line that prints One",
+   "wrong": [
+    "Remove endl from the line that prints One",
+    "Add a comma between the two cout lines",
+    "Move «using namespace std;» below main"
+   ],
+   "why": "The statement printing «One» is not finished. It needs «;». The compiler points at line 5 because it only notices there."
+  },
+  {
+   "type": "out",
+   "code": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"A\" << endl << endl;\n  cout << \"B\" << endl;\n}",
+   "answer": "A\n\nB",
+   "wrong": [
+    "A\nB",
+    "A\n\n\nB",
+    "A B"
+   ],
+   "why": "Two «endl» in a row end the line and then add an empty line before B."
+  },
+  {
+   "type": "mc",
+   "q": "What is the job of «using namespace std;»?",
+   "code": null,
+   "ans": "It lets you write cout and endl instead of std::cout and std::endl",
+   "wrong": [
+    "It loads the tools for input and output",
+    "It tells the compiler where main starts",
+    "It makes capital letters and small letters the same"
+   ],
+   "why": "The tools come from «#include <iostream>». The using line only saves you from typing «std::» each time."
+  },
+  {
+   "type": "out",
+   "code": "#include <iostream>\n\nint main() {\n  std::cout << \"Hi\" << std::endl;\n}",
+   "answer": "Hi",
+   "wrong": [
+    "std::cout Hi",
+    "std Hi",
+    "Nothing, because there is no using namespace std;"
+   ],
+   "why": "With the full names «std::cout» and «std::endl», the «using» line is not needed."
+  },
+  {
+   "type": "out",
+   "code": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"Start\" << endl;\n  /* cout << \"Middle\" << endl;\n     cout << \"Still hidden\" << endl; */\n  cout << \"End\" << endl;\n}",
+   "answer": "Start\nEnd",
+   "wrong": [
+    "Start\nMiddle\nStill hidden\nEnd",
+    "Start\nMiddle\nEnd",
+    "Start\nStill hidden\nEnd"
+   ],
+   "why": "Everything between «/*» and «*/» is a comment, even when it spans several lines."
+  },
+  {
+   "type": "mc",
+   "q": "Which line makes the compiler complain?",
+   "code": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"Hi\" << endl;\n  Cout << \"Bye\" << endl;\n}",
+   "ans": "Line 5",
+   "wrong": [
+    "Line 1",
+    "Line 4",
+    "No line: the compiler ignores capital letters"
+   ],
+   "why": "C++ is case-sensitive. «Cout» with a capital C is an unknown name. Line 4 uses the right spelling."
+  },
+  {
+   "type": "order",
+   "q": "Put the lines in order to print a countdown.",
+   "lines": [
+    "#include <iostream>",
+    "using namespace std;",
+    "int main() {",
+    "  cout << \"3\" << endl;",
+    "  cout << \"2\" << endl;",
+    "  cout << \"1\" << endl;",
+    "  cout << \"Liftoff!\" << endl;",
+    "}"
+   ],
+   "why": "The lines inside «main» run from top to bottom, so the output follows their order."
+  },
+  {
+   "type": "fill",
+   "q": "Complete the code so it prints Hi and Bye on two lines.",
+   "code": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"Hi\" << ___ << \"Bye\" << endl;\n}",
+   "ans": [
+    "endl",
+    "\"\\n\""
+   ],
+   "why": "Putting «endl» or «\"\\n\"» between the two words starts a new line there."
+  }
+ ],
+ "bugs": [
+  {
+   "title": "Bug hunt 1",
+   "items": [
+    {
+     "code": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"Hello\" << endl\n  cout << \"World\" << endl;\n}",
+     "fixed": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"Hello\" << endl;\n  cout << \"World\" << endl;\n}",
+     "line": 3,
+     "symptom": "error: expected ';' before 'cout'",
+     "why": "The statement that prints Hello is missing its semicolon."
+    },
+    {
+     "code": "#include <iostream>\nusing namespace std;\nint main() {\n  cout >> \"Welcome\" << endl;\n}",
+     "fixed": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"Welcome\" << endl;\n}",
+     "line": 3,
+     "symptom": "The compiler complains about «>>» and no program is made.",
+     "why": "The arrows must point towards cout: «cout <<». The arrows «>>» are for input."
+    },
+    {
+     "code": "#include <iostrem>\nusing namespace std;\nint main() {\n  cout << \"Hi\" << endl;\n}",
+     "fixed": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"Hi\" << endl;\n}",
+     "line": 0,
+     "symptom": "fatal error: iostrem: No such file or directory",
+     "why": "The header is called «iostream». A misspelled name cannot be found."
+    }
+   ]
+  },
+  {
+   "title": "Bug hunt 2",
+   "items": [
+    {
+     "code": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"Hello\";\n  cout << \"World\" << endl;\n}",
+     "fixed": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"Hello\" << endl;\n  cout << \"World\" << endl;\n}",
+     "line": 3,
+     "symptom": "It prints HelloWorld on one line, but two lines were expected.",
+     "why": "Without «endl» or «\\n», the next output continues on the same line."
+    },
+    {
+     "code": "#include <iostream>\nusing namespace std;\nint Main() {\n  cout << \"Hi\" << endl;\n}",
+     "fixed": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"Hi\" << endl;\n}",
+     "line": 2,
+     "symptom": "The program does not link: undefined reference to «main».",
+     "why": "C++ looks for a function named «main» in small letters. «Main» is a different name."
+    },
+    {
+     "code": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"Line A/nLine B\" << endl;\n}",
+     "fixed": "#include <iostream>\nusing namespace std;\nint main() {\n  cout << \"Line A\\nLine B\" << endl;\n}",
+     "line": 3,
+     "symptom": "It prints «Line A/nLine B» on one line instead of two lines.",
+     "why": "The new-line symbol is a backslash: «\\n». A slash «/n» is just two normal characters."
+    }
+   ]
+  }
+ ],
+ "project": {
+  "title": "My First Banner",
+  "brief": "Write a program that prints this exact text. It does not read any input.\n\n«=== My First Program ===»\n«Hello, world!»\n«I am learning C++.»\n«Bye!»\n\nSample run:\n\nInput: (none)\nOutput:\n=== My First Program ===\nHello, world!\nI am learning C++.\nBye!\n\nPut each line on its own line with «cout» and «endl» (or «\\n»).",
+  "starter": "#include <iostream>\nusing namespace std;\n\nint main() {\n  // TODO: print the four lines\n}\n",
+  "solution": "#include <iostream>\nusing namespace std;\n\nint main() {\n  cout << \"=== My First Program ===\" << endl;\n  cout << \"Hello, world!\" << endl;\n  cout << \"I am learning C++.\" << endl;\n  cout << \"Bye!\" << endl;\n  return 0;\n}\n",
+  "samples": [
+   {
+    "stdin": "",
+    "out": "=== My First Program ===\nHello, world!\nI am learning C++.\nBye!\n"
+   }
+  ],
+  "tests": [
+   {
+    "label": "Includes iostream",
+    "must": [
+     "#include\\s*<iostream>"
+    ]
+   },
+   {
+    "label": "Has a main function",
+    "must": [
+     "int\\s+main\\s*\\("
+    ]
+   },
+   {
+    "label": "Prints with cout",
+    "must": [
+     "cout\\s*<<"
+    ],
+    "mustNot": [
+     "printf"
+    ]
+   },
+   {
+    "label": "Prints the title line",
+    "must": [
+     "=== My First Program ==="
+    ]
+   },
+   {
+    "label": "Prints the greeting and the other lines",
+    "must": [
+     "Hello, world!",
+     "I am learning C\\+\\+\\.",
+     "Bye!"
+    ]
+   },
+   {
+    "label": "Ends lines with endl or \\n",
+    "must": [
+     "endl|\\\\n"
+    ]
+   }
+  ]
+ }
+}
