@@ -398,6 +398,7 @@ pre.ex{white-space:pre-wrap;word-break:break-word}
 .lnk{cursor:pointer}
 .chbdg{display:inline-block;min-width:18px;height:18px;border-radius:9px;background:#ff5c8a;color:#15122e;font:800 11px/18px system-ui;text-align:center;padding:0 5px;margin-left:5px}
 .chat{display:flex;flex-direction:column;gap:6px;margin:8px 0 14px}
+.coform.chatbar{position:fixed;left:0;right:0;bottom:var(--navh,74px);z-index:9;max-width:480px;margin:0 auto;padding:10px 16px;background:#0f0c26;border-top:2px solid #3a3470;align-items:center}
 .cb{max-width:82%;padding:8px 12px;border-radius:14px;background:#1d1946;border:2px solid #3a3470;align-self:flex-start;overflow-wrap:anywhere;white-space:pre-wrap}
 .cb small{display:block;font-size:11px;color:#9a93d0;margin-bottom:2px;white-space:normal}
 .cb.me{align-self:flex-end;background:#ffc93c;color:#15122e;border-color:#f4ecd8}
@@ -3524,7 +3525,8 @@ function chatOpen(chan,title){
   if(AC.view!=='chat')CH.from=AC.view==='chats'?function(){chatsScreen()}:userBackFn();
   chStop();L=null;AC.view='chat';CH.cur={chan:chan,title:title,last:0,seen:{}};
   app.innerHTML='<div class="top"><button class="mini" onclick="chatBack()" aria-label="Back">← Back</button><div class="logo" style="font-size:20px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(title)+'</div></div><div class="chat" id="chMsgs"><p class="lead">Loading…</p></div>'+
-   '<form class="coform" onsubmit="return chatSend(event)"><label class="sr" for="chIn">Message</label><input class="fin" id="chIn" maxlength="500" autocomplete="off" placeholder="Write a message…"><button class="cbtn run" type="submit">Send</button></form><div style="height:70px"></div>'+nav('ranks');
+   '<form class="coform chatbar" onsubmit="return chatSend(event)"><label class="sr" for="chIn">Message</label><input class="fin" id="chIn" maxlength="500" autocomplete="off" placeholder="Write a message…"><button class="cbtn run" type="submit">Send</button></form><div style="height:70px"></div>'+nav('ranks');
+  var nv=document.querySelector('.nav');if(nv)document.documentElement.style.setProperty('--navh',nv.offsetHeight+'px');
   chatLoad(true);CH.poll=setInterval(function(){if(AC.view==='chat'&&!document.hidden)chatLoad(false)},3000);
   window.scrollTo(0,0);
 }
