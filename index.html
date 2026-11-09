@@ -3943,9 +3943,9 @@ function shopBuyAv(kind,val){
 var _itemLock=itemLock;
 itemLock=function(k,v){var r=_itemLock(k,v);return r&&G().iv['a:'+k+':'+v]?'':r};
 function shopRevive(){var g=G();if(!L||!(g.iv.hp>0))return;g.iv.hp--;gSave();L.hp=2;draw()}
-var _draw=draw;
+var _drawF=draw;
 draw=function(){
-  _draw.apply(this,arguments);
+  _drawF.apply(this,arguments);
   try{if(L&&L.hp<=0){var g=G(),rw=app.querySelector('.end .row');if(g.iv.hp>0&&rw)rw.insertAdjacentHTML('afterbegin','<button class="go" onclick="shopRevive()">❤️ '+T('Extra heart')+' ('+g.iv.hp+')</button>')}}catch(e){}
 };
 function shopScreen(){
