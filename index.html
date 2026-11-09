@@ -557,7 +557,7 @@ input.fill:focus,.fin:focus,.ed:focus,.uname:focus{border-color:var(--acct);outl
 .hm-prog .ps{font-size:14px;color:var(--mut);max-width:62%}
 .hm-prog .bar2{height:8px;border-radius:99px;background:var(--cd2);overflow:hidden;max-width:58%}.hm-prog .bar2 i{display:block;height:100%;background:var(--acc);border-radius:99px}
 .hm-prog .lv{font:600 12px "DM Sans",sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--acct)}
-.hm-prog .bust{position:absolute;right:-8px;bottom:-18px;width:150px;height:170px;pointer-events:none}
+.hm-prog .bust{position:absolute;right:4px;bottom:0;width:150px;height:178px;pointer-events:none;background:none;border:0;border-radius:0;overflow:visible}
 .hm-prog .bust svg{width:100%;height:100%;display:block}
 .hm-st{display:flex;gap:8px;justify-content:space-between}
 .hm-st div{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;font:600 12px "DM Sans",sans-serif;color:var(--mut)}
@@ -584,7 +584,6 @@ input.fill:focus,.fin:focus,.ed:focus,.uname:focus{border-color:var(--acct);outl
 .cp-hero .go{height:44px;font-size:15px;border-radius:14px}
 .cp-tools{display:flex;gap:8px;margin:0 0 14px}.cp-tools .share{flex:1;margin:0;padding:10px}
 .g{background:var(--cd);border:1px solid var(--ln);border-radius:20px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
-.hm-prog .bust{right:14px;bottom:auto;top:50%;margin-top:-62px;width:124px;height:124px;border-radius:50%;overflow:hidden;border:2px solid var(--acc);background:var(--cd2)}
 .hm-prog .ps,.hm-prog .bar2{max-width:52%}
 .node.xl.side:not(.done):not(.lock) .dot,.node.xl:not(.done):not(.lock) .dot{background:var(--cd);color:var(--tc);box-shadow:none;border-color:var(--tc)}
 
@@ -597,12 +596,13 @@ input.fill:focus,.fin:focus,.ed:focus,.uname:focus{border-color:var(--acct);outl
 [dir="rtl"] .cb.me{border-radius:18px 18px 18px 6px}[dir="rtl"] .cb:not(.me){border-radius:18px 18px 6px 18px}
 [dir="rtl"] .opt::before{margin-inline-end:10px}
 .fig{background:#161a24;border-color:rgba(255,255,255,.12)}
-:root[data-theme="light"] .hm-prog .bust,:root[data-theme="light"] .pfav{background:var(--cd2)}
+:root[data-theme="light"] .pfav{background:var(--cd2)}
 :root[data-theme="light"] .gchip,:root[data-theme="light"] .bgt{background:var(--cd);color:var(--ink)}
 :root[data-theme="light"] .hm-chip,:root[data-theme="light"] .hm-ic{box-shadow:0 1px 2px rgba(16,24,40,.06)}
 :root[data-theme="light"] .g,:root[data-theme="light"] .gcard,:root[data-theme="light"] .pc,:root[data-theme="light"] .acc,:root[data-theme="light"] .rw,:root[data-theme="light"] .unit,:root[data-theme="light"] .hero{box-shadow:0 1px 3px rgba(16,24,40,.08)}
 :root[data-theme="light"] .foot,:root[data-theme="light"] .nav{box-shadow:0 -1px 8px rgba(16,24,40,.06)}
 :root[data-theme="light"] .opt.wrong::before{color:#fff}
+.hm-tile svg{width:62%;height:62%;display:block}.hm-fc .hm-tile svg{width:56px;height:56px}.cp-top b svg{width:22px;height:22px;vertical-align:-4px;margin-inline-end:6px}.opt.cp .ce svg{width:34px;height:34px;display:block}
 </style>
 <link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#15122e"></head>
 <body>
@@ -1460,7 +1460,7 @@ function switchCourse(id){
 }
 function picker(){
   var o=document.createElement('div');o.className='ov';
-  o.innerHTML='<h2 style="margin:0">Choose a course</h2>'+COURSES.map(function(c){var n=(S.dn[c.id]||[]).length,t=courseSize(c);return '<button class="opt cp'+(c.id===S.course?' sel':'')+'" onclick="switchCourse(\''+c.id+'\')"><span class="ce">'+c.e+'</span><span><b>'+c.t+'</b><small>'+esc(c.d)+'</small><small>'+n+' of '+t+' levels done</small></span></button>'}).join('')+'<p>Your progress in each course is saved.</p><button class="go" onclick="this.parentNode.remove()">Close</button>';
+  o.innerHTML='<h2 style="margin:0">Choose a course</h2>'+COURSES.map(function(c){var n=(S.dn[c.id]||[]).length,t=courseSize(c);return '<button class="opt cp'+(c.id===S.course?' sel':'')+'" onclick="switchCourse(\''+c.id+'\')"><span class="ce">'+courseLogo(c)+'</span><span><b>'+c.t+'</b><small>'+esc(c.d)+'</small><small>'+n+' of '+t+' levels done</small></span></button>'}).join('')+'<p>Your progress in each course is saved.</p><button class="go" onclick="this.parentNode.remove()">Close</button>';
   document.body.appendChild(o);
 }
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
@@ -3790,8 +3790,17 @@ var IC={
  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>',
  code:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg>'
 };
+
+var LOGO={
+ python:'<svg viewBox="0 0 48 48" aria-label="Python"><g id="pyh"><path fill="#3776ab" d="M23.500 4C16 4 16.500 7.300 16.500 7.300V11h7.500v1.500H10.500S5 11.800 5 20s4.800 7.800 4.800 7.800h2.900v-3.700s-.2-4.800 4.700-4.800h8s4.600.1 4.600-4.500V8.500S30.700 4 23.500 4z"/><circle cx="18.500" cy="8.300" r="1.600" fill="#fff"/></g><use href="#pyh" transform="rotate(180 24 24)" style="filter:none"/><path fill="#ffd43b" d="M24.500 44c7.500 0 7-3.300 7-3.300V37H24v-1.500h13.500S43 36.200 43 28s-4.800-7.800-4.800-7.800h-2.900v3.700s.2 4.800-4.700 4.800h-8s-4.600-.1-4.600 4.500v7.800S17.300 44 24.500 44z"/><circle cx="29.500" cy="39.700" r="1.600" fill="#fff"/></svg>',
+ js:'<svg viewBox="0 0 48 48" aria-label="JavaScript"><rect x="4" y="4" width="40" height="40" rx="5" fill="#f7df1e"/><text x="43" y="41" text-anchor="end" font-family="Arial,sans-serif" font-weight="800" font-size="19" fill="#323330">JS</text></svg>',
+ html:'<svg viewBox="0 0 48 48" aria-label="HTML5"><path fill="#e34f26" d="M7 4h34l-3 34-14 5-14-5z"/><path fill="#ef652a" d="M24 39.800l11.300-3.900L38.200 8H24z"/><text x="24" y="31" text-anchor="middle" font-family="Arial,sans-serif" font-weight="800" font-size="22" fill="#fff">5</text></svg>',
+ cpp:'<svg viewBox="0 0 48 48" aria-label="C++"><path fill="#00599c" d="M24 3l18 10.500v21L24 45 6 34.500v-21z"/><text x="10" y="31.500" font-family="Arial,sans-serif" font-weight="800" font-size="22" fill="#fff">C</text><path d="M27 24h6M30 21v6M34 24h6M37 21v6" stroke="#fff" stroke-width="2.200" stroke-linecap="round"/></svg>',
+ cs:'<svg viewBox="0 0 48 48" aria-label="C#"><path fill="#68217a" d="M24 3l18 10.500v21L24 45 6 34.500v-21z"/><text x="10" y="31.500" font-family="Arial,sans-serif" font-weight="800" font-size="22" fill="#fff">C</text><text x="26" y="30.500" font-family="Arial,sans-serif" font-weight="800" font-size="20" fill="#fff">#</text></svg>'
+};
+function courseLogo(c){return LOGO[c.id]||c.e}
 function lvOf(xp){return 1+Math.floor((xp||0)/250)}
-function myAvSvg(vb){var P=X.profile;if(!P.gender)return '';P.av=avClean(P.av,P.gender);return avRender(P.gender,P.av,vb?{vb:vb}:undefined)}
+function myAvSvg(vb,clear){var P=X.profile;if(!P.gender)return '';P.av=avClean(P.av,P.gender);var o=vb?{vb:vb}:{};if(clear)o.bg='none';var r=avRender(P.gender,P.av,o);return clear?r.replace(/<rect [^>]*\/>/,''):r}
 function myName(){return AC.user?AC.user.name:(X.profile.name||'Learner')}
 nav=function(on){
   var P=X.profile,pic=P.gender?'<span class="ni av">'+myAvSvg('50 16 170 170')+'</span>':'<span class="ni">'+IC.me+'</span>';
@@ -3821,7 +3830,7 @@ function dash(){
   L=null;AC.view='home';CV.map=false;
   var P=X.profile,first=String(myName()).split(' ')[0],xp=S.xp,tot=LEVELS.length||courseTotal(CUR),dn=S.done.length,pct=tot?Math.round(dn/tot*100):0;
   var av=P.gender?myAvSvg('50 16 170 170'):'<span class="hd" style="font-size:20px;display:grid;place-items:center;height:100%">'+esc(first.charAt(0).toUpperCase())+'</span>';
-  var bust=P.gender?'<div class="bust" aria-hidden="true">'+myAvSvg('40 40 190 190')+'</div>':'';
+  var bust=P.gender?'<div class="bust" aria-hidden="true">'+myAvSvg('40 40 190 190',1)+'</div>':'';
   var h='<div class="hm"><div class="hm-top"><button class="hm-av" onclick="PF.pick=false;PF.edit=false;profile()" aria-label="'+T('Profile')+'">'+av+'</button>'+
    '<div class="hm-hi"><b>'+T('Hi')+(LANG==='ar'?' ':', ')+esc(first)+'</b><span>'+T('Level')+' <bdi>'+lvOf(xp)+'</bdi> · <bdi>'+xp.toLocaleString('en')+' XP</bdi></span></div>'+
    '<div class="hm-chips"><button class="hm-chip" onclick="streakInfo()" aria-label="Streak">'+IC.flame+S.streak+'</button>'+(typeof coinChip==='function'?coinChip():'')+'</div></div>';
@@ -3832,8 +3841,8 @@ function dash(){
   act.sort(function(a,b){return (b.id===S.course)-(a.id===S.course)});
   h+='<div class="hm-h"><b>'+T('Continue learning')+'</b></div>';
   act.forEach(function(c){var n=courseNow(c),t=courseTotal(c),p=t?Math.round(n/t*100):0;
-    h+='<button class="g hm-cont" onclick="openCourse(\''+c.id+'\')"><span class="hm-tile">'+c.e+'</span><span class="tx"><b>'+esc(c.t)+'</b><small><bdi>'+n+' / '+t+'</bdi> '+T('levels')+'</small><span class="bar2" style="display:block"><i style="width:'+p+'%"></i></span></span><span class="hm-play">'+IC.play+'</span></button>'});
-  h+='<div class="hm-h"><b>'+T('Featured courses')+'</b></div><div class="hm-feat">'+COURSES.map(function(c){return '<button class="g hm-fc" onclick="openCourse(\''+c.id+'\')"><span class="hm-tile">'+c.e+'</span><b>'+esc(c.t)+'</b><small>'+esc(c.d||'')+'</small></button>'}).join('')+'</div>';
+    h+='<button class="g hm-cont" onclick="openCourse(\''+c.id+'\')"><span class="hm-tile">'+courseLogo(c)+'</span><span class="tx"><b>'+esc(c.t)+'</b><small><bdi>'+n+' / '+t+'</bdi> '+T('levels')+'</small><span class="bar2" style="display:block"><i style="width:'+p+'%"></i></span></span><span class="hm-play">'+IC.play+'</span></button>'});
+  h+='<div class="hm-h"><b>'+T('Featured courses')+'</b></div><div class="hm-feat">'+COURSES.map(function(c){return '<button class="g hm-fc" onclick="openCourse(\''+c.id+'\')"><span class="hm-tile">'+courseLogo(c)+'</span><b>'+esc(c.t)+'</b><small>'+esc(c.d||'')+'</small></button>'}).join('')+'</div>';
   h+='<div class="hm-h"><b>'+T('Today')+'</b></div>'+_gToday();
   h+='<button class="share" onclick="codeScreen()" style="margin:0">'+T('Code editor')+'</button></div>'+nav('learn');
   app.innerHTML=h;
@@ -3848,7 +3857,7 @@ function courseMap(){
   var hl=hero?hero.querySelector('.hl'):null,btn=hero?hero.querySelector('.go'):null;
   [].forEach.call(app.querySelectorAll(':scope>.course,:scope>.share,:scope>.top,:scope>.hero'),function(e){e.remove()});
   var r=26,C=2*Math.PI*r;
-  var h='<div class="cp-top"><button class="hm-ic" onclick="CV.map=false;home()" aria-label="'+T('Back')+'">'+IC.back+'</button><b>'+CUR.e+' '+esc(CUR.t)+'</b><button class="hm-ic" onclick="codeScreen()" aria-label="'+T('Code editor')+'">'+IC.code+'</button></div>'+
+  var h='<div class="cp-top"><button class="hm-ic" onclick="CV.map=false;home()" aria-label="'+T('Back')+'">'+IC.back+'</button><b>'+courseLogo(CUR)+esc(CUR.t)+'</b><button class="hm-ic" onclick="codeScreen()" aria-label="'+T('Code editor')+'">'+IC.code+'</button></div>'+
    '<div class="g cp-hero gcard"><div class="cp-ring"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="'+r+'" fill="none" stroke="var(--cd2)" stroke-width="6"/><circle cx="32" cy="32" r="'+r+'" fill="none" stroke="var(--acc)" stroke-width="6" stroke-linecap="round" stroke-dasharray="'+(C*pct/100).toFixed(1)+' '+C.toFixed(1)+'"/></svg><b>'+pct+'%</b></div>'+
    '<div class="tx">'+(hl?hl.innerHTML.replace(/<b>/,'<b>').replace(/<span>/,'<small>').replace(/<\/span>/,'</small>'):'')+(btn?btn.outerHTML:'')+'</div></div>'+
    '<div class="cp-tools"><button class="share" onclick="jumper()">'+T('Jump to a unit')+'</button><button class="share" onclick="picker()">'+T('Change course')+'</button></div>';
