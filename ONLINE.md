@@ -75,3 +75,7 @@ Change files, then run `vercel --prod` again. The data stays in Neon.
 ## Community feed
 
 The community feed (posts, likes, comments, reposts, reports) adds four tables (`posts`, `post_likes`, `post_comments`, `post_reports`). They are created automatically the first time the new server code runs, so no migration step is needed and existing tables and users are untouched. Posts hidden after 3 reports; people can delete their own posts and comments.
+
+## New look and features (coin shop, tournaments, showcase, light theme, Arabic)
+
+One new table, `tourney` (weekly scores), is created automatically with `create table if not exists`. Everything else is stored inside each player's existing saved progress as optional fields (`th` theme, `lg` language, `cs` coins spent, `cb` bonus coins, `iv` shop items), so existing accounts keep working untouched. The project showcase reads the existing `posts` table (project posts that have code).
