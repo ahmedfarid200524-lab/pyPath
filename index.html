@@ -3823,16 +3823,16 @@ function dash(){
   var av=P.gender?myAvSvg('50 16 170 170'):'<span class="hd" style="font-size:20px;display:grid;place-items:center;height:100%">'+esc(first.charAt(0).toUpperCase())+'</span>';
   var bust=P.gender?'<div class="bust" aria-hidden="true">'+myAvSvg('40 40 190 190')+'</div>':'';
   var h='<div class="hm"><div class="hm-top"><button class="hm-av" onclick="PF.pick=false;PF.edit=false;profile()" aria-label="'+T('Profile')+'">'+av+'</button>'+
-   '<div class="hm-hi"><b>'+T('Hi')+', '+esc(first)+'</b><span>'+T('Level')+' '+lvOf(xp)+' · '+xp.toLocaleString()+' XP</span></div>'+
+   '<div class="hm-hi"><b>'+T('Hi')+(LANG==='ar'?' ':', ')+esc(first)+'</b><span>'+T('Level')+' <bdi>'+lvOf(xp)+'</bdi> · <bdi>'+xp.toLocaleString('en')+' XP</bdi></span></div>'+
    '<div class="hm-chips"><button class="hm-chip" onclick="streakInfo()" aria-label="Streak">'+IC.flame+S.streak+'</button>'+(typeof coinChip==='function'?coinChip():'')+'</div></div>';
-  h+='<div class="g hm-prog gcard"><span class="lv">'+esc(CUR.t)+'</span><div class="pt">'+pct+'%</div><div class="ps">'+dn+' / '+tot+' '+T('levels done')+'</div><div class="bar2"><i style="width:'+pct+'%"></i></div>'+
+  h+='<div class="g hm-prog gcard"><span class="lv">'+esc(CUR.t)+'</span><div class="pt">'+pct+'%</div><div class="ps"><bdi>'+dn+' / '+tot+'</bdi> '+T('levels done')+'</div><div class="bar2"><i style="width:'+pct+'%"></i></div>'+
    '<button class="go" style="width:auto;align-self:flex-start;height:42px;font-size:15px;padding:0 20px" onclick="openCourse(\''+CUR.id+'\')">'+(dn?T('Continue'):T('Start'))+'</button>'+bust+'</div>';
   h+=weekRow();
   var act=COURSES.filter(function(c){var n=courseNow(c);return c.id===S.course||(n>0&&n<courseTotal(c))});
   act.sort(function(a,b){return (b.id===S.course)-(a.id===S.course)});
   h+='<div class="hm-h"><b>'+T('Continue learning')+'</b></div>';
   act.forEach(function(c){var n=courseNow(c),t=courseTotal(c),p=t?Math.round(n/t*100):0;
-    h+='<button class="g hm-cont" onclick="openCourse(\''+c.id+'\')"><span class="hm-tile">'+c.e+'</span><span class="tx"><b>'+esc(c.t)+'</b><small>'+n+' / '+t+' '+T('levels')+'</small><span class="bar2" style="display:block"><i style="width:'+p+'%"></i></span></span><span class="hm-play">'+IC.play+'</span></button>'});
+    h+='<button class="g hm-cont" onclick="openCourse(\''+c.id+'\')"><span class="hm-tile">'+c.e+'</span><span class="tx"><b>'+esc(c.t)+'</b><small><bdi>'+n+' / '+t+'</bdi> '+T('levels')+'</small><span class="bar2" style="display:block"><i style="width:'+p+'%"></i></span></span><span class="hm-play">'+IC.play+'</span></button>'});
   h+='<div class="hm-h"><b>'+T('Featured courses')+'</b></div><div class="hm-feat">'+COURSES.map(function(c){return '<button class="g hm-fc" onclick="openCourse(\''+c.id+'\')"><span class="hm-tile">'+c.e+'</span><b>'+esc(c.t)+'</b><small>'+esc(c.d||'')+'</small></button>'}).join('')+'</div>';
   h+='<div class="hm-h"><b>'+T('Today')+'</b></div>'+_gToday();
   h+='<button class="share" onclick="codeScreen()" style="margin:0">'+T('Code editor')+'</button></div>'+nav('learn');
