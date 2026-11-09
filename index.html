@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>pyPath – learn by levels</title>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&family=Space+Mono:wght@400;700&family=Sora:wght@500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&family=Space+Mono:wght@400;700&family=Sora:wght@500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Cairo:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ===== game layer ===== */
 .gcard{border:3px solid #f4ecd8;border-radius:14px;background:#1d1946;padding:12px;margin:0 0 14px;box-shadow:4px 4px 0 #3a3470;display:block}
@@ -587,6 +587,22 @@ input.fill:focus,.fin:focus,.ed:focus,.uname:focus{border-color:var(--acct);outl
 .hm-prog .bust{right:14px;bottom:auto;top:50%;margin-top:-62px;width:124px;height:124px;border-radius:50%;overflow:hidden;border:2px solid var(--acc);background:var(--cd2)}
 .hm-prog .ps,.hm-prog .bar2{max-width:52%}
 .node.xl.side:not(.done):not(.lock) .dot,.node.xl:not(.done):not(.lock) .dot{background:var(--cd);color:var(--tc);box-shadow:none;border-color:var(--tc)}
+
+/* RTL (Arabic) + light-theme touch-ups */
+[lang="ar"] body,[lang="ar"] h1,[lang="ar"] h2,[lang="ar"] .logo,[lang="ar"] .hd,[lang="ar"] .go,[lang="ar"] .fb{font-family:"Cairo","DM Sans",system-ui,sans-serif}
+[dir="rtl"] pre,[dir="rtl"] .ed,[dir="rtl"] code,[dir="rtl"] .opt,[dir="rtl"] input.fill,[dir="rtl"] .cout,[dir="rtl"] .chip{direction:ltr;text-align:left}
+[dir="rtl"] .hm-prog .bust{right:auto;left:-8px}
+[dir="rtl"] .hm-cont,[dir="rtl"] .hm-fc,[dir="rtl"] .rw,[dir="rtl"] .pcn,[dir="rtl"] .hm-hi{text-align:start}
+[dir="rtl"] .hm-play svg,[dir="rtl"] .cp-top .hm-ic svg,[dir="rtl"] .go svg{transform:scaleX(-1)}
+[dir="rtl"] .cb.me{border-radius:18px 18px 18px 6px}[dir="rtl"] .cb:not(.me){border-radius:18px 18px 6px 18px}
+[dir="rtl"] .opt::before{margin-inline-end:10px}
+.fig{background:#161a24;border-color:rgba(255,255,255,.12)}
+:root[data-theme="light"] .hm-prog .bust,:root[data-theme="light"] .pfav{background:var(--cd2)}
+:root[data-theme="light"] .gchip,:root[data-theme="light"] .bgt{background:var(--cd);color:var(--ink)}
+:root[data-theme="light"] .hm-chip,:root[data-theme="light"] .hm-ic{box-shadow:0 1px 2px rgba(16,24,40,.06)}
+:root[data-theme="light"] .g,:root[data-theme="light"] .gcard,:root[data-theme="light"] .pc,:root[data-theme="light"] .acc,:root[data-theme="light"] .rw,:root[data-theme="light"] .unit,:root[data-theme="light"] .hero{box-shadow:0 1px 3px rgba(16,24,40,.08)}
+:root[data-theme="light"] .foot,:root[data-theme="light"] .nav{box-shadow:0 -1px 8px rgba(16,24,40,.06)}
+:root[data-theme="light"] .opt.wrong::before{color:#fff}
 </style>
 <link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#15122e"></head>
 <body>
@@ -3787,7 +3803,6 @@ nav=function(on){
    '<button class="'+(on==='me'?'on':'')+'" onclick="PF.pick=false;PF.edit=false;profile()">'+pic+T('Profile')+'</button>'+
    '</div></div>';
 };
-function T(s){return s}   /* replaced by the translation layer */
 var _gToday=gTodayHTML;
 gTodayHTML=function(){return CV.noToday?'':_gToday()};
 var _homeFull=home;
@@ -3841,6 +3856,180 @@ function courseMap(){
   var nw=q('.node.now');if(nw&&S.done.length)nw.scrollIntoView({block:'center'});else window.scrollTo(0,0);
 }
 /* lessons and level screens return to the course page */
+
+/* ===== Features: light theme, Arabic (RTL), coin shop, weekly tournament, project showcase ===== */
+(function(){
+  /* the saved settings live in the cloud-synced "g" block; the browser keeps a copy so the first paint is already right */
+  var gf=gFix,mg=mergeG;
+  gFix=function(g){var r=gf(g);g=g&&typeof g==='object'?g:{};r.th=g.th==='l'?'l':g.th==='d'?'d':'';r.lg=g.lg==='ar'?'ar':g.lg==='en'?'en':'';r.cs=gNum(g.cs,0,1e7);r.cb=gNum(g.cb,0,1e7);
+    var iv={};if(g.iv&&typeof g.iv==='object')Object.keys(g.iv).slice(0,60).forEach(function(k){var n=gNum(g.iv[k],0,999),t=gTag(k,24);if(n&&t)iv[t]=n});r.iv=iv;return r};
+  mergeG=function(a,b){var r=mg(a,b);a=gFix(a);b=gFix(b);var nw=b.t>=a.t?b:a,od=nw===b?a:b;r.th=nw.th||od.th;r.lg=nw.lg||od.lg;r.cs=Math.max(a.cs,b.cs);r.cb=Math.max(a.cb,b.cb);
+    var iv={};Object.keys(a.iv).concat(Object.keys(b.iv)).forEach(function(k){iv[k]=Math.max(a.iv[k]||0,b.iv[k]||0)});r.iv=iv;return r};
+})();
+var AR={'Home':'الرئيسية','Ranks':'الترتيب','Community':'المجتمع','Profile':'حسابي','Hi':'أهلاً','Level':'المستوى','levels done':'مستوى مكتمل','levels':'مستويات','Continue':'متابعة','Start':'ابدأ','Continue learning':'واصل التعلم','Featured courses':'دورات مميزة','Today':'اليوم','Code editor':'محرر الأكواد','Back':'رجوع','Jump to a unit':'انتقل إلى وحدة','Change course':'تغيير الدورة',
+ 'Settings':'الإعدادات','Theme':'المظهر','Dark':'داكن','Light':'فاتح','Language':'اللغة','Coin shop':'متجر العملات','Coins':'العملات','Buy':'شراء','Owned':'مملوك','Not enough coins':'العملات غير كافية','Streak freeze':'تجميد السلسلة','Extra heart':'قلب إضافي','Avatar items':'عناصر الأفاتار','Weekly tournament':'بطولة الأسبوع','Ends in':'تنتهي بعد','Play':'العب','Tries left':'محاولات متبقية','Your best':'أفضل نتيجة لك','Your rank':'ترتيبك','Leaderboard':'المتصدرون','Last week':'الأسبوع الماضي','Claim prize':'استلم الجائزة','Showcase':'المعرض','Top':'الأعلى','New':'الأحدث','Open in editor':'افتح في المحرر','Load more':'عرض المزيد','Project showcase':'معرض المشاريع',
+ 'Check':'تحقق','Correct!':'صحيح!','Not quite':'ليس تماماً','Back to levels':'العودة للمستويات','Quit lesson':'إنهاء الدرس','Finish lesson':'إنهاء الدرس','Level complete':'اكتمل المستوى','Lesson complete':'اكتمل الدرس','Out of hearts':'نفدت القلوب',
+ 'Friends':'الأصدقاء','All':'الكل','Post':'نشر','Account':'الحساب','Edit':'تعديل','Chats':'المحادثات','Groups':'المجموعات','Log in':'تسجيل الدخول','Create account':'إنشاء حساب','Save progress':'حفظ التقدم','Randomise':'عشوائي','Loading…':'جارٍ التحميل…','Streak':'السلسلة','Daily challenges':'تحديات يومية','Review':'مراجعة','Placement test':'اختبار تحديد المستوى','Reset progress':'إعادة ضبط التقدم','Close':'إغلاق','Got it':'حسناً','Hello':'مرحباً','Share a project or ask a question…':'شارك مشروعاً أو اسأل سؤالاً…','Send':'إرسال','Write a message…':'اكتب رسالة…','Sign out':'تسجيل الخروج','Logout':'تسجيل الخروج','Python':'بايثون','JavaScript':'جافاسكريبت','Characters':'الشخصيات','Face':'الوجه','Mood':'التعبير','Skin':'البشرة','Hair':'الشعر','Eyes':'العينين','Clothes':'الملابس','Earrings':'الأقراط','Head wear':'غطاء الرأس','Posts':'المنشورات','Badges':'الأوسمة'};
+var LANG='en';
+function T(s){return LANG==='ar'&&AR[s]?AR[s]:s}
+var TRBUSY=false;
+function trDom(root){
+  if(LANG!=='ar'||TRBUSY)return;TRBUSY=true;
+  try{
+    var w=document.createTreeWalker(root||document.body,NodeFilter.SHOW_TEXT,null),n,list=[];
+    while((n=w.nextNode())){var p=n.parentNode;if(!p||/^(SCRIPT|STYLE|TEXTAREA|PRE|CODE)$/.test(p.nodeName)||p.closest&&p.closest('pre,code,textarea,.ed'))continue;list.push(n)}
+    list.forEach(function(n){
+      var m=/^(\s*[^A-Za-z؀-ۿ]*)([A-Za-z][^؀-ۿ]*?)(\s*)$/.exec(n.nodeValue);
+      if(m&&AR[m[2]])n.nodeValue=m[1]+AR[m[2]]+m[3];
+    });
+  }catch(e){}
+  TRBUSY=false;
+}
+var trT=0;
+new MutationObserver(function(){if(LANG!=='ar')return;clearTimeout(trT);trT=setTimeout(function(){trDom(document.body)},30)}).observe(document.body,{childList:true,subtree:true});
+function applyPrefs(){
+  var g=null;try{g=G()}catch(e){}
+  var th=(g&&g.th)||lsGet('pp_th')||'d',lg=(g&&g.lg)||lsGet('pp_lg')||'en';
+  var r=document.documentElement;
+  r.setAttribute('data-theme',th==='l'?'light':'dark');r.setAttribute('lang',lg==='ar'?'ar':'en');r.setAttribute('dir',lg==='ar'?'rtl':'ltr');LANG=lg;
+  var mt=document.querySelector('meta[name=theme-color]');if(mt)mt.setAttribute('content',th==='l'?'#f3f5f8':'#0a0c10');
+  if(lg==='ar')trDom(document.body);
+}
+function setPref(k,v){var g=G();g[k]=v;try{localStorage.setItem(k==='th'?'pp_th':'pp_lg',v)}catch(e){}gSave();applyPrefs();if(AC.view==='profile')profile();else home()}
+applyPrefs();
+/* settings card on the profile page */
+function prefsCard(){
+  var g=G(),th=g.th||'d',lg=g.lg||'en';
+  return '<div class="acc" style="text-align:start"><div class="kick">'+T('Settings')+'</div>'+
+   '<b style="font-size:16px;margin-top:6px">'+T('Theme')+'</b><div class="seg"><button class="'+(th==='d'?'on':'')+'" onclick="setPref(\'th\',\'d\')">🌙 '+T('Dark')+'</button><button class="'+(th==='l'?'on':'')+'" onclick="setPref(\'th\',\'l\')">☀️ '+T('Light')+'</button></div>'+
+   '<b style="font-size:16px">'+T('Language')+'</b><div class="seg" style="margin-bottom:6px"><button class="'+(lg==='en'?'on':'')+'" onclick="setPref(\'lg\',\'en\')">English</button><button class="'+(lg==='ar'?'on':'')+'" onclick="setPref(\'lg\',\'ar\')">العربية</button></div>'+
+   '<button class="share" style="margin:8px 0 0" onclick="shopScreen()">🪙 '+T('Coin shop')+'</button><button class="share" style="margin:8px 0 0" onclick="card()">'+T('Save streak card')+'</button></div>';
+}
+var _profileP=profile;
+profile=function(){
+  var r=_profileP.apply(this,arguments);
+  try{if(X.profile.gender&&!PF.pick&&!PF.edit&&app.querySelector('#pfTiles')){var nv=app.querySelector('.nav');if(nv&&!app.querySelector('#prefsBox'))nv.insertAdjacentHTML('beforebegin','<div id="prefsBox">'+prefsCard()+'</div>')}}catch(e){}
+  return r;
+};
+
+/* ---- coins and the shop ---- */
+function coins(){var g=G();return Math.max(0,gTotalDone()*5+g.dc*10+g.cb-g.cs)}
+function coinChip(){return '<button class="hm-chip" onclick="shopScreen()" aria-label="'+T('Coins')+'"><svg viewBox="0 0 24 24" fill="none" stroke="#ffb454" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v9M9.5 10c.5-1 1.500-1.500 2.500-1.500s2 .5 2 1.500-1 1.300-2 1.500-2 .5-2 1.500 1 1.500 2 1.500 2-.5 2.500-1.500" stroke-linecap="round"/></svg>'+coins()+'</button>'}
+var SHOP_ITEMS=[
+ {id:'fz',n:'Streak freeze',d:'Saves your streak if you miss a day (max 5)',e:'❄️',p:60},
+ {id:'hp',n:'Extra heart',d:'Keep going when you run out of hearts',e:'❤️',p:25}
+];
+function shopBuyItem(key,price,apply){
+  var g=G();if(coins()<price){gToast(T('Not enough coins'));return false}
+  g.cs+=price;apply(g);gSave();return true;
+}
+function shopBuy(id){
+  var g=G(),it=SHOP_ITEMS.filter(function(x){return x.id===id})[0];if(!it)return;
+  if(id==='fz'&&g.fz>=5){gToast('You already have 5 freezes');return}
+  if(shopBuyItem(id,it.p,function(g){if(id==='fz')g.fz=Math.min(9,g.fz+1);else g.iv.hp=Math.min(99,(g.iv.hp||0)+1)}))shopScreen();
+}
+function shopBuyAv(kind,val){
+  var g=G();if(shopBuyItem('a',120,function(g){g.iv['a:'+kind+':'+val]=1}))shopScreen();
+}
+var _itemLock=itemLock;
+itemLock=function(k,v){var r=_itemLock(k,v);return r&&G().iv['a:'+k+':'+v]?'':r};
+function shopRevive(){var g=G();if(!L||!(g.iv.hp>0))return;g.iv.hp--;gSave();L.hp=2;draw()}
+var _draw=draw;
+draw=function(){
+  _draw.apply(this,arguments);
+  try{if(L&&L.hp<=0){var g=G(),rw=app.querySelector('.end .row');if(g.iv.hp>0&&rw)rw.insertAdjacentHTML('afterbegin','<button class="go" onclick="shopRevive()">❤️ '+T('Extra heart')+' ('+g.iv.hp+')</button>')}}catch(e){}
+};
+function shopScreen(){
+  L=null;AC.view='shop';var g=G(),P=X.profile,h='<div class="cp-top"><button class="hm-ic" onclick="CV.map=false;home()" aria-label="'+T('Back')+'">'+IC.back+'</button><b>'+T('Coin shop')+'</b>'+coinChip()+'</div>';
+  h+='<p class="lead">'+({en:'Earn coins by finishing levels (+5), daily challenges (+10) and winning the weekly tournament.',ar:'اكسب عملات بإنهاء المستويات (+5) والتحديات اليومية (+10) والفوز في بطولة الأسبوع.'}[LANG])+'</p>';
+  SHOP_ITEMS.forEach(function(it){var have=it.id==='fz'?g.fz:(g.iv.hp||0);
+    h+='<div class="g hm-cont" style="margin-bottom:10px"><span class="hm-tile">'+it.e+'</span><span class="tx"><b>'+T(it.n)+'</b><small style="margin:2px 0 0">'+(LANG==='ar'?'لديك: ':'You have: ')+have+'</small></span><button class="mini go2" onclick="shopBuy(\''+it.id+'\')">'+it.p+' 🪙</button></div>'});
+  if(P.gender){
+    var a=avClean(P.av,P.gender),items=UNIT_ITEMS.filter(function(it){return _itemLock(it[0],it[1])&&!g.iv['a:'+it[0]+':'+it[1]]});
+    h+='<div class="hm-h" style="margin:14px 0 8px"><b>'+T('Avatar items')+'</b></div>';
+    if(!items.length)h+='<p class="lead">'+(LANG==='ar'?'كل العناصر مفتوحة!':'Everything is unlocked!')+'</p>';
+    else h+='<div class="og">'+items.map(function(it){var t=Object.assign({},a);delete t.ch;t[it[0]]=it[1];if(it[0]!=='hat'&&it[0]!=='top')t.hat='none';
+      return '<button class="oc" aria-label="'+(AV_NAMES[it[1]]||it[1])+'" onclick="shopBuyAv(\''+it[0]+'\',\''+it[1]+'\')">'+avRender(P.gender,t,{vb:it[0]==='top'?'30 120 180 180':'50 16 170 170'})+'<i>120 🪙</i></button>'}).join('')+'</div>';
+  }
+  app.innerHTML=h+nav('me');window.scrollTo(0,0);
+}
+
+/* ---- weekly tournament ---- */
+var TN={d:null,t0:0};
+function tnLeft(){var d=new Date(),mon=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate()-((d.getUTCDay()+6)%7)));var ms=mon.getTime()+7*864e5-Date.now();return ms}
+function tnLeftTxt(ms){var m=Math.max(0,Math.floor(ms/6e4)),d=Math.floor(m/1440),h=Math.floor(m%1440/60);return d?d+(LANG==='ar'?' ي ':'d ')+h+(LANG==='ar'?' س':'h'):h+(LANG==='ar'?' س ':'h ')+(m%60)+(LANG==='ar'?' د':'m')}
+function tnRow(x){return '<div class="rw'+(x.mine?' me':'')+'"><span class="rkn">'+x.rank+'</span><span class="lnk" onclick="userOpen(\''+x.p.id+'\')">'+avMini(x.p.g,x.p.av)+'</span><span class="rn"><b>'+esc(x.p.name)+'</b><small>'+x.correct+' / 10 · '+x.secs+'s</small></span><span class="rx">'+x.best+'</span></div>'}
+function tourneyScreen(){
+  L=null;AC.view='tourney';
+  if(!AC.token){guestWall2('Weekly <i>tournament</i>','🏆','Compete with everyone every week and win coins. Create a free account to join.');return}
+  app.innerHTML='<div class="cp-top"><button class="hm-ic" onclick="CV.map=false;home()" aria-label="'+T('Back')+'">'+IC.back+'</button><b>'+T('Weekly tournament')+'</b></div><div id="tnBody"><p class="lead">Loading…</p></div>'+nav('learn');
+  api('GET','/api/tourney').then(function(d){TN.d=d;if(AC.view==='tourney')tnDraw()}).catch(function(e){var b=elx('tnBody');if(b)b.innerHTML='<p class="lead">'+esc(e.offline?'You are offline.':(e.message||'Could not load'))+'</p>'});
+  window.scrollTo(0,0);
+}
+function tnDraw(){
+  var d=TN.d,b=elx('tnBody');if(!b||!d)return;
+  var h='<div class="g gcard" style="display:flex;flex-direction:column;gap:6px"><div class="kick">'+T('Ends in')+' '+tnLeftTxt(d.endsAt-Date.now())+' · '+d.players+' '+(LANG==='ar'?'لاعب':'players')+'</div>'+
+   '<div style="display:flex;gap:18px"><div><small>'+T('Tries left')+'</small><b class="hd" style="display:block;font-size:24px">'+d.left+'</b></div><div><small>'+T('Your best')+'</small><b class="hd" style="display:block;font-size:24px">'+d.best+'</b></div><div><small>'+T('Your rank')+'</small><b class="hd" style="display:block;font-size:24px">'+(d.myRank||'–')+'</b></div></div>'+
+   '<p class="lead" style="margin:6px 0 10px">'+(LANG==='ar'?'١٠ أسئلة. الدرجة = الإجابات الصحيحة والسرعة. الفائزون الثلاثة الأوائل يحصلون على 300 / 200 / 100 عملة.':'10 questions. Score = correct answers + speed. Top 3 win 300 / 200 / 100 coins.')+'</p>'+
+   '<button class="go" '+(d.left?'onclick="tourneyStart()"':'disabled')+'>'+T('Play')+'</button></div>';
+  if(d.last&&d.last.prize)h+='<div class="g gcard" style="margin-top:12px"><b class="hd">'+T('Last week')+': +'+d.last.prize+' 🪙</b><br>'+(d.last.claimed?'<small>✓</small>':'<button class="go" style="margin-top:8px;height:44px" onclick="tourneyClaim()">'+T('Claim prize')+'</button>')+'</div>';
+  h+='<div class="hm-h" style="margin:18px 0 8px"><b>'+T('Leaderboard')+'</b></div>'+(d.board.length?d.board.map(tnRow).join(''):'<p class="lead">'+(LANG==='ar'?'كن أول المشاركين!':'Be the first to play!')+'</p>');
+  b.innerHTML=h;
+}
+function tourneyQuestions(){
+  var pool=[];UNITS.forEach(function(u){u.hand.forEach(function(q){if(q.k==='mc'||q.k==='fill')pool.push(q)})});
+  return shuffle(pool).slice(0,10);
+}
+function tourneyStart(){TN.t0=Date.now();gQuiz('tourney','Weekly tournament',tourneyQuestions(),0)}
+var _gCD=gCustomDone;
+gCustomDone=function(d){if(d.k==='tourney')return tourneyDone(d);return _gCD(d)};
+function tourneyDone(d){
+  var ok=L.ok,secs=Math.max(5,Math.round((Date.now()-TN.t0)/1000));
+  gEnd('🏆',(LANG==='ar'?'النتيجة: ':'Score: ')+ok+' / 10',(LANG==='ar'?'جارٍ إرسال نتيجتك…':'Sending your score…'),'<p class="lead" id="tnRes"></p>','<button class="go" onclick="tourneyScreen()">'+T('Leaderboard')+'</button>');
+  api('POST','/api/tourney',{action:'submit',correct:ok,secs:secs}).then(function(r){var e=elx('tnRes');if(e)e.textContent=(LANG==='ar'?'نقاطك: ':'Your points: ')+r.score}).catch(function(e){var el=elx('tnRes');if(el)el.textContent=e.message||'Could not send your score'});
+}
+function tourneyClaim(){
+  api('POST','/api/tourney',{action:'claim'}).then(function(r){var g=G();g.cb+=r.coins;gSave();gToast('🪙 +'+r.coins);tourneyScreen()}).catch(function(e){gToast(e.message||'Could not claim')});
+}
+
+/* ---- project showcase ---- */
+var SH={sort:'top',list:[],more:0,busy:false};
+var _postHTML=postHTML;
+postHTML=function(p,ctx){var h=_postHTML(p,ctx);if(ctx==='show'&&p.code)h=h.replace('<div class="pca">','<button class="share" style="margin:0 0 6px" onclick="showRun(\''+p.id+'\')">▶ '+T('Open in editor')+'</button><div class="pca">');return h};
+function showcaseScreen(sort){
+  L=null;AC.view='feed';if(sort)SH.sort=sort;
+  if(!AC.token){guestWall2('Project <i>showcase</i>','🌟','See the best projects from other learners. Create a free account to join.');return}
+  app.innerHTML='<div class="cp-top"><button class="hm-ic" onclick="communityScreen()" aria-label="'+T('Back')+'">'+IC.back+'</button><b>'+T('Project showcase')+'</b></div>'+
+   '<div class="cmtabs">'+[['top','Top'],['new','New']].map(function(t){return '<button class="'+(SH.sort===t[0]?'on':'')+'" onclick="showcaseScreen(\''+t[0]+'\')">'+T(t[1])+'</button>'}).join('')+'</div><div id="shList"></div><div id="shMore"></div>'+nav('feed');
+  SH.list=[];showLoad(0);window.scrollTo(0,0);
+}
+function showLoad(off){
+  if(SH.busy)return;SH.busy=true;
+  api('GET','/api/showcase?sort='+SH.sort+'&off='+off).then(function(d){
+    SH.busy=false;if(AC.view!=='feed'||!elx('shList'))return;pcKeep(d.posts);
+    elx('shList').insertAdjacentHTML('beforeend',d.posts.map(function(p){return postHTML(p,'show')}).join('')||(off?'':'<p class="lead">'+(LANG==='ar'?'لا توجد مشاريع بعد. شارك مشروعك من المجتمع!':'No projects yet. Share yours from Community!')+'</p>'));
+    elx('shMore').innerHTML=d.more?'<button class="share" onclick="showLoad('+d.next+')">'+T('Load more')+'</button>':'';
+  }).catch(function(e){SH.busy=false;gToast(e.message||'Could not load')});
+}
+function showRun(id){
+  var p=PC.posts[id];if(!p||!p.code)return;
+  var c=p.code,lang=/^\s*</.test(c)?'html':/console\.|=>|\bfunction\b|\b(let|const|var)\s/.test(c)?'js':'py';
+  try{localStorage.setItem('pypath_code_'+lang,c)}catch(e){}
+  CE.lang=lang;codeScreen();
+}
+var _commS=communityScreen;
+communityScreen=function(){
+  var r=_commS.apply(this,arguments);
+  try{var t=app.querySelector('.cmtabs');if(t&&AC.token)t.insertAdjacentHTML('beforeend','<button onclick="showcaseScreen()">🌟 '+T('Showcase')+'</button>')}catch(e){}
+  return r;
+};
+/* a tournament card on the Home screen */
+var _dash=dash;
+dash=function(){
+  _dash.apply(this,arguments);
+  try{var hs=app.querySelector('.hm-st');if(hs)hs.insertAdjacentHTML('afterend','<button class="g hm-cont" onclick="tourneyScreen()"><span class="hm-tile">🏆</span><span class="tx"><b>'+T('Weekly tournament')+'</b><small style="margin:2px 0 0">'+T('Ends in')+' '+tnLeftTxt(tnLeft())+'</small></span><span class="hm-play">'+IC.play+'</span></button>');if(LANG==='ar')trDom(app)}catch(e){}
+};
+home=function(){return CV.map?courseMap():dash()};
 
 useCourse(S.course);
 boot();
