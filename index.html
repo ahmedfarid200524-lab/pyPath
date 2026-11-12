@@ -605,6 +605,7 @@ input.fill:focus,.fin:focus,.ed:focus,.uname:focus{border-color:var(--acct);outl
 .hm-tile svg{width:62%;height:62%;display:block}.hm-fc .hm-tile svg{width:56px;height:56px}.cp-top b svg{width:22px;height:22px;vertical-align:-4px;margin-inline-end:6px}.opt.cp .ce svg{width:34px;height:34px;display:block}
 /* new avatars */
 .pagrid{grid-template-columns:repeat(3,1fr)}
+.paann{display:flex;gap:8px;justify-content:center}.paann img{width:56px;height:56px;border-radius:30%;border:1.5px solid var(--ln)}
 .oc.lk img{filter:grayscale(1) brightness(.5)}
 .oc.lk::after{content:"🔒";position:absolute;top:6px;right:8px;font-size:15px}
 .oc img{width:100%;height:100%;display:block;object-fit:cover}
@@ -4145,6 +4146,29 @@ function shopBuyPa(id){
   if(shopBuyItem('pa',PA_PRICE,function(g){g.iv['pa:'+id]=1})){gToast('🎁 Avatar unlocked. Pick it in Edit avatar.');shopScreen()}
 }
 AR['Avatars']='الأفاتار';AR['Owned']='مملوك';
+
+/* one-time announcement for people who open the app after this update */
+AR['New avatars are here']='أفاتارات جديدة وصلت';
+AR['Choose a character that shows next to your name on ranks, the feed and your profile. Your progress and coins are untouched.']='اختر شخصية تظهر بجانب اسمك في الترتيب والمجتمع وملفك الشخصي. تقدمك وعملاتك كما هي.';
+AR['Some are free, some are earned with badges, and a few are in the coin shop.']='بعضها مجاني وبعضها تكسبه بالشارات وبعضها في متجر العملات.';
+AR['Choose my avatar']='اختر أفاتاري';AR['Maybe later']='لاحقاً';
+function paAnnounce(n){
+  n=n||0;
+  var key='pp_avatars_ann_'+((AC.user&&(AC.user.id||AC.user.email||AC.user.name))||'guest');
+  if(lsGet(key)||AC.mode!=='app')return;
+  var P=X.profile,has=gTotalDone()>0||S.xp>0||!!P.gender;
+  if(!has||paOk(P.av&&P.av.pa)){lsSet(key,'1');return}   /* brand-new players meet the avatars in their own first steps; anyone who already chose one needs no notice */
+  if(document.querySelector('.ov')){if(n<6)setTimeout(function(){paAnnounce(n+1)},4000);return}
+  lsSet(key,'1');
+  gDlg('<div class="paann">'+['04','13','21','08','24'].map(function(id){return'<img src="'+paUrl(id,true)+'" alt="" width="56" height="56">'}).join('')+'</div>'+
+    '<h2 style="margin:0">'+T('New avatars are here')+'</h2>'+
+    '<p class="lead">'+T('Choose a character that shows next to your name on ranks, the feed and your profile. Your progress and coins are untouched.')+'</p>'+
+    '<p>'+T('Some are free, some are earned with badges, and a few are in the coin shop.')+'</p>'+
+    '<button class="go" onclick="gClose();pfEdit()">'+T('Choose my avatar')+'</button>'+
+    '<button class="mini" onclick="gClose()">'+T('Maybe later')+'</button>');
+}
+var _startApp2=startApp;
+startApp=function(){var r=_startApp2.apply(this,arguments);setTimeout(paAnnounce,1500);return r};
 
 useCourse(S.course);
 boot();
