@@ -3809,7 +3809,7 @@ var LOGO={
 };
 function courseLogo(c){return LOGO[c.id]||c.e}
 function lvOf(xp){return 1+Math.floor((xp||0)/250)}
-function myAvSvg(vb,clear){var P=X.profile;if(!P.gender)return '';P.av=avClean(P.av,P.gender);var o=vb?{vb:vb}:{};if(clear)o.bg='none';var r=avRender(P.gender,P.av,o);return clear?r.replace(/<rect [^>]*\/>/,''):r}
+function myAvSvg(vb,clear){var P=X.profile;if(!P.gender)return '';P.av=avClean(P.av,P.gender);var o=vb?{vb:vb}:{};if(clear){o.bg='none';o.big=1}var r=avRender(P.gender,P.av,o);return clear?r.replace(/<rect [^>]*\/>/,''):r}
 function myName(){return AC.user?AC.user.name:(X.profile.name||'Learner')}
 nav=function(on){
   var P=X.profile,pic=P.gender?'<span class="ni av">'+myAvSvg('50 16 170 170')+'</span>':'<span class="ni">'+IC.me+'</span>';
@@ -4070,7 +4070,7 @@ var _avClean=avClean;
 avClean=function(a,g){var o=_avClean(a,g);if(a&&typeof a==='object'&&paOk(a.pa))o.pa=a.pa;return o};
 avRender=function(g,cfg,o){
   o=o||{};var id=paOf(avClean(cfg,g));
-  return'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMax meet" role="img" aria-label="Avatar"><image href="'+paUrl(id,!!o.vb)+'" width="100" height="100" preserveAspectRatio="xMidYMax meet"/></svg>';
+  return'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMax meet" role="img" aria-label="Avatar"><image href="'+paUrl(id,!!o.vb&&!o.big)+'" width="100" height="100" preserveAspectRatio="xMidYMax meet"/></svg>';
 };
 gAvatarImg=function(){   /* share cards: draw the character into the 480 x 520 frame */
   return new Promise(function(res){
