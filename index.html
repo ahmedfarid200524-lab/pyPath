@@ -4059,7 +4059,7 @@ var PA_SHOP={'02':1,'04':1,'16':1,'17':1,'20':1,'21':1},PA_PRICE=1000;
 var PA_BD={'06':'xp100','12':'streak3','14':'flawless','07':'daily1','08':'bug1','27':'proj1','25':'xp1000','01':'streak7','26':'pygrad','11':'streak30'};
 var PA_FREE=PA_IDS.filter(function(id){return!PA_SHOP[id]&&!PA_BD[id]});
 function paOk(v){return typeof v==='string'&&PA_IDS.indexOf(v)>-1}
-function paUrl(id,small){return'/avatars/'+(small?'small/':'')+'avatar-'+id+(small?'.webp':'.svg')}
+function paUrl(id,small){return'/avatars/'+(small?'small/':'')+'avatar-'+id+'.webp'}   /* sharp cut-out characters on a transparent background */
 function paHash(s){var h=5381;for(var i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return Math.abs(h)}
 function paOf(a){   /* the chosen character; players who still have an old avatar get a steady pick until they choose */
   if(a&&paOk(a.pa))return a.pa;
@@ -4070,13 +4070,13 @@ var _avClean=avClean;
 avClean=function(a,g){var o=_avClean(a,g);if(a&&typeof a==='object'&&paOk(a.pa))o.pa=a.pa;return o};
 avRender=function(g,cfg,o){
   o=o||{};var id=paOf(avClean(cfg,g));
-  return'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Avatar"><image href="'+paUrl(id,!!o.vb)+'" width="100" height="100"/></svg>';
+  return'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMax meet" role="img" aria-label="Avatar"><image href="'+paUrl(id,!!o.vb)+'" width="100" height="100" preserveAspectRatio="xMidYMax meet"/></svg>';
 };
 gAvatarImg=function(){   /* share cards: draw the character into the 480 x 520 frame */
   return new Promise(function(res){
     var P=X.profile;if(!P.gender){res(null);return}
     var im=new Image();
-    im.onload=function(){try{var c=document.createElement('canvas');c.width=480;c.height=520;c.getContext('2d').drawImage(im,-20,0,520,520);res(c)}catch(e){res(null)}};
+    im.onload=function(){try{var c=document.createElement('canvas');c.width=480;c.height=520;c.getContext('2d').drawImage(im,0,40,480,480);res(c)}catch(e){res(null)}};
     im.onerror=function(){res(null)};
     im.src=paUrl(paOf(avClean(P.av,P.gender)));
   });
