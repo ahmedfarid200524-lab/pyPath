@@ -605,6 +605,8 @@ input.fill:focus,.fin:focus,.ed:focus,.uname:focus{border-color:var(--acct);outl
 .hm-tile svg{width:62%;height:62%;display:block}.hm-fc .hm-tile svg{width:56px;height:56px}.cp-top b svg{width:22px;height:22px;vertical-align:-4px;margin-inline-end:6px}.opt.cp .ce svg{width:34px;height:34px;display:block}
 /* new avatars */
 .pagrid{grid-template-columns:repeat(3,1fr)}
+.oc.lk img{filter:grayscale(1) brightness(.5)}
+.oc.lk::after{content:"🔒";position:absolute;top:6px;right:8px;font-size:15px}
 .oc img{width:100%;height:100%;display:block;object-fit:cover}
 .pfav,.pfs.pfstat .pfav{border-radius:26%}
 .mav{border-radius:30%}
@@ -4051,13 +4053,17 @@ home=function(){return CV.map?courseMap():dash()};
    Their code stays in this file, unused. Saved avatar data is never changed or removed:
    the old fields stay as they are and one new field, "pa", records the chosen character. */
 var PA_N=27,PA_IDS=[];(function(){for(var i=1;i<=PA_N;i++)PA_IDS.push(('0'+i).slice(-2))})();
+/* which characters are free, bought with coins, or earned with a badge */
+var PA_SHOP={'02':1,'04':1,'16':1,'17':1,'20':1,'21':1},PA_PRICE=1000;
+var PA_BD={'06':'xp100','12':'streak3','14':'flawless','07':'daily1','08':'bug1','27':'proj1','25':'xp1000','01':'streak7','26':'pygrad','11':'streak30'};
+var PA_FREE=PA_IDS.filter(function(id){return!PA_SHOP[id]&&!PA_BD[id]});
 function paOk(v){return typeof v==='string'&&PA_IDS.indexOf(v)>-1}
 function paUrl(id,small){return'/avatars/'+(small?'small/':'')+'avatar-'+id+(small?'.webp':'.svg')}
 function paHash(s){var h=5381;for(var i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return Math.abs(h)}
 function paOf(a){   /* the chosen character; players who still have an old avatar get a steady pick until they choose */
   if(a&&paOk(a.pa))return a.pa;
   var k=a&&typeof a==='object'?Object.keys(a).filter(function(x){return x.charAt(0)!=='_'&&x!=='pa'}).sort().map(function(x){return x+':'+a[x]}).join('|'):'';
-  return PA_IDS[paHash(k)%PA_N];
+  return PA_FREE[paHash(k)%PA_FREE.length];
 }
 var _avClean=avClean;
 avClean=function(a,g){var o=_avClean(a,g);if(a&&typeof a==='object'&&paOk(a.pa))o.pa=a.pa;return o};
@@ -4074,9 +4080,21 @@ gAvatarImg=function(){   /* share cards: draw the character into the 480 x 520 f
     im.src=paUrl(paOf(avClean(P.av,P.gender)));
   });
 };
+function paLock(id){   /* '' when the player can use it, otherwise why not */
+  var g=G();
+  if(PA_SHOP[id]&&!(g.iv&&g.iv['pa:'+id]))return'Buy it in the coin shop for '+PA_PRICE.toLocaleString()+' coins';
+  if(PA_BD[id]&&g.bd.indexOf(PA_BD[id])<0){var b=badgeById(PA_BD[id]);return'Earn the "'+b.n+'" badge: '+b.d}
+  return'';
+}
+function paTag(id){
+  if(PA_SHOP[id])return(G().iv['pa:'+id]?'':PA_PRICE.toLocaleString()+' 🪙');
+  if(PA_BD[id])return(G().bd.indexOf(PA_BD[id])<0?badgeById(PA_BD[id]).n:'');
+  return'';
+}
 function paDraw(){var e=document.getElementById('pfAv');if(e)e.innerHTML=avRender(X.profile.gender||'m',X.profile.av)}
 function paPick(id){
-  var P=X.profile,first=!P.gender;
+  var P=X.profile,first=!P.gender,lk=paLock(id);
+  if(lk){gToast('🔒 '+lk);return}
   if(first)P.gender='m';   /* kept only because older code and the server expect it; it is no longer a visible choice */
   P.av=Object.assign({},P.av&&typeof P.av==='object'?P.av:{},{pa:id});
   saveX();
@@ -4086,12 +4104,14 @@ function paPick(id){
 }
 function paScreen(){
   L=null;AC.view='profile';
+  try{badgeCheck()}catch(e){}
   var P=X.profile,first=!P.gender,cur=first?'':paOf(avClean(P.av,P.gender)),keep=document.getElementById('paGrid')?window.pageYOffset:0;
   app.innerHTML='<div class="top"><div class="logo">'+(first?'Choose your <i>Avatar</i>':'Edit <i>Avatar</i>')+'</div>'+(first?'':'<button class="mini go2" onclick="pfDone()">✓ Done</button>')+'</div>'+
     (first?'':'<div class="pfs pfstat"><div class="pfav" id="pfAv"></div></div>')+
     '<p class="lead" style="margin:12px 0">Pick the character that shows next to your name.</p>'+
     '<div class="og pagrid" id="paGrid">'+PA_IDS.map(function(id){
-      return'<button class="oc'+(id===cur?' sel':'')+'" data-id="'+id+'" aria-label="Avatar '+id+'" aria-pressed="'+(id===cur)+'" onclick="paPick(\''+id+'\')"><img src="'+paUrl(id,true)+'" alt="" width="96" height="96" loading="lazy" decoding="async"></button>'}).join('')+'</div>'+nav('me');
+      var lk=paLock(id),tg=paTag(id);
+      return'<button class="oc'+(id===cur?' sel':'')+(lk?' lk':'')+'" data-id="'+id+'" aria-label="Avatar '+id+(lk?' (locked)':'')+'" aria-pressed="'+(id===cur)+'" onclick="paPick(\''+id+'\')"><img src="'+paUrl(id,true)+'" alt="" width="96" height="96" loading="lazy" decoding="async">'+(tg?'<i>'+esc(tg)+'</i>':'')+'</button>'}).join('')+'</div>'+nav('me');
   if(!first)paDraw();
   window.scrollTo(0,keep);
 }
@@ -4101,14 +4121,30 @@ profile=function(){
   if(!P.gender||PF.pick||PF.edit){paScreen();return}
   return _profile5.apply(this,arguments);
 };
-unlockIds=function(){return[]};   /* old unlockable characters and outfits are retired */
+unlockIds=function(){return PA_IDS.filter(function(id){return PA_BD[id]&&!paLock(id)}).map(function(id){return'pa:'+id})};   /* old characters and outfits are retired; the new avatars earned with badges are announced instead */
+var _unlockName=unlockName;
+unlockName=function(id){return id.indexOf('pa:')===0?'Avatar '+id.slice(3)+' (new avatar)':_unlockName(id)};
 var _gProfileHTML=gProfileHTML;
 gProfileHTML=function(){return _gProfileHTML.apply(this,arguments).replace(/<details class="gcard"><summary>🎁 Rewards[\s\S]*?<\/details>/,'')};
 var _shopScreen=shopScreen;
 shopScreen=function(){
   _shopScreen.apply(this,arguments);
   try{[].forEach.call(app.querySelectorAll('.hm-h'),function(h){if(/Avatar items|عناصر الأفاتار/.test(h.textContent)){var n=h.nextElementSibling;if(n)n.remove();h.remove()}})}catch(e){}
+  try{
+    var g=G(),nv=app.querySelector('.nav');
+    var h='<div class="hm-h" style="margin:14px 0 8px"><b>'+T('Avatars')+'</b></div><div class="og pagrid">'+Object.keys(PA_SHOP).map(function(id){
+      var own=!!g.iv['pa:'+id];
+      return'<button class="oc'+(own?' sel':'')+'" aria-label="Avatar '+id+(own?' (owned)':' for '+PA_PRICE+' coins')+'" onclick="shopBuyPa(\''+id+'\')"><img src="'+paUrl(id,true)+'" alt="" width="96" height="96" loading="lazy" decoding="async"><i>'+(own?T('Owned'):PA_PRICE.toLocaleString()+' 🪙')+'</i></button>'}).join('')+'</div>';
+    if(nv)nv.insertAdjacentHTML('beforebegin',h);
+  }catch(e){}
 };
+function shopBuyPa(id){
+  var g=G();if(!PA_SHOP[id]||g.iv['pa:'+id]){gToast(T('Owned'));return}
+  if(coins()<PA_PRICE){gToast(T('Not enough coins'));return}
+  if(!confirm('Buy this avatar for '+PA_PRICE.toLocaleString()+' coins?'))return;
+  if(shopBuyItem('pa',PA_PRICE,function(g){g.iv['pa:'+id]=1})){gToast('🎁 Avatar unlocked. Pick it in Edit avatar.');shopScreen()}
+}
+AR['Avatars']='الأفاتار';AR['Owned']='مملوك';
 
 useCourse(S.course);
 boot();
