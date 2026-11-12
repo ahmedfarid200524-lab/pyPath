@@ -603,6 +603,12 @@ input.fill:focus,.fin:focus,.ed:focus,.uname:focus{border-color:var(--acct);outl
 :root[data-theme="light"] .foot,:root[data-theme="light"] .nav{box-shadow:0 -1px 8px rgba(16,24,40,.06)}
 :root[data-theme="light"] .opt.wrong::before{color:#fff}
 .hm-tile svg{width:62%;height:62%;display:block}.hm-fc .hm-tile svg{width:56px;height:56px}.cp-top b svg{width:22px;height:22px;vertical-align:-4px;margin-inline-end:6px}.opt.cp .ce svg{width:34px;height:34px;display:block}
+/* new avatars */
+.pagrid{grid-template-columns:repeat(3,1fr)}
+.oc img{width:100%;height:100%;display:block;object-fit:cover}
+.pfav,.pfs.pfstat .pfav{border-radius:26%}
+.mav{border-radius:30%}
+@media(min-width:520px){.pagrid{grid-template-columns:repeat(4,1fr)}}
 </style>
 <link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#15122e"></head>
 <body>
@@ -4039,6 +4045,70 @@ dash=function(){
   try{var hs=app.querySelector('.hm-st');if(hs)hs.insertAdjacentHTML('afterend','<button class="g hm-cont" onclick="tourneyScreen()"><span class="hm-tile">🏆</span><span class="tx"><b>'+T('Weekly tournament')+'</b><small style="margin:2px 0 0">'+T('Ends in')+' '+tnLeftTxt(tnLeft())+'</small></span><span class="hm-play">'+IC.play+'</span></button>');if(LANG==='ar')trDom(app)}catch(e){}
 };
 home=function(){return CV.map?courseMap():dash()};
+
+/* ===== New avatars: ready-made SVG characters =====
+   The old drawn avatars, the customise tabs and the old unlockable items are no longer shown.
+   Their code stays in this file, unused. Saved avatar data is never changed or removed:
+   the old fields stay as they are and one new field, "pa", records the chosen character. */
+var PA_N=27,PA_IDS=[];(function(){for(var i=1;i<=PA_N;i++)PA_IDS.push(('0'+i).slice(-2))})();
+function paOk(v){return typeof v==='string'&&PA_IDS.indexOf(v)>-1}
+function paUrl(id,small){return'/avatars/'+(small?'small/':'')+'avatar-'+id+(small?'.webp':'.svg')}
+function paHash(s){var h=5381;for(var i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return Math.abs(h)}
+function paOf(a){   /* the chosen character; players who still have an old avatar get a steady pick until they choose */
+  if(a&&paOk(a.pa))return a.pa;
+  var k=a&&typeof a==='object'?Object.keys(a).filter(function(x){return x.charAt(0)!=='_'&&x!=='pa'}).sort().map(function(x){return x+':'+a[x]}).join('|'):'';
+  return PA_IDS[paHash(k)%PA_N];
+}
+var _avClean=avClean;
+avClean=function(a,g){var o=_avClean(a,g);if(a&&typeof a==='object'&&paOk(a.pa))o.pa=a.pa;return o};
+avRender=function(g,cfg,o){
+  o=o||{};var id=paOf(avClean(cfg,g));
+  return'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Avatar"><image href="'+paUrl(id,!!o.vb)+'" width="100" height="100"/></svg>';
+};
+gAvatarImg=function(){   /* share cards: draw the character into the 480 x 520 frame */
+  return new Promise(function(res){
+    var P=X.profile;if(!P.gender){res(null);return}
+    var im=new Image();
+    im.onload=function(){try{var c=document.createElement('canvas');c.width=480;c.height=520;c.getContext('2d').drawImage(im,-20,0,520,520);res(c)}catch(e){res(null)}};
+    im.onerror=function(){res(null)};
+    im.src=paUrl(paOf(avClean(P.av,P.gender)));
+  });
+};
+function paDraw(){var e=document.getElementById('pfAv');if(e)e.innerHTML=avRender(X.profile.gender||'m',X.profile.av)}
+function paPick(id){
+  var P=X.profile,first=!P.gender;
+  if(first)P.gender='m';   /* kept only because older code and the server expect it; it is no longer a visible choice */
+  P.av=Object.assign({},P.av&&typeof P.av==='object'?P.av:{},{pa:id});
+  saveX();
+  if(first){PF.pick=false;PF.edit=false;profile();return}
+  [].forEach.call(document.querySelectorAll('#paGrid .oc'),function(b){var on=b.getAttribute('data-id')===id;b.classList.toggle('sel',on);b.setAttribute('aria-pressed',on)});
+  paDraw();
+}
+function paScreen(){
+  L=null;AC.view='profile';
+  var P=X.profile,first=!P.gender,cur=first?'':paOf(avClean(P.av,P.gender)),keep=document.getElementById('paGrid')?window.pageYOffset:0;
+  app.innerHTML='<div class="top"><div class="logo">'+(first?'Choose your <i>Avatar</i>':'Edit <i>Avatar</i>')+'</div>'+(first?'':'<button class="mini go2" onclick="pfDone()">✓ Done</button>')+'</div>'+
+    (first?'':'<div class="pfs pfstat"><div class="pfav" id="pfAv"></div></div>')+
+    '<p class="lead" style="margin:12px 0">Pick the character that shows next to your name.</p>'+
+    '<div class="og pagrid" id="paGrid">'+PA_IDS.map(function(id){
+      return'<button class="oc'+(id===cur?' sel':'')+'" data-id="'+id+'" aria-label="Avatar '+id+'" aria-pressed="'+(id===cur)+'" onclick="paPick(\''+id+'\')"><img src="'+paUrl(id,true)+'" alt="" width="96" height="96" loading="lazy" decoding="async"></button>'}).join('')+'</div>'+nav('me');
+  if(!first)paDraw();
+  window.scrollTo(0,keep);
+}
+var _profile5=profile;
+profile=function(){
+  var P=X.profile;
+  if(!P.gender||PF.pick||PF.edit){paScreen();return}
+  return _profile5.apply(this,arguments);
+};
+unlockIds=function(){return[]};   /* old unlockable characters and outfits are retired */
+var _gProfileHTML=gProfileHTML;
+gProfileHTML=function(){return _gProfileHTML.apply(this,arguments).replace(/<details class="gcard"><summary>🎁 Rewards[\s\S]*?<\/details>/,'')};
+var _shopScreen=shopScreen;
+shopScreen=function(){
+  _shopScreen.apply(this,arguments);
+  try{[].forEach.call(app.querySelectorAll('.hm-h'),function(h){if(/Avatar items|عناصر الأفاتار/.test(h.textContent)){var n=h.nextElementSibling;if(n)n.remove();h.remove()}})}catch(e){}
+};
 
 useCourse(S.course);
 boot();
